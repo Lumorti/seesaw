@@ -111,7 +111,29 @@ complex2 transpose(complex2 mat){
 	return matTran;
 }
 
-// Get the output product of two matrices 
+// Multiply two matrices
+complex2 multiply(complex2 mat1, complex2 mat2){
+
+	// Set the dimensions: n x m (x) m x q = n x q
+	complex2 mult(mat1.size(), std::vector<std::complex<double>>(mat2[0].size()));
+
+	// For each element in the new matrix
+	for (int i=0; i<mult.size(); i++){
+		for (int j=0; j<mult[0].size(); j++){
+
+			// Add the row from mat1 times the column from mat2
+			for (int k=0; k<mat2.size(); k++){
+				mult[i][j] += mat1[i][k] * mat2[k][j];
+			}
+			
+		}
+	}
+
+	return mult;
+
+}
+
+// Get the output product of two matrices
 complex2 outer(complex2 mat1, complex2 mat2){
 
 	// Set the dimensions: n x m (x) p x q = np x mq
@@ -140,22 +162,38 @@ complex2 outer(complex2 mat1, complex2 mat2){
 }
 
 // Given C, A, B and rho, see what this evaluates to
-double evaluate(real4 &C, complex4 &A, complex4 &B, complex2 &rho){
+double evaluate(real2 &C, complex4 &A, complex4 &B, complex2 &rho){
 
 	// The total 
 	double S = 0;
+	double prob = 0;
+	double expect = 0;
 
-	// For each combination of measurements and results
-	for (int a = 0; a < A.size(); a++){
-		for (int b = 0; b < B.size(); b++){
-			for (int x = 0; x < A[a].size(); x++){
-				for (int y = 0; y < B[b].size(); y++){
+	// For each combination of measurements 
+	for (int x = 0; x < A.size(); x++){
+		for (int y = 0; y < B.size(); y++){
 
-					// Add the contribution
-					S += C[a][b][x][y] * inner(rho, outer(A[a][x], B[b][y])).real();
+			// For each combination of outcomes
+			for (int a = 0; a < A[0].size(); a++){
+				for (int b = 0; b < B[0].size(); b++){
+
+					// Calculate the probability
+					prob = trace(multiply(rho, outer(A[x][a], B[y][b]))).real();
+
+					// Since the outcomes are +1 or -1
+					if (a == b){
+						expect += prob;
+					} else {
+						expect -= prob;
+					}
 
 				}
 			}
+
+			// Add based on the Bell inequality definition
+			S += C[x][y] * expect;
+			std::cout << "x = " << x << "  y = " << y << "    expect = " << expect << "    C = " << C[x][y] << std::endl;
+
 		}
 	}
 
@@ -173,7 +211,7 @@ int main (int argc, char ** argv) {
 	double overRoot2 = 1.0/sqrt(2.0);
 
 	// The coefficients C such that S = sum(C_{a,b,x,y}*p(a,b|x,y))
-	real4 C(numOutcomeA, real3(numOutcomeB, real2(numMeasureA, real1(numMeasureB))));
+	real2 C(numMeasureA, real1(numMeasureB));
 
 	// Sets of operators on Alice and Bob
 	complex4 A(numMeasureA, complex3(numOutcomeA, complex2(d, complex1(d))));
@@ -193,39 +231,55 @@ int main (int argc, char ** argv) {
 			   {-0.5,  0.5}};
 
 	// The known best values for B for the CHSH inequality TODO
+	double t1 = 1.0+root2;
+	double t2 = 1.0-root2;
+	double t3 = -1.0+root2;
+	double t4 = -1.0-root2;
+	double mag1 = 4.0+2*root2;
+	double mag2 = 4.0-2*root2;
+	double mag3 = 4.0-2*root2;
+	double mag4 = 4.0+2*root2;
+	B[0][0] = {{pow(t1, 2)/mag1, t1/mag1},
+			   {t1/mag1,         1/mag1}};
+	B[0][1] = {{pow(t2, 2)/mag2, t2/mag2},
+			   {t2/mag2,         1/mag2}};
+	B[1][0] = {{pow(t3, 2)/mag3, t3/mag3},
+			   {t3/mag3,         1/mag3}};
+	B[1][1] = {{pow(t4, 2)/mag4, t4/mag4},
+			   {t4/mag4,         1/mag4}};
 	
 	// The known best state for rho for the CHSH inequality
 	complex2 psiPlus = {{overRoot2, 0, 0, overRoot2}};
 	rho = outer(transpose(psiPlus), psiPlus);
 	
 	// Define the CHSH inequality 
-	real2 expectCoeffs(numMeasureA, real1(numMeasureB));
-	expectCoeffs[0][0] = 1;
-	expectCoeffs[0][1] = 1;
-	expectCoeffs[1][0] = 1;
-	expectCoeffs[1][1] = -1;
-	for (int i=0; i<expectCoeffs.size(); i++){
-		for (int j=0; j<expectCoeffs[i].size(); j++){
-			for (int k=0; k<numOutcomeA; k++){
-				for (int l=0; l<numOutcomeB; l++){
-					if (k == 0){
-						C[k][l][i][j] = expectCoeffs[i][j];
-					} else {
-						C[k][l][i][j] = -expectCoeffs[i][j];
-					}
-				}
-			}
-		}
-	}
+	C[0][0] = 1;
+	C[0][1] = -1;
+	C[1][0] = 1;
+	C[1][1] = 1;
 
 	// Outputs
 	prettyPrint("rho = ", rho, stateSize, stateSize);
+	for (int x = 0; x < A.size(); x++){
+		for (int a = 0; a < A[x].size(); a++){
+			std::cout << std::endl;
+			prettyPrint("A["+std::to_string(x)+"]["+std::to_string(a)+"]=", A[x][a], d, d);
+		}
+	}
+	for (int y = 0; y < B.size(); y++){
+		for (int b = 0; b < B[y].size(); b++){
+			std::cout << std::endl;
+			prettyPrint("B["+std::to_string(y)+"]["+std::to_string(b)+"]=", B[y][b], d, d);
+		}
+	}
 
 	// Evaluate once
+	std::cout << std::endl;
 	double result = evaluate(C, A, B, rho);
 	
 	// Output the result
-	std::cout << result << std::endl;
+	std::cout << std::endl;
+	std::cout << "result = " << result << std::endl;
 
 }
 
