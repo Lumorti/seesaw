@@ -5,6 +5,9 @@
 #include <complex>
 #include <iomanip>
 
+// MOSEK
+#include "fusion.h"
+
 // Because otherwise things start looking messy
 using complex1 = std::vector<std::complex<double>>;
 using complex2 = std::vector<complex1>;
@@ -83,8 +86,8 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 }
 
 // Get the trace of a matrix (summing the diagonals)
-std::complex<double> trace(complex2 mat){
-	std::complex<double> sum = 0;
+template <typename type> type trace(std::vector<std::vector<type>> mat){
+	type sum = 0;
 	for (int i=0; i<mat.size(); i++){
 		sum += mat[i][i];
 	}
@@ -92,8 +95,8 @@ std::complex<double> trace(complex2 mat){
 }
 
 // Get the inner product of two matrices (summing the multiplied diagonals)
-std::complex<double> inner(complex2 mat1, complex2 mat2){
-	std::complex<double> sum = 0;
+template <typename type> type inner(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
+	type sum = 0;
 	for (int i=0; i<mat1.size(); i++){
 		sum += mat1[i][i] * mat2[i][i];
 	}
@@ -101,8 +104,8 @@ std::complex<double> inner(complex2 mat1, complex2 mat2){
 }
 
 // Transpose a matrix
-complex2 transpose(complex2 mat){
-	complex2 matTran(mat[0].size(), complex1(mat.size()));
+template <typename type> std::vector<std::vector<type>> transpose(std::vector<std::vector<type>> mat){
+	std::vector<std::vector<type>> matTran(mat[0].size(), std::vector<type>(mat.size()));
 	for (int i=0; i<mat.size(); i++){
 		for (int j=0; j<mat[0].size(); j++){
 			matTran[j][i] = mat[i][j];
@@ -112,10 +115,10 @@ complex2 transpose(complex2 mat){
 }
 
 // Multiply two matrices
-complex2 multiply(complex2 mat1, complex2 mat2){
+template <typename type> std::vector<std::vector<type>> multiply(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
 
 	// Set the dimensions: n x m (x) m x q = n x q
-	complex2 mult(mat1.size(), std::vector<std::complex<double>>(mat2[0].size()));
+	std::vector<std::vector<type>> mult(mat1.size(), std::vector<type>(mat2[0].size()));
 
 	// For each element in the new matrix
 	for (int i=0; i<mult.size(); i++){
@@ -134,10 +137,10 @@ complex2 multiply(complex2 mat1, complex2 mat2){
 }
 
 // Get the output product of two matrices
-complex2 outer(complex2 mat1, complex2 mat2){
+template <typename type> std::vector<std::vector<type>> outer(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
 
 	// Set the dimensions: n x m (x) p x q = np x mq
-	complex2 product(mat1.size()*mat2.size(), std::vector<std::complex<double>>(mat1[0].size()*mat2[0].size()));
+	std::vector<std::vector<type>> product(mat1.size()*mat2.size(), std::vector<type>(mat1[0].size()*mat2[0].size()));
 
 	// Loop over the first matrix
 	for (int i=0; i<mat1.size(); i++){
@@ -211,26 +214,36 @@ int main (int argc, char ** argv) {
 	double overRoot2 = 1.0/sqrt(2.0);
 
 	// The coefficients C such that S = sum(C_{a,b,x,y}*p(a,b|x,y))
-	real2 C(numMeasureA, real1(numMeasureB));
+	//real2 C(numMeasureA, real1(numMeasureB));
 
-	// Sets of operators on Alice and Bob
-	complex4 A(numMeasureA, complex3(numOutcomeA, complex2(d, complex1(d))));
-	complex4 B(numMeasureB, complex3(numOutcomeB, complex2(d, complex1(d))));
+	//// Sets of operators on Alice and Bob
+	//real4 A(numMeasureA, real3(numOutcomeA, real2(d, real1(d))));
+	real4 B(numMeasureB, real3(numOutcomeB, real2(d, real1(d))));
 
-	// The shared quantum state
-	complex2 rho(stateSize, complex1(stateSize));
+	//// The shared quantum state
+	//real2 rho(stateSize, real1(stateSize));
 
-	// The known best values for A for the CHSH inequality
-	A[0][0] = {{1, 0},
-			   {0, 0}};
-	A[0][1] = {{0, 0},
-			   {0, 1}};
-	A[1][0] = {{0.5, 0.5},
-			   {0.5, 0.5}};
-	A[1][1] = {{ 0.5, -0.5},
-			   {-0.5,  0.5}};
+	//// The known best values for A for the CHSH inequality
+	//A[0][0] = {{1, 0},
+			   //{0, 0}};
+	//A[0][1] = {{0, 0},
+			   //{0, 1}};
+	//A[1][0] = {{0.5, 0.5},
+			   //{0.5, 0.5}};
+	//A[1][1] = {{ 0.5, -0.5},
+			   //{-0.5,  0.5}};
 
-	// The known best values for B for the CHSH inequality TODO
+	//// The known best state for rho for the CHSH inequality
+	//real2 psiPlus = {{overRoot2, 0, 0, overRoot2}};
+	//rho = outer(transpose(psiPlus), psiPlus);
+	
+	//// Define the CHSH inequality 
+	//C[0][0] = 1;
+	//C[0][1] = -1;
+	//C[1][0] = 1;
+	//C[1][1] = 1;
+
+	// The known best values for B for the CHSH inequality 
 	double t1 = 1.0+root2;
 	double t2 = 1.0-root2;
 	double t3 = -1.0+root2;
@@ -247,39 +260,106 @@ int main (int argc, char ** argv) {
 			   {t3/mag3,         1/mag3}};
 	B[1][1] = {{pow(t4, 2)/mag4, t4/mag4},
 			   {t4/mag4,         1/mag4}};
+	prettyPrint("", B[0][0], d, d);
+	std::cout << std::endl;
+	prettyPrint("", B[0][1], d, d);
+	std::cout << std::endl;
+	prettyPrint("", B[1][0], d, d);
+	std::cout << std::endl;
+	prettyPrint("", B[1][1], d, d);
+
+	// In a form best for MOSEK
+	real2 COptInput = {{ 1.0,-1.0,-1.0, 1.0}, 
+				       {-1.0, 1.0, 1.0,-1.0},
+					   { 1.0,-1.0, 1.0,-1.0},
+					   {-1.0, 1.0,-1.0, 1.0}};
+	real2 AOptInput = {{1.0, 0.0, 0.0, 0.0}, 
+				       {0.0, 0.0, 0.0, 1.0},
+					   {0.5, 0.5, 0.5, 0.5},
+					   {0.5,-0.5,-0.5, 0.5}};
+
+	auto AOpt = monty::new_array_ptr(AOptInput);
+	auto COpt = monty::new_array_ptr(COptInput);
+
+	auto dim0Start = monty::new_array_ptr(std::vector<int>({0,0}));
+	auto dim0End = monty::new_array_ptr(std::vector<int>({4,1}));
+	auto dim1Start = monty::new_array_ptr(std::vector<int>({0,1}));
+	auto dim1End = monty::new_array_ptr(std::vector<int>({4,2}));
+	auto dim2Start = monty::new_array_ptr(std::vector<int>({0,2}));
+	auto dim2End = monty::new_array_ptr(std::vector<int>({4,3}));
+	auto dim3Start = monty::new_array_ptr(std::vector<int>({0,3}));
+	auto dim3End = monty::new_array_ptr(std::vector<int>({4,4}));
+
+	auto identity = monty::new_array_ptr(std::vector<std::vector<double>>({{1},{0},{0},{1}}));
+	auto dim = monty::new_array_ptr(std::vector<int>({d*d,numOutcomeB*numMeasureB}));
+
+	// Optimise for B as an SDP TODO
 	
-	// The known best state for rho for the CHSH inequality
-	complex2 psiPlus = {{overRoot2, 0, 0, overRoot2}};
-	rho = outer(transpose(psiPlus), psiPlus);
+	// Create the MOSEK model 
+	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
+	auto _model = monty::finally([&](){model->dispose();});
+
+	// The moment matrix to optimise
+	mosek::fusion::Variable::t BOpt = model->variable(dim, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// Set up the objective function 
+	model->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(COpt, mosek::fusion::Expr::mul(AOpt, BOpt)));
+
+	// For each set of measurements, the matrices should sum to the identity
+	model->constraint(mosek::fusion::Expr::add(BOpt->slice(dim0Start, dim0End), BOpt->slice(dim1Start, dim1End)), mosek::fusion::Domain::equalsTo(identity));
+	model->constraint(mosek::fusion::Expr::add(BOpt->slice(dim2Start, dim2End), BOpt->slice(dim3Start, dim3End)), mosek::fusion::Domain::equalsTo(identity));
+
+	// B should also be >= 0
+	model->constraint(BOpt->slice(dim0Start,dim0End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
+	model->constraint(BOpt->slice(dim1Start,dim1End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
+	model->constraint(BOpt->slice(dim2Start,dim2End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
+	model->constraint(BOpt->slice(dim3Start,dim3End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
+	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,0), BOpt->index(2,0)), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,1), BOpt->index(2,1)), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,2), BOpt->index(2,2)), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,3), BOpt->index(2,3)), mosek::fusion::Domain::equalsTo(0.0));
+
+	// TODO remove all symetric vars from BOpt
+
+	// Solve the SDP
+	model->solve();
 	
-	// Define the CHSH inequality 
-	C[0][0] = 1;
-	C[0][1] = -1;
-	C[1][0] = 1;
-	C[1][1] = 1;
+	// Extract the results
+	double energy = model->primalObjValue() / d;
+	real2 results(d*d, real1(numMeasureB*numOutcomeB));
+	auto temp = *(BOpt->level());
+	int matWidth = d*d;
+	int matHeight = numMeasureB*numOutcomeB;
+	for (int i=0; i<matWidth*matHeight; i++){
+		results[i/matWidth][i%matHeight] = temp[i];
+	}
+
+	// Output the results
+	std::cout << energy << " <= " << 2*root2 << std::endl;
+	prettyPrint("", results, d*d, numMeasureB*numOutcomeB);
 
 	// Outputs
-	prettyPrint("rho = ", rho, stateSize, stateSize);
-	for (int x = 0; x < A.size(); x++){
-		for (int a = 0; a < A[x].size(); a++){
-			std::cout << std::endl;
-			prettyPrint("A["+std::to_string(x)+"]["+std::to_string(a)+"]=", A[x][a], d, d);
-		}
-	}
-	for (int y = 0; y < B.size(); y++){
-		for (int b = 0; b < B[y].size(); b++){
-			std::cout << std::endl;
-			prettyPrint("B["+std::to_string(y)+"]["+std::to_string(b)+"]=", B[y][b], d, d);
-		}
-	}
+	//prettyPrint("rho = ", rho, stateSize, stateSize);
+	//for (int x = 0; x < A.size(); x++){
+		//for (int a = 0; a < A[x].size(); a++){
+			//std::cout << std::endl;
+			//prettyPrint("A["+std::to_string(x)+"]["+std::to_string(a)+"]=", A[x][a], d, d);
+		//}
+	//}
+	//for (int y = 0; y < B.size(); y++){
+		//for (int b = 0; b < B[y].size(); b++){
+			//std::cout << std::endl;
+			//prettyPrint("B["+std::to_string(y)+"]["+std::to_string(b)+"]=", B[y][b], d, d);
+		//}
+	//}
 
-	// Evaluate once
-	std::cout << std::endl;
-	double result = evaluate(C, A, B, rho);
+	//// Evaluate once
+	//std::cout << std::endl;
+	//double result = evaluate(C, A, B, rho);
 	
-	// Output the result
-	std::cout << std::endl;
-	std::cout << "result = " << result << std::endl;
+	//// Output the result
+	//std::cout << std::endl;
+	//std::cout << "result = " << result << std::endl;
 
 }
 
