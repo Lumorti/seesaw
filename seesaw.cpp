@@ -205,161 +205,248 @@ double evaluate(real2 &C, complex4 &A, complex4 &B, complex2 &rho){
 
 }
 
+// Perform the seesaw method to optimise both A and B
+double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
+
+	// The inequality value to eventually return
+	double finalResult = 0;
+
+	// Create the arrays to be used to select the columns of the B array 
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsEndRefB;
+	for (int i=0; i<numMeasureA*numOutcomeA; i++){
+		columnsStartRefB.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
+		columnsEndRefB.push_back(monty::new_array_ptr(std::vector<int>({d*d, i+1})));
+	}
+
+	// Create the arrays to be used to select the rows of the B array 
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> rowsStartRefB;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> rowsEndRefB;
+	for (int i=0; i<d*d; i++){
+		rowsStartRefB.push_back(monty::new_array_ptr(std::vector<int>({i, 0})));
+		rowsEndRefB.push_back(monty::new_array_ptr(std::vector<int>({i+1, numOutcomeB*numMeasureB})));
+	}
+
+	// Create the arrays to be used to select the columns of the A array 
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefA;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsEndRefA;
+	for (int i=0; i<d*d; i++){
+		columnsStartRefA.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
+		columnsEndRefA.push_back(monty::new_array_ptr(std::vector<int>({numMeasureA*numOutcomeA, i+1})));
+	}
+
+	// Create the arrays to be used to select the rows of the A array 
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> rowsStartRefA;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> rowsEndRefA;
+	for (int i=0; i<numMeasureA*numOutcomeA; i++){
+		rowsStartRefA.push_back(monty::new_array_ptr(std::vector<int>({i, 0})));
+		rowsEndRefA.push_back(monty::new_array_ptr(std::vector<int>({i+1, d*d})));
+	}
+
+	// Create the collapsed identity
+	std::vector<double> identity(d*d, 0.0);
+	for (int i=0; i<d; i++){
+		identity[i*(d+1)] = 1.0;
+	}
+	auto identityRef = monty::new_array_ptr(identity);
+
+	// The list of row indices which should be identical 
+	std::vector<std::vector<int>> matchingRows;
+	for (int i=1; i<d; i++){
+		for (int j=0; j<d-1; j++){
+			matchingRows.push_back({j*d+i, (j+1)*d+(i-1)});
+		}
+	}
+
+	// Create a reference to an array of zeros
+	std::vector<double> zero1D(d*d, 0);
+	std::vector<std::vector<double>> zero(1, std::vector<double>(d*d, 0));
+	auto zero1DRef = monty::new_array_ptr(zero1D);
+	auto zeroRefB = monty::new_array_ptr(zero);
+	auto zeroRefA = monty::new_array_ptr(transpose(zero));
+
+	// The sizes of the variable matrix
+	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
+	auto dimRefB = monty::new_array_ptr(std::vector<int>({d*d, numOutcomeB*numMeasureB}));
+
+	// C is always fixed
+	auto CRef = monty::new_array_ptr(C);
+
+	// Keep seesawing 
+	for (int iter=0; iter<3; iter++){
+
+		// ----------------------------
+		//    Fixing A, optimising B
+		// ----------------------------
+
+		// Create references to the fixed matrices
+		auto ArRef = monty::new_array_ptr(Ar);
+		auto AiRef = monty::new_array_ptr(Ai);
+
+		// Clear the B matrices
+		Br = real2(d*d, real1(numOutcomeB*numMeasureB, 0));
+		Bi = real2(d*d, real1(numOutcomeB*numMeasureB, 0));
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
+
+		// The moment matrices to optimise
+		mosek::fusion::Variable::t BrOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t BiOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Set up the objective function 
+		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
+
+		// For each set of measurements, the matrices should sum to the identity
+		for (int i=0; i<columnsStartRefB.size(); i+=numOutcomeB){
+			modelB->constraint(mosek::fusion::Expr::sum(BrOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(identityRef));
+			modelB->constraint(mosek::fusion::Expr::sum(BiOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(zero1DRef));
+		}
+
+		// Each section of B should also be >= 0
+		for (int i=0; i<columnsStartRefB.size(); i++){
+			modelB->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d), 
+										mosek::fusion::Expr::neg(BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d))
+									), 
+									mosek::fusion::Expr::hstack(
+										BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d),
+										BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+		}
+
+		// Symmetry constraints 
+		for (int i=0; i<matchingRows.size(); i++){
+			modelB->constraint(mosek::fusion::Expr::sub(BrOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BrOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
+			modelB->constraint(mosek::fusion::Expr::add(BiOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BiOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
+		}
+
+		// Solve the SDP
+		modelB->solve();
+		
+		// Extract the results
+		finalResult = modelB->primalObjValue() / d;
+		int matWidthB = d*d;
+		int matHeightB = numMeasureB*numOutcomeB;
+		auto tempBr = *(BrOpt->level());
+		auto tempBi = *(BiOpt->level());
+		for (int i=0; i<matWidthB*matHeightB; i++){
+			Br[i/matWidthB][i%matHeightB] = tempBr[i];
+			Bi[i/matWidthB][i%matHeightB] = tempBi[i];
+		}
+
+		// Destroy the model
+		modelB->dispose();
+
+		// Output after this section
+		std::cout << "iter " << iter << " after B opt " << finalResult << std::endl;
+
+		// TODO 
+		return finalResult;
+
+		// ----------------------------
+		//    Fixing B, optimising A
+		// ----------------------------
+		
+		// Create references to the fixed matrix
+		//auto BRef = monty::new_array_ptr(B);
+
+		//// Clear the A matrix
+		//A = real2(numOutcomeB*numMeasureB, real1(d*d, 0));
+
+		//// Create the MOSEK model 
+		//mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
+
+		//// The moment matrix to optimise
+		//mosek::fusion::Variable::t AOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		//// Set up the objective function 
+		//modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::mul(AOpt, BRef)));
+
+		//// For each set of measurements, the matrices should sum to the identity
+		//for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
+			//modelA->constraint(mosek::fusion::Expr::sum(AOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(identityRef));
+		//}
+
+		//// Each section of A should also be >= 0
+		//for (int i=0; i<rowsStartRefA.size(); i++){
+			//modelA->constraint(AOpt->slice(rowsStartRefA[i], rowsEndRefA[i])->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
+		//}
+
+		//// Symmetry constraints 
+		//for (int i=0; i<matchingRows.size(); i++){
+			//modelA->constraint(mosek::fusion::Expr::sub(AOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), AOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
+		//}
+
+		//// Solve the SDP
+		//modelA->solve();
+		
+		//// Extract the results
+		//finalResult = modelA->primalObjValue() / d;
+		//auto tempA = *(AOpt->level());
+		//int matWidthA = d*d;
+		//int matHeightA = numMeasureA*numOutcomeA;
+		//for (int i=0; i<matWidthA*matHeightA; i++){
+			//A[i/matWidthA][i%matHeightA] = tempA[i];
+		//}
+
+		//// Destroy the model
+		//modelA->dispose();
+
+		//// Output after this section
+		//std::cout << "iter " << iter << " after A opt " << finalResult << std::endl;
+
+	}
+
+	// Return the evaluated expression, A and B have also been modified
+	return finalResult;
+
+}
+
 // Standard cpp entry point
 int main (int argc, char ** argv) {
 
 	// Useful values
-	int stateSize = pow(2, d);
 	double root2 = sqrt(2.0);
-	double overRoot2 = 1.0/sqrt(2.0);
 
-	// The coefficients C such that S = sum(C_{a,b,x,y}*p(a,b|x,y))
-	//real2 C(numMeasureA, real1(numMeasureB));
+	// The coefficients defining the inequality
+	real2 C = {{ 1.0,-1.0,-1.0, 1.0}, 
+		       {-1.0, 1.0, 1.0,-1.0},
+			   { 1.0,-1.0, 1.0,-1.0},
+			   {-1.0, 1.0,-1.0, 1.0}};
 
-	//// Sets of operators on Alice and Bob
-	//real4 A(numMeasureA, real3(numOutcomeA, real2(d, real1(d))));
-	real4 B(numMeasureB, real3(numOutcomeB, real2(d, real1(d))));
+	// The arrays to store the operators (real and imaginary separately)
+	real2 Ar(numOutcomeA*numMeasureA, real1(d*d));
+	real2 Ai(numOutcomeA*numMeasureA, real1(d*d));
+	real2 Br(d*d, real1(numOutcomeB*numMeasureB));
+	real2 Bi(d*d, real1(numOutcomeB*numMeasureB));
 
-	//// The shared quantum state
-	//real2 rho(stateSize, real1(stateSize));
+	// The initial guess for A
+	Ar = {{1.0, 0.0,-1.0, 0.0}, 
+		  {0.0, 0.0, 0.0, 1.0},
+		  {1.0, 1.0, 0.0, 1.0},
+		  {0.0, 1.0, 0.0, 1.0}};
+	Ai = {{0.0, 0.0, 0.0, 0.0}, 
+	      {0.0, 0.0, 0.0, 0.0},
+		  {0.0, 0.0, 0.0, 0.0},
+		  {0.0, 0.0, 0.0, 0.0}};
 
-	//// The known best values for A for the CHSH inequality
-	//A[0][0] = {{1, 0},
-			   //{0, 0}};
-	//A[0][1] = {{0, 0},
-			   //{0, 1}};
-	//A[1][0] = {{0.5, 0.5},
-			   //{0.5, 0.5}};
-	//A[1][1] = {{ 0.5, -0.5},
-			   //{-0.5,  0.5}};
-
-	//// The known best state for rho for the CHSH inequality
-	//real2 psiPlus = {{overRoot2, 0, 0, overRoot2}};
-	//rho = outer(transpose(psiPlus), psiPlus);
-	
-	//// Define the CHSH inequality 
-	//C[0][0] = 1;
-	//C[0][1] = -1;
-	//C[1][0] = 1;
-	//C[1][1] = 1;
-
-	// The known best values for B for the CHSH inequality 
-	double t1 = 1.0+root2;
-	double t2 = 1.0-root2;
-	double t3 = -1.0+root2;
-	double t4 = -1.0-root2;
-	double mag1 = 4.0+2*root2;
-	double mag2 = 4.0-2*root2;
-	double mag3 = 4.0-2*root2;
-	double mag4 = 4.0+2*root2;
-	B[0][0] = {{pow(t1, 2)/mag1, t1/mag1},
-			   {t1/mag1,         1/mag1}};
-	B[0][1] = {{pow(t2, 2)/mag2, t2/mag2},
-			   {t2/mag2,         1/mag2}};
-	B[1][0] = {{pow(t3, 2)/mag3, t3/mag3},
-			   {t3/mag3,         1/mag3}};
-	B[1][1] = {{pow(t4, 2)/mag4, t4/mag4},
-			   {t4/mag4,         1/mag4}};
-	prettyPrint("", B[0][0], d, d);
-	std::cout << std::endl;
-	prettyPrint("", B[0][1], d, d);
-	std::cout << std::endl;
-	prettyPrint("", B[1][0], d, d);
-	std::cout << std::endl;
-	prettyPrint("", B[1][1], d, d);
-
-	// In a form best for MOSEK
-	real2 COptInput = {{ 1.0,-1.0,-1.0, 1.0}, 
-				       {-1.0, 1.0, 1.0,-1.0},
-					   { 1.0,-1.0, 1.0,-1.0},
-					   {-1.0, 1.0,-1.0, 1.0}};
-	real2 AOptInput = {{1.0, 0.0, 0.0, 0.0}, 
-				       {0.0, 0.0, 0.0, 1.0},
-					   {0.5, 0.5, 0.5, 0.5},
-					   {0.5,-0.5,-0.5, 0.5}};
-
-	auto AOpt = monty::new_array_ptr(AOptInput);
-	auto COpt = monty::new_array_ptr(COptInput);
-
-	auto dim0Start = monty::new_array_ptr(std::vector<int>({0,0}));
-	auto dim0End = monty::new_array_ptr(std::vector<int>({4,1}));
-	auto dim1Start = monty::new_array_ptr(std::vector<int>({0,1}));
-	auto dim1End = monty::new_array_ptr(std::vector<int>({4,2}));
-	auto dim2Start = monty::new_array_ptr(std::vector<int>({0,2}));
-	auto dim2End = monty::new_array_ptr(std::vector<int>({4,3}));
-	auto dim3Start = monty::new_array_ptr(std::vector<int>({0,3}));
-	auto dim3End = monty::new_array_ptr(std::vector<int>({4,4}));
-
-	auto identity = monty::new_array_ptr(std::vector<std::vector<double>>({{1},{0},{0},{1}}));
-	auto dim = monty::new_array_ptr(std::vector<int>({d*d,numOutcomeB*numMeasureB}));
-
-	// Optimise for B as an SDP TODO
-	
-	// Create the MOSEK model 
-	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
-	auto _model = monty::finally([&](){model->dispose();});
-
-	// The moment matrix to optimise
-	mosek::fusion::Variable::t BOpt = model->variable(dim, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-	// Set up the objective function 
-	model->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(COpt, mosek::fusion::Expr::mul(AOpt, BOpt)));
-
-	// For each set of measurements, the matrices should sum to the identity
-	model->constraint(mosek::fusion::Expr::add(BOpt->slice(dim0Start, dim0End), BOpt->slice(dim1Start, dim1End)), mosek::fusion::Domain::equalsTo(identity));
-	model->constraint(mosek::fusion::Expr::add(BOpt->slice(dim2Start, dim2End), BOpt->slice(dim3Start, dim3End)), mosek::fusion::Domain::equalsTo(identity));
-
-	// B should also be >= 0
-	model->constraint(BOpt->slice(dim0Start,dim0End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
-	model->constraint(BOpt->slice(dim1Start,dim1End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
-	model->constraint(BOpt->slice(dim2Start,dim2End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
-	model->constraint(BOpt->slice(dim3Start,dim3End)->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
-	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,0), BOpt->index(2,0)), mosek::fusion::Domain::equalsTo(0.0));
-	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,1), BOpt->index(2,1)), mosek::fusion::Domain::equalsTo(0.0));
-	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,2), BOpt->index(2,2)), mosek::fusion::Domain::equalsTo(0.0));
-	model->constraint(mosek::fusion::Expr::sub(BOpt->index(1,3), BOpt->index(2,3)), mosek::fusion::Domain::equalsTo(0.0));
-
-	// TODO remove all symetric vars from BOpt
-
-	// Solve the SDP
-	model->solve();
-	
-	// Extract the results
-	double energy = model->primalObjValue() / d;
-	real2 results(d*d, real1(numMeasureB*numOutcomeB));
-	auto temp = *(BOpt->level());
-	int matWidth = d*d;
-	int matHeight = numMeasureB*numOutcomeB;
-	for (int i=0; i<matWidth*matHeight; i++){
-		results[i/matWidth][i%matHeight] = temp[i];
-	}
+	// Perform the seesaw
+	double result = seesaw(Ar, Ai, Br, Bi, C);
 
 	// Output the results
-	std::cout << energy << " <= " << 2*root2 << std::endl;
-	prettyPrint("", results, d*d, numMeasureB*numOutcomeB);
-
-	// Outputs
-	//prettyPrint("rho = ", rho, stateSize, stateSize);
-	//for (int x = 0; x < A.size(); x++){
-		//for (int a = 0; a < A[x].size(); a++){
-			//std::cout << std::endl;
-			//prettyPrint("A["+std::to_string(x)+"]["+std::to_string(a)+"]=", A[x][a], d, d);
-		//}
-	//}
-	//for (int y = 0; y < B.size(); y++){
-		//for (int b = 0; b < B[y].size(); b++){
-			//std::cout << std::endl;
-			//prettyPrint("B["+std::to_string(y)+"]["+std::to_string(b)+"]=", B[y][b], d, d);
-		//}
-	//}
-
-	//// Evaluate once
-	//std::cout << std::endl;
-	//double result = evaluate(C, A, B, rho);
-	
-	//// Output the result
-	//std::cout << std::endl;
-	//std::cout << "result = " << result << std::endl;
+	std::cout << std::endl;
+	prettyPrint("Ar = ", Ar, numMeasureB*numOutcomeB, d*d);
+	std::cout << std::endl;
+	prettyPrint("Ai = ", Ai, numMeasureB*numOutcomeB, d*d);
+	std::cout << std::endl;
+	prettyPrint("Br = ", Br, d*d, numMeasureB*numOutcomeB);
+	std::cout << std::endl;
+	prettyPrint("Bi = ", Bi, d*d, numMeasureB*numOutcomeB);
+	std::cout << std::endl;
+	std::cout << "final result = " << result << " <= " << 2*root2 << std::endl;
 
 }
 
