@@ -4,6 +4,7 @@
 #include <vector>
 #include <complex>
 #include <iomanip>
+#include <random>
 
 // MOSEK
 #include "fusion.h"
@@ -19,15 +20,18 @@ using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
 // Dimension
-const int d = 2;
+const int d = 3;
 
 // Number of possible measurements
 const int numMeasureA = 2;
-const int numMeasureB = 2;
+const int numMeasureB = numMeasureA*(numMeasureA-1);
 
 // Number of possible outputs
 const int numOutcomeA = 2;
 const int numOutcomeB = 2;
+
+// Seesaw iterations
+const int numIters = 5;
 
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
@@ -76,6 +80,47 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 		// For the x values, combine them all on one line
 		for (int x=0; x<w; x++){
 			std::cout << std::setw(5) << arr[y][x] << " ";
+		}
+
+		// Output the row
+		std::cout << "|" << std::endl;
+
+	}
+
+}
+
+// Pretty print a complex 2D array with width w and height h
+void prettyPrint(std::string pre, complex2 arr, int w, int h){
+
+	// Used fixed precision
+	std::cout << std::fixed << std::setprecision(2);
+
+	// Loop over the array
+	std::string rowText;
+	for (int y=0; y<h; y++){
+
+		// For the first line, add the pre text
+		if (y == 0){
+			rowText = pre;
+
+		// Otherwise pad accordingly
+		} else {
+			rowText = "";
+			while (rowText.length() < pre.length()){
+				rowText += " ";
+			}
+		}
+
+		// Spacing
+		std::cout << rowText << " | ";
+
+		// For the x values, combine them all on one line
+		for (int x=0; x<w; x++){
+			if (std::imag(arr[y][x]) >= 0){
+				std::cout << std::setw(5) << std::real(arr[y][x]) << "+" << std::abs(std::imag(arr[y][x])) << "i ";
+			} else {
+				std::cout << std::setw(5) << std::real(arr[y][x]) << "-" << std::abs(std::imag(arr[y][x])) << "i ";
+			}
 		}
 
 		// Output the row
@@ -214,7 +259,7 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	// Create the arrays to be used to select the columns of the B array 
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsEndRefB;
-	for (int i=0; i<numMeasureA*numOutcomeA; i++){
+	for (int i=0; i<numMeasureB*numOutcomeB; i++){
 		columnsStartRefB.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
 		columnsEndRefB.push_back(monty::new_array_ptr(std::vector<int>({d*d, i+1})));
 	}
@@ -259,11 +304,10 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	}
 
 	// Create a reference to an array of zeros
-	std::vector<double> zero1D(d*d, 0);
-	std::vector<std::vector<double>> zero(1, std::vector<double>(d*d, 0));
-	auto zero1DRef = monty::new_array_ptr(zero1D);
-	auto zeroRefB = monty::new_array_ptr(zero);
-	auto zeroRefA = monty::new_array_ptr(transpose(zero));
+	auto zero1DRef = monty::new_array_ptr(real1(d*d, 0));
+	auto zeroRefB = monty::new_array_ptr(real2(1, real1(numOutcomeB*numMeasureB, 0.0)));
+	auto zeroRefA = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(1, 0.0)));
+	auto zero2DRef = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB, 0)));
 
 	// The sizes of the variable matrix
 	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
@@ -273,7 +317,7 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	auto CRef = monty::new_array_ptr(C);
 
 	// Keep seesawing 
-	for (int iter=0; iter<3; iter++){
+	for (int iter=0; iter<numIters; iter++){
 
 		// ----------------------------
 		//    Fixing A, optimising B
@@ -282,10 +326,6 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		// Create references to the fixed matrices
 		auto ArRef = monty::new_array_ptr(Ar);
 		auto AiRef = monty::new_array_ptr(Ai);
-
-		// Clear the B matrices
-		Br = real2(d*d, real1(numOutcomeB*numMeasureB, 0));
-		Bi = real2(d*d, real1(numOutcomeB*numMeasureB, 0));
 
 		// Create the MOSEK model 
 		mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
@@ -296,6 +336,9 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 
 		// Set up the objective function 
 		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
+
+		// Ensure the probability isn't imaginary
+		modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
 		// For each set of measurements, the matrices should sum to the identity
 		for (int i=0; i<columnsStartRefB.size(); i+=numOutcomeB){
@@ -328,13 +371,13 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		
 		// Extract the results
 		finalResult = modelB->primalObjValue() / d;
-		int matWidthB = d*d;
-		int matHeightB = numMeasureB*numOutcomeB;
+		int matHeightB = d*d;
+		int matWidthB = numMeasureB*numOutcomeB;
 		auto tempBr = *(BrOpt->level());
 		auto tempBi = *(BiOpt->level());
 		for (int i=0; i<matWidthB*matHeightB; i++){
-			Br[i/matWidthB][i%matHeightB] = tempBr[i];
-			Bi[i/matWidthB][i%matHeightB] = tempBi[i];
+			Br[i/matWidthB][i%matWidthB] = tempBr[i];
+			Bi[i/matWidthB][i%matWidthB] = tempBi[i];
 		}
 
 		// Destroy the model
@@ -343,60 +386,72 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		// Output after this section
 		std::cout << "iter " << iter << " after B opt " << finalResult << std::endl;
 
-		// TODO 
-		return finalResult;
-
 		// ----------------------------
 		//    Fixing B, optimising A
 		// ----------------------------
 		
 		// Create references to the fixed matrix
-		//auto BRef = monty::new_array_ptr(B);
+		auto BrRef = monty::new_array_ptr(Br);
+		auto BiRef = monty::new_array_ptr(Bi);
 
-		//// Clear the A matrix
-		//A = real2(numOutcomeB*numMeasureB, real1(d*d, 0));
+		// Create the MOSEK model 
+		mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
 
-		//// Create the MOSEK model 
-		//mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
+		// The moment matrices to optimise
+		mosek::fusion::Variable::t ArOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t AiOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
 
-		//// The moment matrix to optimise
-		//mosek::fusion::Variable::t AOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		// Set up the objective function 
+		modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArOpt, BrRef), mosek::fusion::Expr::mul(AiOpt, BiRef))));
 
-		//// Set up the objective function 
-		//modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::mul(AOpt, BRef)));
+		// Ensure the probability isn't imaginary
+		modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
-		//// For each set of measurements, the matrices should sum to the identity
-		//for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
-			//modelA->constraint(mosek::fusion::Expr::sum(AOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(identityRef));
-		//}
+		// For each set of measurements, the matrices should sum to the identity
+		for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
+			modelA->constraint(mosek::fusion::Expr::sum(ArOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(identityRef));
+			modelA->constraint(mosek::fusion::Expr::sum(AiOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(zero1DRef));
+		}
 
-		//// Each section of A should also be >= 0
-		//for (int i=0; i<rowsStartRefA.size(); i++){
-			//modelA->constraint(AOpt->slice(rowsStartRefA[i], rowsEndRefA[i])->reshape(d, d), mosek::fusion::Domain::inPSDCone(d));
-		//}
+		// Each section of A should also be >= 0
+		for (int i=0; i<rowsStartRefA.size(); i++){
+			modelA->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d), 
+										mosek::fusion::Expr::neg(AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d))
+									), 
+									mosek::fusion::Expr::hstack(
+										AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d),
+										ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+		}
 
-		//// Symmetry constraints 
-		//for (int i=0; i<matchingRows.size(); i++){
-			//modelA->constraint(mosek::fusion::Expr::sub(AOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), AOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
-		//}
+		// Symmetry constraints 
+		for (int i=0; i<matchingRows.size(); i++){
+			modelA->constraint(mosek::fusion::Expr::sub(ArOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), ArOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
+			modelA->constraint(mosek::fusion::Expr::add(AiOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), AiOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
+		}
 
-		//// Solve the SDP
-		//modelA->solve();
+		// Solve the SDP
+		modelA->solve();
 		
-		//// Extract the results
-		//finalResult = modelA->primalObjValue() / d;
-		//auto tempA = *(AOpt->level());
-		//int matWidthA = d*d;
-		//int matHeightA = numMeasureA*numOutcomeA;
-		//for (int i=0; i<matWidthA*matHeightA; i++){
-			//A[i/matWidthA][i%matHeightA] = tempA[i];
-		//}
+		// Extract the results
+		finalResult = modelA->primalObjValue() / d;
+		auto tempAr = *(ArOpt->level());
+		auto tempAi = *(AiOpt->level());
+		int matWidthA = d*d;
+		int matHeightA = numMeasureA*numOutcomeA;
+		for (int i=0; i<matWidthA*matHeightA; i++){
+			Ar[i/matWidthA][i%matWidthA] = tempAr[i];
+			Ai[i/matWidthA][i%matWidthA] = tempAi[i];
+		}
 
-		//// Destroy the model
-		//modelA->dispose();
+		// Destroy the model
+		modelA->dispose();
 
-		//// Output after this section
-		//std::cout << "iter " << iter << " after A opt " << finalResult << std::endl;
+		// Output after this section
+		std::cout << "iter " << iter << " after A opt " << finalResult << std::endl;
 
 	}
 
@@ -410,12 +465,68 @@ int main (int argc, char ** argv) {
 
 	// Useful values
 	double root2 = sqrt(2.0);
+	const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 	// The coefficients defining the inequality
-	real2 C = {{ 1.0,-1.0,-1.0, 1.0}, 
-		       {-1.0, 1.0, 1.0,-1.0},
-			   { 1.0,-1.0, 1.0,-1.0},
-			   {-1.0, 1.0,-1.0, 1.0}};
+	real2 C(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB));
+
+	// For each CHSH pair
+	int y1 = 0;
+	int y2 = 1;
+	for (int x1=0; x1<numMeasureA; x1++){
+		for (int x2=x1+1; x2<numMeasureA; x2++){
+
+			// A_x1 B_y1
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
+					} else {
+						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
+					}
+
+				}
+			}
+			
+			// A_x2 B_y1
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
+					} else {
+						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
+					}
+				}
+			}
+			
+			// A_x1 B_y2
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
+					} else {
+						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
+					}
+				}
+			}
+			
+			// - A_x2 B_y2
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
+					} else {
+						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
+					}
+				}
+			}
+			
+			// Use a different pair of Bob's measurements
+			y1 += 2;
+			y2 += 2;
+
+		}
+	}
 
 	// The arrays to store the operators (real and imaginary separately)
 	real2 Ar(numOutcomeA*numMeasureA, real1(d*d));
@@ -423,30 +534,102 @@ int main (int argc, char ** argv) {
 	real2 Br(d*d, real1(numOutcomeB*numMeasureB));
 	real2 Bi(d*d, real1(numOutcomeB*numMeasureB));
 
-	// The initial guess for A
-	Ar = {{1.0, 0.0,-1.0, 0.0}, 
-		  {0.0, 0.0, 0.0, 1.0},
-		  {1.0, 1.0, 0.0, 1.0},
-		  {0.0, 1.0, 0.0, 1.0}};
-	Ai = {{0.0, 0.0, 0.0, 0.0}, 
-	      {0.0, 0.0, 0.0, 0.0},
-		  {0.0, 0.0, 0.0, 0.0},
-		  {0.0, 0.0, 0.0, 0.0}};
+	// Create an identity vector
+	std::vector<double> identity(d*d, 0.0);
+	for (int i=0; i<d; i++){
+		identity[i*(d+1)] = 1.0;
+	}
+
+	// Randomise A
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_real_distribution<double> distribution(0.0, 1.0);
+	for (int x=0; x<numMeasureA; x++){
+		for (int a=0; a<numOutcomeA-1; a++){
+			for (int j=0; j<d*d; j++){
+
+				// Create some random values
+				Ar[x*numOutcomeA+a][j] = distribution(generator);
+
+			}
+		}
+	}
+
+	// Which columns should be identical
+	std::vector<std::vector<int>> matchingRows;
+	for (int i=1; i<d; i++){
+		for (int j=0; j<d-1; j++){
+			matchingRows.push_back({j*d+i, (j+1)*d+(i-1)});
+		}
+	}
+
+	// Force these to be identical
+	for (int i=0; i<matchingRows.size(); i++){
+		for (int j=0; j<numMeasureA*numOutcomeA; j++){
+			Ar[j][matchingRows[i][0]] = Ar[j][matchingRows[i][1]];
+			Ai[j][matchingRows[i][0]] = -Ai[j][matchingRows[i][1]];
+		}
+	}
+
+	// Ensure each measurement sums to the identity 
+	for (int x=0; x<numMeasureA; x++){
+		for (int j=0; j<d*d; j++){
+			for (int a=0; a<numOutcomeA-1; a++){
+				Ar[x*numOutcomeA+numOutcomeA-1][j] -= Ar[x*numOutcomeA+a][j];
+				Ai[x*numOutcomeA+numOutcomeA-1][j] -= Ai[x*numOutcomeA+a][j];
+			}
+			Ar[x*numOutcomeA+numOutcomeA-1][j] += identity[j];
+		}
+	}
+
+	// Output the raw arrays
+	prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
+	std::cout << std::endl;
+	prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+	std::cout << std::endl;
+	prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+	std::cout << std::endl;
 
 	// Perform the seesaw
 	double result = seesaw(Ar, Ai, Br, Bi, C);
 
+	// Output the raw arrays
+	std::cout << std::endl;
+	prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+	std::cout << std::endl;
+	prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+	std::cout << std::endl;
+	prettyPrint("Br =", Br, numMeasureB*numOutcomeB, d*d);
+	std::cout << std::endl;
+	prettyPrint("Bi =", Bi, numMeasureB*numOutcomeB, d*d);
+	std::cout << std::endl;
+
+	// Extract the results from the A matrix
+	complex4 A(numMeasureA, complex3(numOutcomeA, complex2(d, complex1(d))));
+	for (int x=0; x<numMeasureA; x++){
+		for (int a=0; a<numOutcomeA; a++){
+			for (int i=0; i<d*d; i++){
+				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
+			}
+			prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
+			std::cout << std::endl;
+		}
+	}
+
+	// Extract the results from the B matrix
+	complex4 B(numMeasureB, complex3(numOutcomeB, complex2(d, complex1(d))));
+	for (int y=0; y<numMeasureB; y++){
+		for (int b=0; b<numOutcomeB; b++){
+			for (int i=0; i<d*d; i++){
+				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB];
+			}
+			prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
+			std::cout << std::endl;
+		}
+	}
+
 	// Output the results
-	std::cout << std::endl;
-	prettyPrint("Ar = ", Ar, numMeasureB*numOutcomeB, d*d);
-	std::cout << std::endl;
-	prettyPrint("Ai = ", Ai, numMeasureB*numOutcomeB, d*d);
-	std::cout << std::endl;
-	prettyPrint("Br = ", Br, d*d, numMeasureB*numOutcomeB);
-	std::cout << std::endl;
-	prettyPrint("Bi = ", Bi, d*d, numMeasureB*numOutcomeB);
-	std::cout << std::endl;
-	std::cout << "final result = " << result << " <= " << 2*root2 << std::endl;
+	std::cout << "final result = " << result << " <= " << (numMeasureB/2)*2*root2 << std::endl;
 
 }
 
