@@ -20,10 +20,10 @@ using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
 // Dimension
-const int d = 3;
+const int d = 2;
 
 // Number of possible measurements
-const int numMeasureA = 2;
+const int numMeasureA = 3;
 const int numMeasureB = numMeasureA*(numMeasureA-1);
 
 // Number of possible outputs
@@ -31,7 +31,8 @@ const int numOutcomeA = 2;
 const int numOutcomeB = 2;
 
 // Seesaw iterations
-const int numIters = 5;
+const int numIters = 100;
+const double tol = 1E-5;
 
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
@@ -309,6 +310,10 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	auto zeroRefA = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(1, 0.0)));
 	auto zero2DRef = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB, 0)));
 
+	// Create references to arrays of one
+	auto oneBRef = monty::new_array_ptr(real2(1, real1(numOutcomeB*numMeasureB, 1.0)));
+	auto oneARef = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(1, 1.0)));
+
 	// The sizes of the variable matrix
 	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
 	auto dimRefB = monty::new_array_ptr(std::vector<int>({d*d, numOutcomeB*numMeasureB}));
@@ -317,6 +322,7 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	auto CRef = monty::new_array_ptr(C);
 
 	// Keep seesawing 
+	double prevResult = -1;
 	for (int iter=0; iter<numIters; iter++){
 
 		// ----------------------------
@@ -384,7 +390,7 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		modelB->dispose();
 
 		// Output after this section
-		std::cout << "iter " << iter << " after B opt " << finalResult << std::endl;
+		std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
 
 		// ----------------------------
 		//    Fixing B, optimising A
@@ -406,6 +412,13 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 
 		// Ensure the probability isn't imaginary
 		modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
+
+		// Force the trace of each sub-matrix to be 1
+		mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(ArOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), ArOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
+		for (int i=2; i<d; i++){
+			sum = mosek::fusion::Expr::add(sum, ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
+		}
+		modelA->constraint(sum, mosek::fusion::Domain::equalsTo(oneARef));
 
 		// For each set of measurements, the matrices should sum to the identity
 		for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
@@ -451,7 +464,15 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		modelA->dispose();
 
 		// Output after this section
-		std::cout << "iter " << iter << " after A opt " << finalResult << std::endl;
+		std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after A opt " << finalResult << std::endl;
+
+		// See if it's converged
+		if (std::abs(finalResult-prevResult) < tol){
+			break;
+		}
+
+		// The new is now the old
+		prevResult = finalResult;
 
 	}
 
@@ -543,14 +564,21 @@ int main (int argc, char ** argv) {
 	// Randomise A
 	std::random_device rd;
 	std::mt19937 generator(rd());
-	std::uniform_real_distribution<double> distribution(0.0, 1.0);
+	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 	for (int x=0; x<numMeasureA; x++){
 		for (int a=0; a<numOutcomeA-1; a++){
-			for (int j=0; j<d*d; j++){
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
 
-				// Create some random values
-				Ar[x*numOutcomeA+a][j] = distribution(generator);
+					// Create some random values
+					Ar[x*numOutcomeA+a][j*d+k] = distribution(generator);
 
+					// Imaginary only on the off-diagonals
+					if (j != k){
+						Ai[x*numOutcomeA+a][j*d+k] = distribution(generator);
+					}
+
+				}
 			}
 		}
 	}
@@ -581,6 +609,19 @@ int main (int argc, char ** argv) {
 			Ar[x*numOutcomeA+numOutcomeA-1][j] += identity[j];
 		}
 	}
+
+	//Ar = {{1.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 1.0},
+		  //{0.5, 0.5, 0.5, 0.5},
+		  //{0.5,-0.5,-0.5, 0.5},
+		  //{0.5, 0.0, 0.0, 0.5},
+		  //{0.5, 0.0, 0.0, 0.5}};
+	//Ai = {{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.5,-0.5, 0.0},
+		  //{0.0,-0.5, 0.5, 0.0}};
 
 	// Output the raw arrays
 	prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
@@ -621,7 +662,7 @@ int main (int argc, char ** argv) {
 	for (int y=0; y<numMeasureB; y++){
 		for (int b=0; b<numOutcomeB; b++){
 			for (int i=0; i<d*d; i++){
-				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB];
+				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB+b];
 			}
 			prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
 			std::cout << std::endl;
@@ -629,7 +670,7 @@ int main (int argc, char ** argv) {
 	}
 
 	// Output the results
-	std::cout << "final result = " << result << " <= " << (numMeasureB/2)*2*root2 << std::endl;
+	std::cout << std::setprecision(5) << "final result = " << result << " <= " << (numMeasureB/2)*2*root2 << std::endl;
 
 }
 
