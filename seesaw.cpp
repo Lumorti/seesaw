@@ -20,10 +20,10 @@ using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
 // Dimension
-const int d = 2;
+const int d = 4;
 
 // Number of possible measurements
-const int numMeasureA = 3;
+const int numMeasureA = 2;
 const int numMeasureB = numMeasureA*(numMeasureA-1);
 
 // Number of possible outputs
@@ -210,47 +210,6 @@ template <typename type> std::vector<std::vector<type>> outer(std::vector<std::v
 
 }
 
-// Given C, A, B and rho, see what this evaluates to
-double evaluate(real2 &C, complex4 &A, complex4 &B, complex2 &rho){
-
-	// The total 
-	double S = 0;
-	double prob = 0;
-	double expect = 0;
-
-	// For each combination of measurements 
-	for (int x = 0; x < A.size(); x++){
-		for (int y = 0; y < B.size(); y++){
-
-			// For each combination of outcomes
-			for (int a = 0; a < A[0].size(); a++){
-				for (int b = 0; b < B[0].size(); b++){
-
-					// Calculate the probability
-					prob = trace(multiply(rho, outer(A[x][a], B[y][b]))).real();
-
-					// Since the outcomes are +1 or -1
-					if (a == b){
-						expect += prob;
-					} else {
-						expect -= prob;
-					}
-
-				}
-			}
-
-			// Add based on the Bell inequality definition
-			S += C[x][y] * expect;
-			std::cout << "x = " << x << "  y = " << y << "    expect = " << expect << "    C = " << C[x][y] << std::endl;
-
-		}
-	}
-
-	// Return the evaluated inequality
-	return S;
-
-}
-
 // Perform the seesaw method to optimise both A and B
 double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 
@@ -298,9 +257,10 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 
 	// The list of row indices which should be identical 
 	std::vector<std::vector<int>> matchingRows;
-	for (int i=1; i<d; i++){
-		for (int j=0; j<d-1; j++){
-			matchingRows.push_back({j*d+i, (j+1)*d+(i-1)});
+	for (int j=0; j<d; j++){
+		for (int i=j+1; i<d; i++){
+			int downLeft = i-j;
+			matchingRows.push_back({j*d+i, (j+downLeft)*d+(i-downLeft)});
 		}
 	}
 
@@ -344,6 +304,7 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
 
 		// Ensure the probability isn't imaginary
+		// for d=3 causes primal infeasability TODO
 		modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
 		// For each set of measurements, the matrices should sum to the identity
@@ -391,6 +352,8 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 
 		// Output after this section
 		std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+
+		//return finalResult;
 
 		// ----------------------------
 		//    Fixing B, optimising A
