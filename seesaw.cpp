@@ -6,6 +6,9 @@
 #include <iomanip>
 #include <random>
 
+// Eigen
+#include <Eigen/Dense>
+
 // MOSEK
 #include "fusion.h"
 
@@ -20,19 +23,26 @@ using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
 // Dimension
-const int d = 4;
+int d = 2;
 
 // Number of possible measurements
-const int numMeasureA = 2;
-const int numMeasureB = numMeasureA*(numMeasureA-1);
+int numMeasureA = 2;
+int numMeasureB = numMeasureA*(numMeasureA-1);
 
 // Number of possible outputs
 const int numOutcomeA = 2;
 const int numOutcomeB = 2;
 
 // Seesaw iterations
-const int numIters = 100;
+const int numIters = 300;
 const double tol = 1E-5;
+
+// How much to output (0 == none, 1 == normal, 2 == extra)
+int verbosity = 1;
+
+// Whether to force the rank of each matrix
+bool restrictRankA = false;
+bool restrictRankB = false;
 
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
@@ -211,7 +221,7 @@ template <typename type> std::vector<std::vector<type>> outer(std::vector<std::v
 }
 
 // Perform the seesaw method to optimise both A and B
-double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
+double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C, real2 &rankA, real2 &rankB){
 
 	// The inequality value to eventually return
 	double finalResult = 0;
@@ -270,9 +280,9 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 	auto zeroRefA = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(1, 0.0)));
 	auto zero2DRef = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB, 0)));
 
-	// Create references to arrays of one
-	auto oneBRef = monty::new_array_ptr(real2(1, real1(numOutcomeB*numMeasureB, 1.0)));
-	auto oneARef = monty::new_array_ptr(real2(numOutcomeA*numMeasureA, real1(1, 1.0)));
+	// Create a reference to the desired rank array
+	auto rankARef = monty::new_array_ptr(rankA);
+	auto rankBRef = monty::new_array_ptr(rankB);
 
 	// The sizes of the variable matrix
 	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
@@ -303,8 +313,16 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		// Set up the objective function 
 		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
 
+		// Force the trace of each matrix to be a certain value 
+		if (restrictRankB){
+			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(BrOpt->slice(rowsStartRefB[0], rowsEndRefB[0]), BrOpt->slice(rowsStartRefB[d+1], rowsEndRefB[d+1]));
+			for (int i=2; i<d; i++){
+				sum = mosek::fusion::Expr::add(sum, BrOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]));
+			}
+			modelB->constraint(sum, mosek::fusion::Domain::equalsTo(rankBRef));
+		}
+
 		// Ensure the probability isn't imaginary
-		// for d=3 causes primal infeasability TODO
 		modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
 		// For each set of measurements, the matrices should sum to the identity
@@ -353,8 +371,6 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		// Output after this section
 		std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
 
-		//return finalResult;
-
 		// ----------------------------
 		//    Fixing B, optimising A
 		// ----------------------------
@@ -373,15 +389,17 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C){
 		// Set up the objective function 
 		modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArOpt, BrRef), mosek::fusion::Expr::mul(AiOpt, BiRef))));
 
+		// Force the trace of each matrix to be a certain value 
+		if (restrictRankA){
+			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(ArOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), ArOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
+			for (int i=2; i<d; i++){
+				sum = mosek::fusion::Expr::add(sum, ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
+			}
+			modelA->constraint(sum, mosek::fusion::Domain::equalsTo(rankARef));
+		}
+
 		// Ensure the probability isn't imaginary
 		modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
-
-		// Force the trace of each sub-matrix to be 1
-		mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(ArOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), ArOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
-		for (int i=2; i<d; i++){
-			sum = mosek::fusion::Expr::add(sum, ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
-		}
-		modelA->constraint(sum, mosek::fusion::Domain::equalsTo(oneARef));
 
 		// For each set of measurements, the matrices should sum to the identity
 		for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
@@ -450,6 +468,51 @@ int main (int argc, char ** argv) {
 	// Useful values
 	double root2 = sqrt(2.0);
 	const std::complex<double> im = sqrt(std::complex<double>(-1.0));
+
+	// Loop over the command-line arguments
+	for (int i=1; i<argc; i++){
+
+		// Convert the char array to a standard string for easier processing
+		std::string arg = argv[i];
+
+		// If asking for help
+		if (arg == "-h" || arg == "--help") {
+			std::cout << "" << std::endl;
+			std::cout << "------------------------------" << std::endl;
+			std::cout << "  program that uses a seesaw" << std::endl;
+			std::cout << "    of a Bell-scenario to" << std::endl;
+			std::cout << "       check for MUBs" << std::endl;
+			std::cout << "------------------------------" << std::endl;
+			std::cout << "-h         show the help" << std::endl;
+			std::cout << "-d [int]   set the dimension" << std::endl;
+			std::cout << "-x [int]   set the number of measurements for Alice" << std::endl;
+			std::cout << "-v         verbose output" << std::endl;
+			std::cout << "" << std::endl;
+			return 0;
+
+		// Set the number of measurements for Alice
+		} else if (arg == "-x") {
+			numMeasureA = std::stoi(argv[i+1]);
+			numMeasureB = numMeasureA*(numMeasureA-1);
+			i += 1;
+
+		// Set the dimension
+		} else if (arg == "-d") {
+			d = std::stoi(argv[i+1]);
+			i += 1;
+
+		// Set the verbosity
+		} else if (arg == "-v") {
+			verbosity = 2;
+			i += 1;
+
+		// Otherwise it's an error
+		} else {
+			std::cout << "ERROR - unknown argument: \"" << arg << "\"" << std::endl;
+			return 1;
+		}
+
+	}
 
 	// The coefficients defining the inequality
 	real2 C(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB));
@@ -548,9 +611,10 @@ int main (int argc, char ** argv) {
 
 	// Which columns should be identical
 	std::vector<std::vector<int>> matchingRows;
-	for (int i=1; i<d; i++){
-		for (int j=0; j<d-1; j++){
-			matchingRows.push_back({j*d+i, (j+1)*d+(i-1)});
+	for (int j=0; j<d; j++){
+		for (int i=j+1; i<d; i++){
+			int downLeft = i-j;
+			matchingRows.push_back({j*d+i, (j+downLeft)*d+(i-downLeft)});
 		}
 	}
 
@@ -587,26 +651,40 @@ int main (int argc, char ** argv) {
 		  //{0.0,-0.5, 0.5, 0.0}};
 
 	// Output the raw arrays
-	prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
-	std::cout << std::endl;
-	prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
-	std::cout << std::endl;
-	prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
-	std::cout << std::endl;
+	if (verbosity >= 2){
+		prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
+		std::cout << std::endl;
+		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+	}
+
+	// The rank for A to try TODO
+	restrictRankA = true;
+	restrictRankB = false;
+	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
+	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
+	//rankA = {{2}, {5}, {1}, {6}};
+	//rankA = {{2}, {2}, {2}, {2}, {2}, {2}};
+
+	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
 
 	// Perform the seesaw
-	double result = seesaw(Ar, Ai, Br, Bi, C);
+	double result = seesaw(Ar, Ai, Br, Bi, C, rankA, rankB);
 
 	// Output the raw arrays
-	std::cout << std::endl;
-	prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
-	std::cout << std::endl;
-	prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
-	std::cout << std::endl;
-	prettyPrint("Br =", Br, numMeasureB*numOutcomeB, d*d);
-	std::cout << std::endl;
-	prettyPrint("Bi =", Bi, numMeasureB*numOutcomeB, d*d);
-	std::cout << std::endl;
+	if (verbosity >= 2){
+		std::cout << std::endl;
+		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+		prettyPrint("Br =", Br, numMeasureB*numOutcomeB, d*d);
+		std::cout << std::endl;
+		prettyPrint("Bi =", Bi, numMeasureB*numOutcomeB, d*d);
+		std::cout << std::endl;
+	}
 
 	// Extract the results from the A matrix
 	complex4 A(numMeasureA, complex3(numOutcomeA, complex2(d, complex1(d))));
@@ -616,9 +694,34 @@ int main (int argc, char ** argv) {
 				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
 			}
 			prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
+			std::cout << "  trace = " << trace(A[x][a]) << std::endl;
 			std::cout << std::endl;
 		}
 	}
+
+	// Get the eigenvalues TODO
+	Eigen::Matrix2cd matTest;
+	matTest(0,0) = A[0][0][0][0];
+	matTest(0,1) = A[0][0][0][1];
+	matTest(1,0) = A[0][0][1][0];
+	matTest(1,1) = A[0][0][1][1];
+	Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigensolver(matTest);
+	if (eigensolver.info() != Eigen::Success) abort();
+
+	// Turn this into a point on the Bloch-sphere TODO
+	std::vector<std::complex<double>> vec(2);
+	vec[0] = eigensolver.eigenvectors()(0,1);
+	vec[1] = eigensolver.eigenvectors()(1,1);
+
+	std::cout << std::endl;
+	std::cout << std::sqrt(vec[0]*std::conj(vec[0]) + vec[1]*std::conj(vec[1])) << std::endl;
+	std::cout << vec[0] << " |0> + " << vec[1] << " |1>" << std::endl;
+	std::cout << vec[0]*std::conj(vec[0]) << " |0> + " << vec[1]*std::conj(vec[0]) << " |1>" << std::endl;
+	std::complex<double> factor = std::sin(std::acos(vec[0]*std::conj(vec[0])));
+	std::cout << vec[0] << " |0> + " << factor << " * (" << vec[1] / factor << " |1>" << std::endl;
+	std::cout << "theta = " << 2*std::acos(std::real(vec[0])) << std::endl;
+	std::cout << "psi1 = " << std::acos(std::real(vec[1]/factor)) << std::endl;
+	std::cout << "psi2 = " << std::asin(std::imag(vec[1]/factor)) << std::endl;
 
 	// Extract the results from the B matrix
 	complex4 B(numMeasureB, complex3(numOutcomeB, complex2(d, complex1(d))));
@@ -627,8 +730,11 @@ int main (int argc, char ** argv) {
 			for (int i=0; i<d*d; i++){
 				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB+b];
 			}
-			prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
-			std::cout << std::endl;
+			if (verbosity >= 2){
+				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
+				std::cout << "  trace = " << trace(B[y][b]) << std::endl;
+				std::cout << std::endl;
+			}
 		}
 	}
 
