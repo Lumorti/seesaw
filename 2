@@ -661,11 +661,11 @@ int main (int argc, char ** argv) {
 	}
 
 	// The rank for A to try TODO
-	restrictRankA = false;
+	restrictRankA = true;
 	restrictRankB = false;
 	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
 	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
-	//rankA = {{1}, {2}, {1}, {2}};
+	//rankA = {{2}, {5}, {1}, {6}};
 	//rankA = {{2}, {2}, {2}, {2}, {2}, {2}};
 
 	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
