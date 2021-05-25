@@ -5,6 +5,8 @@
 #include <complex>
 #include <iomanip>
 #include <random>
+#include <fstream>
+#include <math.h>
 
 // Eigen
 #include <Eigen/Dense>
@@ -661,12 +663,10 @@ int main (int argc, char ** argv) {
 	}
 
 	// The rank for A to try TODO
-	restrictRankA = false;
+	restrictRankA = true;
 	restrictRankB = false;
 	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
 	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
-	//rankA = {{1}, {2}, {1}, {2}};
-	//rankA = {{2}, {2}, {2}, {2}, {2}, {2}};
 
 	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
 
@@ -698,30 +698,49 @@ int main (int argc, char ** argv) {
 			std::cout << std::endl;
 		}
 	}
+	
+	// Write some of the eigenvectors to file
+	if (d == 2){
+		std::ofstream outFile;
+		outFile.open ("vectors.dat");
+		for (int x=0; x<numMeasureA; x++){
 
-	// Get the eigenvalues TODO
-	Eigen::Matrix2cd matTest;
-	matTest(0,0) = A[0][0][0][0];
-	matTest(0,1) = A[0][0][0][1];
-	matTest(1,0) = A[0][0][1][0];
-	matTest(1,1) = A[0][0][1][1];
-	Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigensolver(matTest);
-	if (eigensolver.info() != Eigen::Success) abort();
+			// Copy the matrix
+			Eigen::Matrix2cd matTest;
+			for (int i=0; i<d; i++){
+				for (int j=0; j<d; j++){
+					matTest(i,j) = A[x][0][j][i];
+				}
+			}
 
-	// Turn this into a point on the Bloch-sphere TODO
-	std::vector<std::complex<double>> vec(2);
-	vec[0] = eigensolver.eigenvectors()(0,1);
-	vec[1] = eigensolver.eigenvectors()(1,1);
+			// Get the eigenvalues
+			Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigensolver(matTest);
+			if (eigensolver.info() != Eigen::Success) abort();
+			std::vector<std::complex<double>> vec(d);
+			for (int i=0; i<d; i++){
+				vec[i] = eigensolver.eigenvectors().col(1)(i);
+			}
 
-	//std::cout << std::endl;
-	//std::cout << std::sqrt(vec[0]*std::conj(vec[0]) + vec[1]*std::conj(vec[1])) << std::endl;
-	//std::cout << vec[0] << " |0> + " << vec[1] << " |1>" << std::endl;
-	//std::cout << vec[0]*std::conj(vec[0]) << " |0> + " << vec[1]*std::conj(vec[0]) << " |1>" << std::endl;
-	//std::complex<double> factor = std::sin(std::acos(vec[0]*std::conj(vec[0])));
-	//std::cout << vec[0] << " |0> + " << factor << " * (" << vec[1] / factor << " |1>" << std::endl;
-	//std::cout << "theta = " << 2*std::acos(std::real(vec[0])) << std::endl;
-	//std::cout << "psi1 = " << std::acos(std::real(vec[1]/factor)) << std::endl;
-	//std::cout << "psi2 = " << std::asin(std::imag(vec[1]/factor)) << std::endl;
+			// Make sure the |0> component is real 
+			double phase = atan(-std::imag(vec[0]) / std::real(vec[0]));
+			std::complex<double> phaseComplex(cos(phase), sin(phase));
+			vec[0] *= phaseComplex;
+			vec[1] *= phaseComplex;
+
+			// Turn this into a point on the Bloch-sphere
+			double theta = 2*acos(std::real(vec[0]));
+			std::complex<double> test = vec[1] / sin(theta/2);
+			double phi = std::arg(test);
+			double xCoord = cos(phi)*sin(theta);
+			double yCoord = sin(phi)*sin(theta);
+			double zCoord = cos(theta);
+
+			// Write this to file
+			outFile << "0 0 0 " << xCoord << " " << yCoord << " " << zCoord << std::endl;;
+
+		}
+		outFile.close();
+	}
 
 	// Extract the results from the B matrix
 	complex4 B(numMeasureB, complex3(numOutcomeB, complex2(d, complex1(d))));

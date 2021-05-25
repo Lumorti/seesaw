@@ -26,5 +26,5 @@ set size 1.2,1.2
 
 # Draw the Bloch sphere with arrows
 R=1.0
-splot R*cos(u)*cos(v),R*cos(u)*sin(v),R*sin(u), "test.dat" with vectors title ""
+splot R*cos(u)*cos(v),R*cos(u)*sin(v),R*sin(u), "vectors.dat" with vectors title ""
 
