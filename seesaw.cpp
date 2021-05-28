@@ -24,17 +24,6 @@ using real2 = std::vector<real1>;
 using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
-// Dimension
-int d = 2;
-
-// Number of possible measurements
-int numMeasureA = 2;
-int numMeasureB = numMeasureA*(numMeasureA-1);
-
-// Number of possible outputs
-const int numOutcomeA = 2;
-const int numOutcomeB = 2;
-
 // Seesaw iterations
 const int numIters = 300;
 const double tol = 1E-5;
@@ -43,8 +32,8 @@ const double tol = 1E-5;
 int verbosity = 1;
 
 // Whether to force the rank of each matrix
-bool restrictRankA = false;
-bool restrictRankB = false;
+const bool restrictRankA = false;
+const bool restrictRankB = false;
 
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
@@ -143,90 +132,264 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 
 }
 
-// Get the trace of a matrix (summing the diagonals)
-template <typename type> type trace(std::vector<std::vector<type>> mat){
-	type sum = 0;
-	for (int i=0; i<mat.size(); i++){
-		sum += mat[i][i];
-	}
-	return sum;
-}
+// Perform the seesaw method to optimise both A and B TODO
+void seesawExtended(int d, int n){
 
-// Get the inner product of two matrices (summing the multiplied diagonals)
-template <typename type> type inner(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
-	type sum = 0;
-	for (int i=0; i<mat1.size(); i++){
-		sum += mat1[i][i] * mat2[i][i];
-	}
-	return sum;
-}
+	// The inequality value to eventually return
+	double finalResult = 0;
 
-// Transpose a matrix
-template <typename type> std::vector<std::vector<type>> transpose(std::vector<std::vector<type>> mat){
-	std::vector<std::vector<type>> matTran(mat[0].size(), std::vector<type>(mat.size()));
-	for (int i=0; i<mat.size(); i++){
-		for (int j=0; j<mat[0].size(); j++){
-			matTran[j][i] = mat[i][j];
-		}
-	}
-	return matTran;
-}
+	// How many permutations
+	int numPerm = n*(n-1)/2;
 
-// Multiply two matrices
-template <typename type> std::vector<std::vector<type>> multiply(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
+	int numMeasureA = d*d*numPerm*numPerm;
+	int numOutcomeA = 3;
+	int numMeasureB = n;
+	int numOutcomeB = d;
 
-	// Set the dimensions: n x m (x) m x q = n x q
-	std::vector<std::vector<type>> mult(mat1.size(), std::vector<type>(mat2[0].size()));
+	// The arrays to store the operators (real and imaginary separately)
+	real3 Ar(numMeasureA*numOutcomeA, real2(d, real1(d)));
+	real3 Ai(numMeasureA*numOutcomeA, real2(d, real1(d)));
+	real3 Br(numMeasureB*numOutcomeB, real2(d, real1(d)));
+	real3 Bi(numMeasureB*numOutcomeB, real2(d, real1(d)));
 
-	// For each element in the new matrix
-	for (int i=0; i<mult.size(); i++){
-		for (int j=0; j<mult[0].size(); j++){
+	// Keep seesawing 
+	double prevResult = -1;
+	for (int iter=0; iter<numIters; iter++){
 
-			// Add the row from mat1 times the column from mat2
-			for (int k=0; k<mat2.size(); k++){
-				mult[i][j] += mat1[i][k] * mat2[k][j];
-			}
-			
-		}
-	}
+		// ----------------------------
+		//    Fixing A, optimising B
+		// ----------------------------
 
-	return mult;
+		// Create references to the fixed matrices
+		auto ArRef = monty::new_array_ptr(Ar);
+		//auto AiRef = monty::new_array_ptr(Ai);
 
-}
+		// Create the MOSEK model 
+		mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
 
-// Get the output product of two matrices
-template <typename type> std::vector<std::vector<type>> outer(std::vector<std::vector<type>> mat1, std::vector<std::vector<type>> mat2){
+		// The moment matrices to optimise
+		mosek::fusion::Variable::t BrOpt = modelB->variable(d, numMeasureB*numOutcomeB, mosek::fusion::Domain::inPSDCone(d));
+		//mosek::fusion::Variable::t BiOpt = modelB->variable(d, numMeasureB*numOutcomeB, mosek::fusion::Domain::inPSDCone(d));
 
-	// Set the dimensions: n x m (x) p x q = np x mq
-	std::vector<std::vector<type>> product(mat1.size()*mat2.size(), std::vector<type>(mat1[0].size()*mat2[0].size()));
-
-	// Loop over the first matrix
-	for (int i=0; i<mat1.size(); i++){
-		for (int j=0; j<mat1[0].size(); j++){
-
-			// And also the second
-			for (int k=0; k<mat2.size(); k++){
-				for (int l=0; l<mat2[0].size(); l++){
-
-					// The components of the outer product
-					product[i*mat2.size()+k][j*mat2[0].size()+l] = mat1[i][j] * mat2[k][l];
-		
+		// Set up the objective function 
+		mosek::fusion::Expression::t obj;
+		for (int i=0; i<n; i++){
+			for (int j=i+1; j<n; j++){
+				int m = j - i + ((i-1)*(2*n-i))/2;
+				for (int x1=m; x1<(m+1)*d; x1++){
+					for (int x2=m; x2<(m+1)*d; x2++){
+						obj = mosek::fusion::Expr::add(obj, 
+							mosek::fusion::Expr::dot(
+								mosek::fusion::Expr::sub(ArRef.index(x1*x2*numOutcomeA+0), ArRef.index(x1*x2*numOutcomeA+1)),
+								mosek::fusion::Expr::sub(BrOpt.index(i*numOutcomeB+x1), BrOpt.index(j*numOutcomeB+x2))
+							));
+					}
 				}
 			}
-
 		}
-	}
+		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, obj);
 
-	// Return this much larger matrix
-	return product;
+		// For each set of measurements, the matrices should sum to the identity
+		for (int y=0; y<numMeasureB; y++){
+			mosek::fusion::Expression::t total;
+			for (int b=0; b<numOutcomeB; b++){
+				total = mosek::fusion::Expr:add(total, BrOpt.index(y*numOutcomeB+b));
+			}
+			modelB->constraint(total, mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::eye(d)));
+		}
+
+		// Solve the SDP
+		modelB->solve();
+		
+		// Extract the results
+		finalResult = modelB->primalObjValue() / d;
+		int matHeightB = d*d;
+		int matWidthB = numMeasureB*numOutcomeB;
+		auto tempBr = *(BrOpt->level());
+		auto tempBi = *(BiOpt->level());
+		for (int i=0; i<matWidthB*matHeightB; i++){
+			Br[i/matWidthB][i%matWidthB] = tempBr[i];
+			Bi[i/matWidthB][i%matWidthB] = tempBi[i];
+		}
+
+		// Destroy the model
+		modelB->dispose();
+
+		// Output after this section
+		std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+
+	}
 
 }
 
 // Perform the seesaw method to optimise both A and B
-double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C, real2 &rankA, real2 &rankB){
+void seesaw(int d, int n){
 
-	// The inequality value to eventually return
+	// Number of measurements
+	int numMeasureA = n;
+	int numMeasureB = n*(n-1);
+
+	// Number of possible outputs
+	int numOutcomeA = 2;
+	int numOutcomeB = 2;
+
+	// The inequality value to maximise
 	double finalResult = 0;
+
+	// The coefficients defining the inequality
+	real2 C(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB));
+
+	// For each CHSH pair
+	int y1 = 0;
+	int y2 = 1;
+	for (int x1=0; x1<numMeasureA; x1++){
+		for (int x2=x1+1; x2<numMeasureA; x2++){
+
+			// A_x1 B_y1
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
+					} else {
+						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
+					}
+
+				}
+			}
+			
+			// A_x2 B_y1
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
+					} else {
+						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
+					}
+				}
+			}
+			
+			// A_x1 B_y2
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
+					} else {
+						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
+					}
+				}
+			}
+			
+			// - A_x2 B_y2
+			for (int a=0; a<numOutcomeA; a++){
+				for (int b=0; b<numOutcomeB; b++){
+					if (a == b){
+						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
+					} else {
+						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
+					}
+				}
+			}
+			
+			// Use a different pair of Bob's measurements
+			y1 += 2;
+			y2 += 2;
+
+		}
+	}
+
+	// The arrays to store the operators (real and imaginary separately)
+	real2 Ar(numOutcomeA*numMeasureA, real1(d*d));
+	real2 Ai(numOutcomeA*numMeasureA, real1(d*d));
+	real2 Br(d*d, real1(numOutcomeB*numMeasureB));
+	real2 Bi(d*d, real1(numOutcomeB*numMeasureB));
+
+	// Create an identity vector
+	std::vector<double> identity(d*d, 0.0);
+	for (int i=0; i<d; i++){
+		identity[i*(d+1)] = 1.0;
+	}
+
+	// Randomise A
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+	for (int x=0; x<numMeasureA; x++){
+		for (int a=0; a<numOutcomeA-1; a++){
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
+
+					// Create some random values
+					Ar[x*numOutcomeA+a][j*d+k] = distribution(generator);
+
+					// Imaginary only on the off-diagonals
+					if (j != k){
+						Ai[x*numOutcomeA+a][j*d+k] = distribution(generator);
+					}
+
+				}
+			}
+		}
+	}
+
+	// Which columns should be identical
+	std::vector<std::vector<int>> matchingRows;
+	for (int j=0; j<d; j++){
+		for (int i=j+1; i<d; i++){
+			int downLeft = i-j;
+			matchingRows.push_back({j*d+i, (j+downLeft)*d+(i-downLeft)});
+		}
+	}
+
+	// Force these to be identical
+	for (int i=0; i<matchingRows.size(); i++){
+		for (int j=0; j<numMeasureA*numOutcomeA; j++){
+			Ar[j][matchingRows[i][0]] = Ar[j][matchingRows[i][1]];
+			Ai[j][matchingRows[i][0]] = -Ai[j][matchingRows[i][1]];
+		}
+	}
+
+	// Ensure each measurement sums to the identity 
+	for (int x=0; x<numMeasureA; x++){
+		for (int j=0; j<d*d; j++){
+			for (int a=0; a<numOutcomeA-1; a++){
+				Ar[x*numOutcomeA+numOutcomeA-1][j] -= Ar[x*numOutcomeA+a][j];
+				Ai[x*numOutcomeA+numOutcomeA-1][j] -= Ai[x*numOutcomeA+a][j];
+			}
+			Ar[x*numOutcomeA+numOutcomeA-1][j] += identity[j];
+		}
+	}
+
+	//Ar = {{1.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 1.0},
+		  //{0.5, 0.5, 0.5, 0.5},
+		  //{0.5,-0.5,-0.5, 0.5},
+		  //{0.5, 0.0, 0.0, 0.5},
+		  //{0.5, 0.0, 0.0, 0.5}};
+	//Ai = {{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.0, 0.0, 0.0},
+		  //{0.0, 0.5,-0.5, 0.0},
+		  //{0.0,-0.5, 0.5, 0.0}};
+
+	// Output the raw arrays
+	if (verbosity >= 2){
+		prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
+		std::cout << std::endl;
+		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+		std::cout << std::endl;
+	}
+
+	// The rank for A to try
+	restrictRankA = true;
+	restrictRankB = false;
+	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
+	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
+
+	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
+
 
 	// Create the arrays to be used to select the columns of the B array 
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
@@ -459,220 +622,6 @@ double seesaw(real2 &Ar, real2 &Ai, real2 &Br, real2 &Bi, real2 &C, real2 &rankA
 
 	}
 
-	// Return the evaluated expression, A and B have also been modified
-	return finalResult;
-
-}
-
-// Standard cpp entry point
-int main (int argc, char ** argv) {
-
-	// Useful values
-	double root2 = sqrt(2.0);
-	const std::complex<double> im = sqrt(std::complex<double>(-1.0));
-
-	// Loop over the command-line arguments
-	for (int i=1; i<argc; i++){
-
-		// Convert the char array to a standard string for easier processing
-		std::string arg = argv[i];
-
-		// If asking for help
-		if (arg == "-h" || arg == "--help") {
-			std::cout << "" << std::endl;
-			std::cout << "------------------------------" << std::endl;
-			std::cout << "  program that uses a seesaw" << std::endl;
-			std::cout << "    of a Bell-scenario to" << std::endl;
-			std::cout << "       check for MUBs" << std::endl;
-			std::cout << "------------------------------" << std::endl;
-			std::cout << "-h         show the help" << std::endl;
-			std::cout << "-d [int]   set the dimension" << std::endl;
-			std::cout << "-x [int]   set the number of measurements for Alice" << std::endl;
-			std::cout << "-v         verbose output" << std::endl;
-			std::cout << "" << std::endl;
-			return 0;
-
-		// Set the number of measurements for Alice
-		} else if (arg == "-x") {
-			numMeasureA = std::stoi(argv[i+1]);
-			numMeasureB = numMeasureA*(numMeasureA-1);
-			i += 1;
-
-		// Set the dimension
-		} else if (arg == "-d") {
-			d = std::stoi(argv[i+1]);
-			i += 1;
-
-		// Set the verbosity
-		} else if (arg == "-v") {
-			verbosity = 2;
-			i += 1;
-
-		// Otherwise it's an error
-		} else {
-			std::cout << "ERROR - unknown argument: \"" << arg << "\"" << std::endl;
-			return 1;
-		}
-
-	}
-
-	// The coefficients defining the inequality
-	real2 C(numOutcomeA*numMeasureA, real1(numOutcomeB*numMeasureB));
-
-	// For each CHSH pair
-	int y1 = 0;
-	int y2 = 1;
-	for (int x1=0; x1<numMeasureA; x1++){
-		for (int x2=x1+1; x2<numMeasureA; x2++){
-
-			// A_x1 B_y1
-			for (int a=0; a<numOutcomeA; a++){
-				for (int b=0; b<numOutcomeB; b++){
-					if (a == b){
-						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
-					} else {
-						C[x1*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
-					}
-
-				}
-			}
-			
-			// A_x2 B_y1
-			for (int a=0; a<numOutcomeA; a++){
-				for (int b=0; b<numOutcomeB; b++){
-					if (a == b){
-						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = 1.0;
-					} else {
-						C[x2*numOutcomeA+a][y1*numOutcomeB+b] = -1.0;
-					}
-				}
-			}
-			
-			// A_x1 B_y2
-			for (int a=0; a<numOutcomeA; a++){
-				for (int b=0; b<numOutcomeB; b++){
-					if (a == b){
-						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
-					} else {
-						C[x1*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
-					}
-				}
-			}
-			
-			// - A_x2 B_y2
-			for (int a=0; a<numOutcomeA; a++){
-				for (int b=0; b<numOutcomeB; b++){
-					if (a == b){
-						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = -1.0;
-					} else {
-						C[x2*numOutcomeA+a][y2*numOutcomeB+b] = 1.0;
-					}
-				}
-			}
-			
-			// Use a different pair of Bob's measurements
-			y1 += 2;
-			y2 += 2;
-
-		}
-	}
-
-	// The arrays to store the operators (real and imaginary separately)
-	real2 Ar(numOutcomeA*numMeasureA, real1(d*d));
-	real2 Ai(numOutcomeA*numMeasureA, real1(d*d));
-	real2 Br(d*d, real1(numOutcomeB*numMeasureB));
-	real2 Bi(d*d, real1(numOutcomeB*numMeasureB));
-
-	// Create an identity vector
-	std::vector<double> identity(d*d, 0.0);
-	for (int i=0; i<d; i++){
-		identity[i*(d+1)] = 1.0;
-	}
-
-	// Randomise A
-	std::random_device rd;
-	std::mt19937 generator(rd());
-	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
-	for (int x=0; x<numMeasureA; x++){
-		for (int a=0; a<numOutcomeA-1; a++){
-			for (int j=0; j<d; j++){
-				for (int k=0; k<d; k++){
-
-					// Create some random values
-					Ar[x*numOutcomeA+a][j*d+k] = distribution(generator);
-
-					// Imaginary only on the off-diagonals
-					if (j != k){
-						Ai[x*numOutcomeA+a][j*d+k] = distribution(generator);
-					}
-
-				}
-			}
-		}
-	}
-
-	// Which columns should be identical
-	std::vector<std::vector<int>> matchingRows;
-	for (int j=0; j<d; j++){
-		for (int i=j+1; i<d; i++){
-			int downLeft = i-j;
-			matchingRows.push_back({j*d+i, (j+downLeft)*d+(i-downLeft)});
-		}
-	}
-
-	// Force these to be identical
-	for (int i=0; i<matchingRows.size(); i++){
-		for (int j=0; j<numMeasureA*numOutcomeA; j++){
-			Ar[j][matchingRows[i][0]] = Ar[j][matchingRows[i][1]];
-			Ai[j][matchingRows[i][0]] = -Ai[j][matchingRows[i][1]];
-		}
-	}
-
-	// Ensure each measurement sums to the identity 
-	for (int x=0; x<numMeasureA; x++){
-		for (int j=0; j<d*d; j++){
-			for (int a=0; a<numOutcomeA-1; a++){
-				Ar[x*numOutcomeA+numOutcomeA-1][j] -= Ar[x*numOutcomeA+a][j];
-				Ai[x*numOutcomeA+numOutcomeA-1][j] -= Ai[x*numOutcomeA+a][j];
-			}
-			Ar[x*numOutcomeA+numOutcomeA-1][j] += identity[j];
-		}
-	}
-
-	//Ar = {{1.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 1.0},
-		  //{0.5, 0.5, 0.5, 0.5},
-		  //{0.5,-0.5,-0.5, 0.5},
-		  //{0.5, 0.0, 0.0, 0.5},
-		  //{0.5, 0.0, 0.0, 0.5}};
-	//Ai = {{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.5,-0.5, 0.0},
-		  //{0.0,-0.5, 0.5, 0.0}};
-
-	// Output the raw arrays
-	if (verbosity >= 2){
-		prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
-		std::cout << std::endl;
-		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
-		std::cout << std::endl;
-		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
-		std::cout << std::endl;
-	}
-
-	// The rank for A to try TODO
-	restrictRankA = true;
-	restrictRankB = false;
-	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
-	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
-
-	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
-
-	// Perform the seesaw
-	double result = seesaw(Ar, Ai, Br, Bi, C, rankA, rankB);
-
 	// Output the raw arrays
 	if (verbosity >= 2){
 		std::cout << std::endl;
@@ -758,7 +707,81 @@ int main (int argc, char ** argv) {
 	}
 
 	// Output the results
-	std::cout << std::setprecision(5) << "final result = " << result << " <= " << (numMeasureB/2)*2*root2 << std::endl;
+	std::cout << std::setprecision(5) << "final result = " << finalResult << " <= " << (numMeasureB/2)*2*root2 << std::endl;
+
+}
+
+// Standard cpp entry point
+int main (int argc, char ** argv) {
+
+	// Useful values
+	double root2 = sqrt(2.0);
+	const std::complex<double> im = sqrt(std::complex<double>(-1.0));
+
+	// Whether to use the extension for d > 2
+	useExtended = false;
+
+	// The number of measurements
+	int n = 2;
+
+	// The dimension
+	int d = 2;
+
+	// Loop over the command-line arguments
+	for (int i=1; i<argc; i++){
+
+		// Convert the char array to a standard string for easier processing
+		std::string arg = argv[i];
+
+		// If asking for help
+		if (arg == "-h" || arg == "--help") {
+			std::cout << "" << std::endl;
+			std::cout << "------------------------------" << std::endl;
+			std::cout << "  program that uses a seesaw" << std::endl;
+			std::cout << "    of a Bell-scenario to" << std::endl;
+			std::cout << "       check for MUBs" << std::endl;
+			std::cout << "------------------------------" << std::endl;
+			std::cout << "-h         show the help" << std::endl;
+			std::cout << "-d [int]   set the dimension" << std::endl;
+			std::cout << "-n [int]   set the number of measurements" << std::endl;
+			std::cout << "-v         verbose output" << std::endl;
+			std::cout << "-e         use the extended method" << std::endl;
+			std::cout << "" << std::endl;
+			return 0;
+
+		// Set the number of measurements for Alice
+		} else if (arg == "-n") {
+			n = std::stoi(argv[i+1]);
+			i += 1;
+
+		// Set the dimension
+		} else if (arg == "-d") {
+			d = std::stoi(argv[i+1]);
+			i += 1;
+
+		// Set the verbosity
+		} else if (arg == "-v") {
+			verbosity = 2;
+			i += 1;
+
+		// Use the extended method
+		} else if (arg == "-e") {
+			useExtended = true;
+
+		// Otherwise it's an error
+		} else {
+			std::cout << "ERROR - unknown argument: \"" << arg << "\"" << std::endl;
+			return 1;
+		}
+
+	}
+
+	// Perform the seesaw
+	if (useExtended){
+		seesawExtended(d, n);
+	} else {
+		seesaw(d, n);
+	}
 
 }
 
