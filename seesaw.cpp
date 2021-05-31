@@ -24,16 +24,20 @@ using real2 = std::vector<real1>;
 using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
 
+// Useful values
+const double root2 = sqrt(2.0);
+const std::complex<double> im = sqrt(std::complex<double>(-1.0));
+
 // Seesaw iterations
-const int numIters = 300;
+const int numIters = 10;
 const double tol = 1E-5;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
 
 // Whether to force the rank of each matrix
-const bool restrictRankA = false;
-const bool restrictRankB = false;
+bool restrictRankA = false;
+bool restrictRankB = false;
 
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
@@ -132,6 +136,250 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 
 }
 
+// Perform an approximated seesaw method to optimise just B TODO
+void seesawApprox(int d, int n){
+
+	// The inequality value to eventually return
+	double finalResult = 0;
+
+	int numMeasureB = n;
+	int numOutcomeB = d;
+
+	real4 Br(numMeasureB, real3(numOutcomeB, real2(d, real1(d))));
+	real4 Bi(numMeasureB, real3(numOutcomeB, real2(d, real1(d))));
+
+	auto dimRefB = monty::new_array_ptr(std::vector<int>({d, d}));
+
+	// Randomise B
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+	for (int y=0; y<numMeasureB; y++){
+		for (int b=0; b<numOutcomeB-1; b++){
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
+
+					// Create some random values
+					Br[y][b][j][k] = distribution(generator);
+					Br[y][b][k][j] = Br[y][b][j][k];
+
+					// Imaginary only on the off-diagonals
+					if (j != k){
+						Bi[y][b][j][k] = distribution(generator);
+						Bi[y][b][k][j] = -Bi[y][b][j][k];
+					}
+
+				}
+			}
+		}
+	}
+
+	// Ensure each measurement sums to the identity 
+	for (int y=0; y<numMeasureB; y++){
+		for (int b=0; b<numOutcomeB; b++){
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
+					if (b < numOutcomeB-1){
+						Br[y][numOutcomeB-1][j][k] -= Br[y][b][j][k];
+						Bi[y][numOutcomeB-1][j][k] -= Bi[y][b][j][k];
+					} else if (b == numOutcomeB - 1 && j == k){
+						Br[y][numOutcomeB-1][j][k] += 1.0;
+					}
+				}
+			}
+		}
+
+	}
+
+	// Initial output
+	for (int y=0; y<numMeasureB; y++){
+		for (int b=0; b<numOutcomeB; b++){
+			prettyPrint("before Br = ", Br[y][b], d, d);
+			std::cout << std::endl;
+			prettyPrint("before Bi = ", Bi[y][b], d, d);
+			std::cout << std::endl;
+		}
+	}
+
+	// Keep iterating
+	for (int iter=0; iter<numIters; iter++){
+
+		// For each pair of measurements
+		for (int k=0; k<numMeasureB; k++){
+			for (int l=k+1; l<numMeasureB; l++){
+
+				// For each outcome
+				for (int i=0; i<numOutcomeB; i++){
+
+					// Precalculate the sum of the other measurements
+					real2 otherBr(d, real1(d, 0));
+					real2 otherBi(d, real1(d, 0));
+					real2 otherBr2(d, real1(d, 0));
+					real2 otherBi2(d, real1(d, 0));
+					for (int j=0; j<numOutcomeB; j++){
+						for (int a=0; a<d; a++){
+							for (int b=0; b<d; b++){
+								otherBr[a][b] += Br[l][j][a][b];
+								otherBi[a][b] += Bi[l][j][a][b];
+								otherBr2[a][b] += Br[k][j][a][b];
+								otherBi2[a][b] += Bi[k][j][a][b];
+							}
+						}
+					}
+
+					// Create the references to these arrays
+					auto otherBrRef = monty::new_array_ptr(otherBr);
+					auto otherBiRef = monty::new_array_ptr(otherBi);
+					auto otherBrRef2 = monty::new_array_ptr(otherBr2);
+					auto otherBiRef2 = monty::new_array_ptr(otherBi2);
+
+					// -----------------------
+					//    optimising B_k^i
+					// -----------------------
+
+					// Create the MOSEK model 
+					mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
+
+					// The moment matrices to optimise
+					mosek::fusion::Variable::t BrOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+					mosek::fusion::Variable::t BiOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+					// Constrain the combined matrix to be PSD
+					modelB->constraint(mosek::fusion::Expr::vstack(
+											mosek::fusion::Expr::hstack(
+												BrOpt, 
+												mosek::fusion::Expr::neg(BiOpt)
+											), 
+											mosek::fusion::Expr::hstack(
+												BiOpt,
+												BrOpt 
+											)
+									   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+					// Symmetry
+					modelB->constraint(mosek::fusion::Expr::sub(BrOpt->index(0, 1), BrOpt->index(1, 0)), mosek::fusion::Domain::equalsTo(0.0));
+					modelB->constraint(mosek::fusion::Expr::add(BiOpt->index(0, 1), BiOpt->index(1, 0)), mosek::fusion::Domain::equalsTo(0.0));
+
+					// Must sum to identity
+					modelB->constraint(mosek::fusion::Expr::add(BrOpt, otherBrRef2), mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::eye(d)));
+					modelB->constraint(mosek::fusion::Expr::add(BiOpt, otherBiRef2), mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::sparse(d, d)));
+
+					// Set up the objective function 
+					modelB->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(BrOpt, otherBrRef), mosek::fusion::Expr::dot(BiOpt, otherBiRef)));
+
+					// Ensure the probability isn't imaginary
+					modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(otherBrRef, BiOpt), mosek::fusion::Expr::dot(otherBiRef, BrOpt)), mosek::fusion::Domain::equalsTo(0.0));
+
+					// Solve the SDP
+					modelB->solve();
+					
+					// Extract the results
+					finalResult = n - modelB->primalObjValue();
+					int matHeightB = d;
+					int matWidthB = d;
+					auto tempBr = *(BrOpt->level());
+					auto tempBi = *(BiOpt->level());
+					for (int a=0; a<matWidthB*matHeightB; a++){
+						Br[k][i][a/matWidthB][a%matWidthB] = tempBr[a];
+						Bi[k][i][a/matWidthB][a%matWidthB] = tempBi[a];
+					}
+
+					// Destroy the model
+					modelB->dispose();
+
+					// Output after this section
+					std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+
+					// Precalculate the sum of the other measurements
+					otherBr2 = real2(d, real1(d, 0));
+					otherBi2 = real2(d, real1(d, 0));
+					for (int j=0; j<numOutcomeB; j++){
+						for (int a=0; a<d; a++){
+							for (int b=0; b<d; b++){
+								otherBr2[a][b] += Br[k][j][a][b];
+								otherBi2[a][b] += Bi[k][j][a][b];
+							}
+						}
+					}
+
+					// Create the references to these arrays
+					otherBrRef2 = monty::new_array_ptr(otherBr2);
+					otherBiRef2 = monty::new_array_ptr(otherBi2);
+
+					// -----------------------
+					//    optimising B_l^i
+					// -----------------------
+					
+					// Create the MOSEK model 
+					mosek::fusion::Model::t modelB2 = new mosek::fusion::Model(); 
+
+					// The moment matrices to optimise
+					mosek::fusion::Variable::t BrOpt2 = modelB2->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+					mosek::fusion::Variable::t BiOpt2 = modelB2->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+					// Constrain the combined matrix to be PSD
+					modelB2->constraint(mosek::fusion::Expr::vstack(
+											mosek::fusion::Expr::hstack(
+												BrOpt2, 
+												mosek::fusion::Expr::neg(BiOpt2)
+											), 
+											mosek::fusion::Expr::hstack(
+												BiOpt2,
+												BrOpt2 
+											)
+									   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+					// Must sum to identity
+					modelB2->constraint(mosek::fusion::Expr::add(BrOpt2, otherBrRef), mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::eye(d)));
+					modelB2->constraint(mosek::fusion::Expr::add(BiOpt2, otherBiRef), mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::sparse(d, d)));
+
+					// Symmetry
+					modelB2->constraint(mosek::fusion::Expr::sub(BrOpt2->index(0, 1), BrOpt2->index(1, 0)), mosek::fusion::Domain::equalsTo(0.0));
+					modelB2->constraint(mosek::fusion::Expr::add(BiOpt2->index(0, 1), BiOpt2->index(1, 0)), mosek::fusion::Domain::equalsTo(0.0));
+
+					// Set up the objective function 
+					modelB2->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(BrOpt2, otherBrRef2), mosek::fusion::Expr::dot(BiOpt2, otherBiRef2)));
+
+					// Ensure the probability isn't imaginary
+					modelB2->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(otherBrRef2, BiOpt2), mosek::fusion::Expr::dot(otherBiRef2, BrOpt2)), mosek::fusion::Domain::equalsTo(0.0));
+
+					// Solve the SDP
+					modelB2->solve();
+
+					// Extract the results
+					finalResult = n - modelB2->primalObjValue();
+					auto tempBr2 = *(BrOpt2->level());
+					auto tempBi2 = *(BiOpt2->level());
+					for (int a=0; a<d*d; a++){
+						Br[l][i][a/d][a%d] = tempBr2[a];
+						Bi[l][i][a/d][a%d] = tempBi2[a];
+					}
+
+					// Destroy the model
+					modelB2->dispose();
+
+					// Output after this section
+					std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+
+				}
+
+			}
+		}
+
+	}
+
+	// Final output
+	for (int y=0; y<numMeasureB; y++){
+		for (int b=0; b<numOutcomeB; b++){
+			prettyPrint("after Br = ", Br[y][b], d, d);
+			std::cout << std::endl;
+			prettyPrint("after Bi = ", Bi[y][b], d, d);
+			std::cout << std::endl;
+		}
+	}
+
+}
+
 // Perform the seesaw method to optimise both A and B TODO
 void seesawExtended(int d, int n){
 
@@ -161,15 +409,19 @@ void seesawExtended(int d, int n){
 		// ----------------------------
 
 		// Create references to the fixed matrices
-		auto ArRef = monty::new_array_ptr(Ar);
-		//auto AiRef = monty::new_array_ptr(Ai);
+		std::vector<mosek::fusion::Expression::t> ArRef;
+		std::vector<mosek::fusion::Expression::t> AiRef;
+		for (int i=0; i<numMeasureA*numOutcomeA; i++){
+			ArRef.push_back(mosek::fusion::Expr::constTerm(monty::new_array_ptr(Ar[i])));
+			AiRef.push_back(mosek::fusion::Expr::constTerm(monty::new_array_ptr(Ai[i])));
+		}
 
 		// Create the MOSEK model 
 		mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
 
 		// The moment matrices to optimise
 		mosek::fusion::Variable::t BrOpt = modelB->variable(d, numMeasureB*numOutcomeB, mosek::fusion::Domain::inPSDCone(d));
-		//mosek::fusion::Variable::t BiOpt = modelB->variable(d, numMeasureB*numOutcomeB, mosek::fusion::Domain::inPSDCone(d));
+		mosek::fusion::Variable::t BiOpt = modelB->variable(d, numMeasureB*numOutcomeB, mosek::fusion::Domain::inPSDCone(d));
 
 		// Set up the objective function 
 		mosek::fusion::Expression::t obj;
@@ -178,11 +430,11 @@ void seesawExtended(int d, int n){
 				int m = j - i + ((i-1)*(2*n-i))/2;
 				for (int x1=m; x1<(m+1)*d; x1++){
 					for (int x2=m; x2<(m+1)*d; x2++){
-						obj = mosek::fusion::Expr::add(obj, 
-							mosek::fusion::Expr::dot(
-								mosek::fusion::Expr::sub(ArRef.index(x1*x2*numOutcomeA+0), ArRef.index(x1*x2*numOutcomeA+1)),
-								mosek::fusion::Expr::sub(BrOpt.index(i*numOutcomeB+x1), BrOpt.index(j*numOutcomeB+x2))
-							));
+						//obj = mosek::fusion::Expr::add(obj, 
+							//mosek::fusion::Expr::dot(
+								//mosek::fusion::Expr::sub(ArRef[x1*x2*numOutcomeA+0], ArRef[x1*x2*numOutcomeA+1]),
+								//mosek::fusion::Expr::sub(BrOpt->index(i*numOutcomeB+x1), BrOpt->index(j*numOutcomeB+x2))
+							//));
 					}
 				}
 			}
@@ -193,7 +445,7 @@ void seesawExtended(int d, int n){
 		for (int y=0; y<numMeasureB; y++){
 			mosek::fusion::Expression::t total;
 			for (int b=0; b<numOutcomeB; b++){
-				total = mosek::fusion::Expr:add(total, BrOpt.index(y*numOutcomeB+b));
+				total = mosek::fusion::Expr::add(total, BrOpt->index(y*numOutcomeB+b));
 			}
 			modelB->constraint(total, mosek::fusion::Domain::equalsTo(mosek::fusion::Matrix::eye(d)));
 		}
@@ -207,10 +459,10 @@ void seesawExtended(int d, int n){
 		int matWidthB = numMeasureB*numOutcomeB;
 		auto tempBr = *(BrOpt->level());
 		auto tempBi = *(BiOpt->level());
-		for (int i=0; i<matWidthB*matHeightB; i++){
-			Br[i/matWidthB][i%matWidthB] = tempBr[i];
-			Bi[i/matWidthB][i%matWidthB] = tempBi[i];
-		}
+		//for (int i=0; i<matWidthB*matHeightB; i++){
+			//Br[i/matWidthB][i%matWidthB] = tempBr[i];
+			//Bi[i/matWidthB][i%matWidthB] = tempBi[i];
+		//}
 
 		// Destroy the model
 		modelB->dispose();
@@ -359,19 +611,6 @@ void seesaw(int d, int n){
 		}
 	}
 
-	//Ar = {{1.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 1.0},
-		  //{0.5, 0.5, 0.5, 0.5},
-		  //{0.5,-0.5,-0.5, 0.5},
-		  //{0.5, 0.0, 0.0, 0.5},
-		  //{0.5, 0.0, 0.0, 0.5}};
-	//Ai = {{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.0, 0.0, 0.0},
-		  //{0.0, 0.5,-0.5, 0.0},
-		  //{0.0,-0.5, 0.5, 0.0}};
-
 	// Output the raw arrays
 	if (verbosity >= 2){
 		prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
@@ -387,9 +626,10 @@ void seesaw(int d, int n){
 	restrictRankB = false;
 	real2 rankA = real2(numOutcomeA*numMeasureA, real1(1, d/2.0));
 	real2 rankB = real2(1, real1(numOutcomeB*numMeasureB, d/2.0));
-
+	if (d == 5){
+		rankA = {{2}, {3}, {2}, {3}, {3}, {2}};
+	}
 	prettyPrint("rank of A = ", rankA, 1, numOutcomeA*numMeasureA);
-
 
 	// Create the arrays to be used to select the columns of the B array 
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
@@ -424,20 +664,7 @@ void seesaw(int d, int n){
 	}
 
 	// Create the collapsed identity
-	std::vector<double> identity(d*d, 0.0);
-	for (int i=0; i<d; i++){
-		identity[i*(d+1)] = 1.0;
-	}
 	auto identityRef = monty::new_array_ptr(identity);
-
-	// The list of row indices which should be identical 
-	std::vector<std::vector<int>> matchingRows;
-	for (int j=0; j<d; j++){
-		for (int i=j+1; i<d; i++){
-			int downLeft = i-j;
-			matchingRows.push_back({j*d+i, (j+downLeft)*d+(i-downLeft)});
-		}
-	}
 
 	// Create a reference to an array of zeros
 	auto zero1DRef = monty::new_array_ptr(real1(d*d, 0));
@@ -643,7 +870,6 @@ void seesaw(int d, int n){
 				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
 			}
 			prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
-			std::cout << "  trace = " << trace(A[x][a]) << std::endl;
 			std::cout << std::endl;
 		}
 	}
@@ -700,7 +926,6 @@ void seesaw(int d, int n){
 			}
 			if (verbosity >= 2){
 				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
-				std::cout << "  trace = " << trace(B[y][b]) << std::endl;
 				std::cout << std::endl;
 			}
 		}
@@ -714,12 +939,8 @@ void seesaw(int d, int n){
 // Standard cpp entry point
 int main (int argc, char ** argv) {
 
-	// Useful values
-	double root2 = sqrt(2.0);
-	const std::complex<double> im = sqrt(std::complex<double>(-1.0));
-
 	// Whether to use the extension for d > 2
-	useExtended = false;
+	int method = 1;
 
 	// The number of measurements
 	int n = 2;
@@ -766,7 +987,11 @@ int main (int argc, char ** argv) {
 
 		// Use the extended method
 		} else if (arg == "-e") {
-			useExtended = true;
+			method = 2;
+
+		// Use the approximate method
+		} else if (arg == "-a") {
+			method = 3;
 
 		// Otherwise it's an error
 		} else {
@@ -777,7 +1002,9 @@ int main (int argc, char ** argv) {
 	}
 
 	// Perform the seesaw
-	if (useExtended){
+	if (method == 3){
+		seesawApprox(d, n);
+	} else if (method == 2){
 		seesawExtended(d, n);
 	} else {
 		seesaw(d, n);
