@@ -42,6 +42,54 @@ int outputMethod = 1;
 bool restrictRankA = false;
 bool restrictRankB = false;
 
+// Dot product of two 1D vectors
+double dot(real1 a1, real1 a2){
+	double toReturn = 0;
+	for (int i=0; i<a1.size(); i++){
+		toReturn += a1[i]*a2[i];
+	}
+	return toReturn;
+}
+
+// Projector operator on two 1D vectors
+real1 proj(real1 u, real1 v){
+	real1 toReturn = u;
+	double factor = dot(u,v) / dot(u,u);
+	for (int i=0; i<u.size(); i++){
+		toReturn[i] *= factor;
+	}
+	return toReturn;
+}
+
+// Use the Gram-Schmidt process to orthonormalise a set of vectors
+void makeOrthonormal(real2 v, real2 &u){
+
+	// For each new vector
+	for (int i=0; i<u.size(); i++){
+
+		// Start with the original vector
+		u[i] = v[i];
+
+		// For each previous vector
+		real1 prev = v[i];
+		for (int j=0; j<i; j++){
+			real1 deltaVec = proj(u[j], prev);
+			for (int k=0; k<deltaVec.size(); k++){
+				u[i][k] -= deltaVec[k];
+			}
+			prev = u[i];
+		}
+
+		// Normalise the vector
+		double factor = sqrt(dot(u[i], u[i]));
+		for (int k=0; k<u.size(); k++){
+			u[i][k] /= factor;
+		}
+
+	}
+
+}
+
 // Pretty print a generic 1D vector with length n 
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
 
@@ -239,8 +287,37 @@ void seesawExtended(int d, int n){
 		}
 	}
 
-	// Try using a random unitary instead TODO
+	// For each set of measurements
+	for (int x=0; x<numMeasureB; x++){
 
+		// Create some random vectors
+		real2 randVecs(numOutcomeB, real1(d));
+		real2 normVecs(numOutcomeB, real1(d));
+		for (int b=0; b<numOutcomeB; b++){
+			for (int i=0; i<d; i++){
+				randVecs[b][i] = distribution(generator);
+			}
+		}
+
+		// Use Gram-Schmidt to make these orthonormal TODO
+		makeOrthonormal(randVecs, normVecs);
+
+		prettyPrint("rand vecs = ", randVecs, d, numOutcomeB);
+		prettyPrint("norm vecs = ", normVecs, d, numOutcomeB);
+
+		// Create the matrices from this basis set TODO
+		for (int b=0; b<numOutcomeB; b++){
+			for (int i=0; i<d; i++){
+				for (int j=0; j<d; j++){
+					Br[i*d+j][x*numOutcomeB+b] = normVecs[b][i]*normVecs[b][j];
+					std::cout << i << " " << j << " " << normVecs[b][i]*normVecs[b][j] << std::endl;
+				}
+			}
+		}
+
+	}
+	prettyPrint("before Br = ", Br, numMeasureB*numOutcomeB, d*d);
+	
 	// The sizes of the variable matrices
 	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
 	auto dimRefB = monty::new_array_ptr(std::vector<int>({d*d, numOutcomeB*numMeasureB}));
@@ -307,8 +384,6 @@ void seesawExtended(int d, int n){
 	// Output before
 	if (verbosity >= 2){
 		prettyPrint("C = ", C, numMeasureB*numOutcomeB, numMeasureA*numOutcomeA);
-		prettyPrint("before Ar = ", Ar, d*d, numMeasureA*numOutcomeA);
-		prettyPrint("before Ai = ", Ai, d*d, numMeasureA*numOutcomeA);
 		prettyPrint("before Br = ", Br, numMeasureB*numOutcomeB, d*d);
 		prettyPrint("before Bi = ", Bi, numMeasureB*numOutcomeB, d*d);
 	}
