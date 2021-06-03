@@ -1,21 +1,23 @@
 #!/bin/bash
 
-make
-
-total=0
-
-numRepeats=500
-d=3
+# Params
+numRepeats=1000
+d=2
 n=2
 
 # Keep repeating
+total=0
 for i in $(seq 1 $numRepeats)
 do
-	val=$(./seesaw -e -D -d $d -n $n)
+	val=$(./seesaw -D -d $d -n $n)
 	echo "$i $val"
-	total=$(echo "scale=5;$total+$val" | bc)
+	if (( $(echo "$val < 100" | bc -l) ))
+	then
+		total=$(echo "scale=5;$total+1" | bc)
+	fi
 done
 
-avg=$(echo "scale=5;$total/$numRepeats" | bc)
-echo "average = $avg"
+# Calculate the average
+avg=$(echo "scale=0;100*$total/$numRepeats" | bc)
+echo "success chance = $avg%"
 

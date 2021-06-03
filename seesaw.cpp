@@ -29,11 +29,20 @@ const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 // Seesaw iterations
-const int numIters = 10;
+const int numIters = 10000;
 const double tol = 1E-5;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
+
+// Which random method to use
+int randomMethod = 2;
+
+// The seed to use for randomness
+std::string seed = "";
+
+// Force matrix values
+std::vector<double> fixedVals;
 
 // What to output
 int outputMethod = 1;
@@ -51,10 +60,20 @@ double dot(real1 a1, real1 a2){
 	return toReturn;
 }
 
+// Dot product of two 1D complex vectors
+std::complex<double> dot(complex1 a1, complex1 a2){
+	std::complex<double> toReturn = 0;
+	for (int i=0; i<a1.size(); i++){
+		toReturn += a1[i]*std::conj(a2[i]);
+	}
+	return toReturn;
+}
+
 // Projector operator on two 1D vectors
-real1 proj(real1 u, real1 v){
-	real1 toReturn = u;
-	double factor = dot(u,v) / dot(u,u);
+template<typename type1>
+std::vector<type1> proj(std::vector<type1> u, std::vector<type1> v){
+	std::vector<type1> toReturn = u;
+	type1 factor = dot(u,v) / dot(u,u);
 	for (int i=0; i<u.size(); i++){
 		toReturn[i] *= factor;
 	}
@@ -62,7 +81,7 @@ real1 proj(real1 u, real1 v){
 }
 
 // Use the Gram-Schmidt process to orthonormalise a set of vectors
-void makeOrthonormal(real2 v, real2 &u){
+void makeOrthonormal(complex2 v, complex2 &u){
 
 	// For each new vector
 	for (int i=0; i<u.size(); i++){
@@ -71,9 +90,9 @@ void makeOrthonormal(real2 v, real2 &u){
 		u[i] = v[i];
 
 		// For each previous vector
-		real1 prev = v[i];
+		complex1 prev = v[i];
 		for (int j=0; j<i; j++){
-			real1 deltaVec = proj(u[j], prev);
+			complex1 deltaVec = proj(u[j], prev);
 			for (int k=0; k<deltaVec.size(); k++){
 				u[i][k] -= deltaVec[k];
 			}
@@ -81,7 +100,7 @@ void makeOrthonormal(real2 v, real2 &u){
 		}
 
 		// Normalise the vector
-		double factor = sqrt(dot(u[i], u[i]));
+		std::complex<double> factor = sqrt(dot(u[i], u[i]));
 		for (int k=0; k<u.size(); k++){
 			u[i][k] /= factor;
 		}
@@ -190,11 +209,13 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 // Perform the seesaw method to optimise both A and B 
 void seesawExtended(int d, int n){
 
-	// The inequality value to eventually return
-	double finalResult = 0;
-
 	// How many permutations
 	int numPerm = n*(n-1)/2;
+
+	// The inequality value to eventually return
+	double finalResult = 0;
+	double exact = numPerm*sqrt(d*(d-1));
+	double delta = exact-finalResult;
 
 	// Amount to remove from each
 	double sub = sqrt(d*(d-1))*numPerm;
@@ -237,86 +258,104 @@ void seesawExtended(int d, int n){
 		}
 	}
 
-	// Randomise B
-	std::random_device rd;
-	std::mt19937 generator(rd());
+	// Set up the random generator
+	std::mt19937 generator;
+	if (seed.length() > 0){
+		std::seed_seq seed1 (seed.begin(), seed.end());
+		generator = std::mt19937(seed1);
+	} else {
+		std::random_device rd;
+		generator = std::mt19937(rd());
+	}
 	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
-	for (int x=0; x<numMeasureB; x++){
-		for (int a=0; a<numOutcomeB-1; a++){
-			for (int j=0; j<d; j++){
-				for (int k=0; k<d; k++){
 
-					// Create some random values
-					Br[j*d+k][x*numOutcomeB+a] = distribution(generator);
+	// If told to just generate a random symteric matrix
+	if (randomMethod == 1){
 
-					// Imaginary only on the off-diagonals
-					if (j != k){
-						Bi[j*d+k][x*numOutcomeB+a] = distribution(generator);
-					}
-
-				}
-			}
-		}
-	}
-
-	// Force these to be identical 
-	for (int i=0; i<matchingRows.size(); i++){
-		for (int j=0; j<numMeasureB*numOutcomeB; j++){
-			Br[matchingRows[i][0]][j] = Br[matchingRows[i][1]][j];
-			Bi[matchingRows[i][0]][j] = -Bi[matchingRows[i][1]][j];
-		}
-	}
-
-	// Ensure the trace of each is one
-	for (int x=0; x<numMeasureB*numOutcomeB; x++){
-		double sum = 0;
-		for (int i=0; i<d-1; i++){
-			sum += Br[i*(d+1)][x];
-		}
-		Br[d*d-1][x] = rankB[0][x] - sum;
-	}
-
-	// Ensure each measurement sums to the identity
-	for (int x=0; x<numMeasureB; x++){
-		for (int j=0; j<d*d; j++){
+		// Randomise B
+		for (int x=0; x<numMeasureB; x++){
 			for (int a=0; a<numOutcomeB-1; a++){
-				Br[j][x*numOutcomeB+numOutcomeB-1] -= Br[j][x*numOutcomeB+a];
-				Bi[j][x*numOutcomeB+numOutcomeB-1] -= Bi[j][x*numOutcomeB+a];
-			}
-			Br[j][x*numOutcomeB+numOutcomeB-1] += identity[j];
-		}
-	}
-
-	// For each set of measurements
-	for (int x=0; x<numMeasureB; x++){
-
-		// Create some random vectors
-		real2 randVecs(numOutcomeB, real1(d));
-		real2 normVecs(numOutcomeB, real1(d));
-		for (int b=0; b<numOutcomeB; b++){
-			for (int i=0; i<d; i++){
-				randVecs[b][i] = distribution(generator);
-			}
-		}
-
-		// Use Gram-Schmidt to make these orthonormal TODO
-		makeOrthonormal(randVecs, normVecs);
-
-		prettyPrint("rand vecs = ", randVecs, d, numOutcomeB);
-		prettyPrint("norm vecs = ", normVecs, d, numOutcomeB);
-
-		// Create the matrices from this basis set TODO
-		for (int b=0; b<numOutcomeB; b++){
-			for (int i=0; i<d; i++){
 				for (int j=0; j<d; j++){
-					Br[i*d+j][x*numOutcomeB+b] = normVecs[b][i]*normVecs[b][j];
-					std::cout << i << " " << j << " " << normVecs[b][i]*normVecs[b][j] << std::endl;
+					for (int k=0; k<d; k++){
+
+						// Create some random values
+						Br[j*d+k][x*numOutcomeB+a] = distribution(generator);
+
+						// Imaginary only on the off-diagonals
+						if (j != k){
+							Bi[j*d+k][x*numOutcomeB+a] = distribution(generator);
+						}
+
+					}
 				}
 			}
 		}
 
+		// Force these to be identical 
+		for (int i=0; i<matchingRows.size(); i++){
+			for (int j=0; j<numMeasureB*numOutcomeB; j++){
+				Br[matchingRows[i][0]][j] = Br[matchingRows[i][1]][j];
+				Bi[matchingRows[i][0]][j] = -Bi[matchingRows[i][1]][j];
+			}
+		}
+
+		// Ensure the trace of each is one
+		for (int x=0; x<numMeasureB*numOutcomeB; x++){
+			double sum = 0;
+			for (int i=0; i<d-1; i++){
+				sum += Br[i*(d+1)][x];
+			}
+			Br[d*d-1][x] = rankB[0][x] - sum;
+		}
+
+		// Ensure each measurement sums to the identity
+		for (int x=0; x<numMeasureB; x++){
+			for (int j=0; j<d*d; j++){
+				for (int a=0; a<numOutcomeB-1; a++){
+					Br[j][x*numOutcomeB+numOutcomeB-1] -= Br[j][x*numOutcomeB+a];
+					Bi[j][x*numOutcomeB+numOutcomeB-1] -= Bi[j][x*numOutcomeB+a];
+				}
+				Br[j][x*numOutcomeB+numOutcomeB-1] += identity[j];
+			}
+		}
+
+	// Or if told to use matrices made out of random othonormal projectors
+	} else if (randomMethod == 2){
+
+		// For each set of measurements
+		for (int x=0; x<numMeasureB; x++){
+
+			// Create some random vectors
+			complex2 randVecs(numOutcomeB, complex1(d));
+			complex2 normVecs(numOutcomeB, complex1(d));
+			for (int b=0; b<numOutcomeB; b++){
+				for (int i=0; i<d; i++){
+					randVecs[b][i] = std::complex<double>(distribution(generator), distribution(generator));
+					if (fixedVals.size() > 1){
+						randVecs[b][i] = std::complex<double>(fixedVals[fixedVals.size()-1], fixedVals[fixedVals.size()-1]);
+						fixedVals.pop_back();
+						fixedVals.pop_back();
+					}
+				}
+			}
+
+			// Use Gram-Schmidt to make these orthonormal
+			makeOrthonormal(randVecs, normVecs);
+
+			// Create the matrices from this basis set
+			for (int b=0; b<numOutcomeB; b++){
+				for (int i=0; i<d; i++){
+					for (int j=0; j<d; j++){
+						std::complex<double> res = normVecs[b][i]*std::conj(normVecs[b][j]);
+						Br[i*d+j][x*numOutcomeB+b] = std::real(res);
+						Bi[i*d+j][x*numOutcomeB+b] = std::imag(res);
+					}
+				}
+			}
+
+		}
+
 	}
-	prettyPrint("before Br = ", Br, numMeasureB*numOutcomeB, d*d);
 	
 	// The sizes of the variable matrices
 	auto dimRefA = monty::new_array_ptr(std::vector<int>({numOutcomeA*numMeasureA, d*d}));
@@ -383,9 +422,10 @@ void seesawExtended(int d, int n){
 
 	// Output before
 	if (verbosity >= 2){
-		prettyPrint("C = ", C, numMeasureB*numOutcomeB, numMeasureA*numOutcomeA);
 		prettyPrint("before Br = ", Br, numMeasureB*numOutcomeB, d*d);
+		std::cout << std::endl;
 		prettyPrint("before Bi = ", Bi, numMeasureB*numOutcomeB, d*d);
+		std::cout << std::endl;
 	}
 
 	// Keep seesawing 
@@ -411,7 +451,7 @@ void seesawExtended(int d, int n){
 		modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArOpt, BrRef), mosek::fusion::Expr::mul(AiOpt, BiRef))));
 
 		// Ensure the probability isn't imaginary
-		modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
+		//modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
 		// For each set of measurements, the matrices should sum to the identity
 		for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
@@ -435,11 +475,21 @@ void seesawExtended(int d, int n){
 
 		// Force the trace of each matrix to be a certain value
 		if (restrictRankA){
+
+			// The real part should have trace one
 			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(ArOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), ArOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
 			for (int i=2; i<d; i++){
 				sum = mosek::fusion::Expr::add(sum, ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
 			}
 			modelA->constraint(sum, mosek::fusion::Domain::equalsTo(rankARef));
+
+			// The imaginary part should have trace one TODO
+			mosek::fusion::Expression::t sumImag = mosek::fusion::Expr::add(AiOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), AiOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
+			for (int i=2; i<d; i++){
+				sumImag = mosek::fusion::Expr::add(sumImag, AiOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
+			}
+			modelA->constraint(sumImag, mosek::fusion::Domain::equalsTo(zeroRefA));
+
 		}
 
 		// Symmetry constraints 
@@ -454,10 +504,12 @@ void seesawExtended(int d, int n){
 		// Extract the results
 		try {
 			finalResult = modelA->primalObjValue() / d - sub;
-		} catch (...){
+		} catch (mosek::fusion::SolutionError e){
 			finalResult = -100;
+			std::cout << e.what() << std::endl;
 			break;
 		}
+		delta = exact-finalResult;
 		auto tempAr = *(ArOpt->level());
 		auto tempAi = *(AiOpt->level());
 		int matWidthA = d*d;
@@ -473,6 +525,11 @@ void seesawExtended(int d, int n){
 		// Output after this section
 		if (verbosity > 0){
 			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after A opt " << finalResult << std::endl;
+
+		// If told to give per-iteration graphable output
+		} else if (outputMethod == 3){
+			std::cout << std::fixed << std::setprecision(5) << std::setw(3) << iter << " " << delta << std::endl;
+
 		}
 
 		// ----------------------------
@@ -494,7 +551,7 @@ void seesawExtended(int d, int n){
 		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
 
 		// Ensure the probability isn't imaginary
-		modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
+		//modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
 
 		// Each section of B should also be >= 0
 		for (int i=0; i<columnsStartRefB.size(); i++){
@@ -510,13 +567,23 @@ void seesawExtended(int d, int n){
 							   ), mosek::fusion::Domain::inPSDCone(2*d));
 		}
 
-		// Force the trace of each matrix to be a certain value 
+		// Force the trace of each matrix to be a certain value
 		if (restrictRankB){
+
+			// Trace of real should be one
 			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(BrOpt->slice(rowsStartRefB[0], rowsEndRefB[0]), BrOpt->slice(rowsStartRefB[d+1], rowsEndRefB[d+1]));
 			for (int i=2; i<d; i++){
 				sum = mosek::fusion::Expr::add(sum, BrOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]));
 			}
 			modelB->constraint(sum, mosek::fusion::Domain::equalsTo(rankBRef));
+
+			// Trace of imaginary should be zero TODO
+			mosek::fusion::Expression::t sumImag = mosek::fusion::Expr::add(BiOpt->slice(rowsStartRefB[0], rowsEndRefB[0]), BiOpt->slice(rowsStartRefB[d+1], rowsEndRefB[d+1]));
+			for (int i=2; i<d; i++){
+				sumImag = mosek::fusion::Expr::add(sumImag, BiOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]));
+			}
+			modelB->constraint(sumImag, mosek::fusion::Domain::equalsTo(zeroRefB));
+
 		}
 
 		// For each set of measurements, the matrices should sum to the identity
@@ -537,10 +604,12 @@ void seesawExtended(int d, int n){
 		// Extract the results
 		try {
 			finalResult = modelB->primalObjValue() / d - sub;
-		} catch (...){
+		} catch (mosek::fusion::SolutionError e){
 			finalResult = -100;
+			std::cout << e.what() << std::endl;
 			break;
 		}
+		delta = exact-finalResult;
 		int matHeightB = d*d;
 		int matWidthB = numMeasureB*numOutcomeB;
 		auto tempBr = *(BrOpt->level());
@@ -556,6 +625,11 @@ void seesawExtended(int d, int n){
 		// Output after this section
 		if (verbosity > 0){
 			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+
+		// If told to give per-iteration graphable output
+		} else if (outputMethod == 3){
+			std::cout << std::fixed << std::setprecision(5) << std::setw(3) << iter << " " << delta << std::endl;
+
 		}
 
 		// See if it's converged within some tolerance
@@ -576,8 +650,8 @@ void seesawExtended(int d, int n){
 				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
 			}
 			if (verbosity >= 2){
-				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
 				std::cout << std::endl;
+				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
 			}
 		}
 	}
@@ -590,8 +664,8 @@ void seesawExtended(int d, int n){
 				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB+b];
 			}
 			if (verbosity >= 2){
-				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
 				std::cout << std::endl;
+				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
 			}
 		}
 	}
@@ -640,11 +714,11 @@ void seesawExtended(int d, int n){
 	}
 
 	// Output after
-	double exact = numPerm*sqrt(d*(d-1));
-	double delta = exact-finalResult;
+	exact = numPerm*sqrt(d*(d-1));
+	delta = exact-finalResult;
 	if (outputMethod == 2){
 		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;;
-	} else {
+	} else if (outputMethod == 1){
 		std::cout << std::setprecision(5) << "final result = " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 	}
 
@@ -1118,7 +1192,7 @@ void seesaw(int d, int n){
 int main (int argc, char ** argv) {
 
 	// Whether to use the extension for d > 2
-	int method = 1;
+	int method = 2;
 
 	// The number of measurements
 	int n = 2;
@@ -1136,16 +1210,21 @@ int main (int argc, char ** argv) {
 		if (arg == "-h" || arg == "--help") {
 			std::cout << "" << std::endl;
 			std::cout << "------------------------------" << std::endl;
-			std::cout << "  program that uses a seesaw" << std::endl;
+			std::cout << "  Program that uses a seesaw" << std::endl;
 			std::cout << "    of a Bell-scenario to" << std::endl;
 			std::cout << "       check for MUBs" << std::endl;
 			std::cout << "------------------------------" << std::endl;
-			std::cout << "-h         show the help" << std::endl;
-			std::cout << "-d [int]   set the dimension" << std::endl;
-			std::cout << "-n [int]   set the number of measurements" << std::endl;
-			std::cout << "-v         verbose output" << std::endl;
-			std::cout << "-D         only output the difference to the ideal" << std::endl;
-			std::cout << "-e         use the extended method" << std::endl;
+			std::cout << "-h               show the help" << std::endl;
+			std::cout << "-d [int]         set the dimension" << std::endl;
+			std::cout << "-n [int]         set the number of measurements" << std::endl;
+			std::cout << "-v               verbose output" << std::endl;
+			std::cout << "-c               use the CHSH method" << std::endl;
+			std::cout << "-e               use the extended method" << std::endl;
+			std::cout << "-r               start completely random without G-S" << std::endl;
+			std::cout << "-s [str]         set the random seed" << std::endl;
+			std::cout << "-f [int*2] [dbl] set part of the initial array" << std::endl;
+			std::cout << "-D               only output the difference to the ideal" << std::endl;
+			std::cout << "-I               output for graphing the difference vs iteration" << std::endl;
 			std::cout << "" << std::endl;
 			return 0;
 
@@ -1155,9 +1234,28 @@ int main (int argc, char ** argv) {
 			i += 1;
 
 		// Only output the delta
+		} else if (arg == "-I") {
+			outputMethod = 3;
+			verbosity = 0;
+
+		// If told not to use the G-S method
+		} else if (arg == "-r") {
+			randomMethod = 1;
+
+		// Only output the delta
 		} else if (arg == "-D") {
 			outputMethod = 2;
 			verbosity = 0;
+
+		// Set the seed
+		} else if (arg == "-s") {
+			seed = std::string(argv[i+1]);
+			i += 1;
+
+		// Add to the list of fixed values
+		} else if (arg == "-f") {
+			fixedVals.push_back(std::stod(argv[i+1]));
+			i += 1;
 
 		// Set the dimension
 		} else if (arg == "-d") {
@@ -1167,6 +1265,10 @@ int main (int argc, char ** argv) {
 		// Set the verbosity
 		} else if (arg == "-v") {
 			verbosity = 2;
+
+		// Use the standard method
+		} else if (arg == "-c") {
+			method = 1;
 
 		// Use the extended method
 		} else if (arg == "-e") {
