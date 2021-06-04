@@ -8,9 +8,6 @@
 #include <fstream>
 #include <math.h>
 
-// Eigen
-#include <Eigen/Dense>
-
 // MOSEK
 #include "fusion.h"
 
@@ -30,7 +27,7 @@ const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 // Seesaw iterations
 const int numIters = 10000;
-const double tol = 1E-5;
+const double tol = 1E-6;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
@@ -377,7 +374,7 @@ void seesawExtended(int d, int n){
 			}
 		}
 	}
-	auto CRef = monty::new_array_ptr(C);
+	auto CRef = mosek::fusion::Matrix::sparse(monty::new_array_ptr(C));
 
 	// Create the arrays to be used to select the columns of the B array 
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
@@ -428,9 +425,112 @@ void seesawExtended(int d, int n){
 		std::cout << std::endl;
 	}
 
+	// ----------------------------
+	//    Creating model A
+	// ----------------------------
+		
+	// Create the MOSEK model 
+	mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
+
+	// The moment matrices to optimise
+	mosek::fusion::Variable::t ArOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t AiOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// For each set of measurements, the matrices should sum to the identity
+	for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
+		modelA->constraint(mosek::fusion::Expr::sum(ArOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(identityRef));
+		modelA->constraint(mosek::fusion::Expr::sum(AiOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(zero1DRef));
+	}
+
+	// Each section of A should also be >= 0
+	for (int i=0; i<rowsStartRefA.size(); i++){
+		modelA->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d), 
+									mosek::fusion::Expr::neg(AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d))
+								), 
+								mosek::fusion::Expr::hstack(
+									AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d),
+									ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+	}
+
+	// The real part should have trace one
+	auto sumA = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	for (int i=0; i<d; i++){
+		(*sumA)[i] = ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]);
+	}
+	modelA->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumA)), mosek::fusion::Domain::equalsTo(rankARef));
+
+	// The imaginary part should have trace zero
+	auto sumAImag = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	for (int i=0; i<d; i++){
+		(*sumAImag)[i] = AiOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]);
+	}
+	modelA->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumAImag)), mosek::fusion::Domain::equalsTo(zeroRefA));
+
+	// Symmetry constraints 
+	for (int i=0; i<matchingRows.size(); i++){
+		modelA->constraint(mosek::fusion::Expr::sub(ArOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), ArOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
+		modelA->constraint(mosek::fusion::Expr::add(AiOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), AiOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
+	}
+
+	// ----------------------------
+	//    Creating model B
+	// ----------------------------
+		
+	// Create the MOSEK model 
+	mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
+
+	// The moment matrices to optimise
+	mosek::fusion::Variable::t BrOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t BiOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// Each section of B should also be >= 0
+	for (int i=0; i<columnsStartRefB.size(); i++){
+		modelB->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d), 
+									mosek::fusion::Expr::neg(BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d))
+								), 
+								mosek::fusion::Expr::hstack(
+									BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d),
+									BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+	}
+
+	// Trace of real should be one
+	auto sumB = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	for (int i=0; i<d; i++){
+		(*sumB)[i] = BrOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]);
+	}
+	modelB->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumB)), mosek::fusion::Domain::equalsTo(rankBRef));
+
+	// Trace of imaginary should be zero
+	auto sumBImag = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	for (int i=0; i<d; i++){
+		(*sumBImag)[i] = BiOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]);
+	}
+	modelB->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumBImag)), mosek::fusion::Domain::equalsTo(zeroRefB));
+
+	// For each set of measurements, the matrices should sum to the identity
+	for (int i=0; i<columnsStartRefB.size(); i+=numOutcomeB){
+		modelB->constraint(mosek::fusion::Expr::sum(BrOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(identityRef));
+		modelB->constraint(mosek::fusion::Expr::sum(BiOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(zero1DRef));
+	}
+
+	// Symmetry constraints 
+	for (int i=0; i<matchingRows.size(); i++){
+		modelB->constraint(mosek::fusion::Expr::sub(BrOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BrOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
+		modelB->constraint(mosek::fusion::Expr::add(BiOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BiOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
+	}
+
 	// Keep seesawing 
 	double prevResult = -1;
-	for (int iter=0; iter<numIters; iter++){
+	int iter = 0;
+	for (iter=0; iter<numIters; iter++){
 
 		// ----------------------------
 		//    Fixing B, optimising A
@@ -440,63 +540,8 @@ void seesawExtended(int d, int n){
 		auto BrRef = monty::new_array_ptr(Br);
 		auto BiRef = monty::new_array_ptr(Bi);
 
-		// Create the MOSEK model 
-		mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
-
-		// The moment matrices to optimise
-		mosek::fusion::Variable::t ArOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t AiOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
 		// Set up the objective function 
 		modelA->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArOpt, BrRef), mosek::fusion::Expr::mul(AiOpt, BiRef))));
-
-		// Ensure the probability isn't imaginary
-		//modelA->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArOpt, BiRef), mosek::fusion::Expr::mul(AiOpt, BrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
-
-		// For each set of measurements, the matrices should sum to the identity
-		for (int i=0; i<rowsStartRefA.size(); i+=numOutcomeA){
-			modelA->constraint(mosek::fusion::Expr::sum(ArOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(identityRef));
-			modelA->constraint(mosek::fusion::Expr::sum(AiOpt->slice(rowsStartRefA[i], rowsEndRefA[i+numOutcomeA-1]), 0), mosek::fusion::Domain::equalsTo(zero1DRef));
-		}
-
-		// Each section of A should also be >= 0
-		for (int i=0; i<rowsStartRefA.size(); i++){
-			modelA->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d), 
-										mosek::fusion::Expr::neg(AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d))
-									), 
-									mosek::fusion::Expr::hstack(
-										AiOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d),
-										ArOpt->slice(rowsStartRefA[i],rowsEndRefA[i])->reshape(d, d) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-		}
-
-		// Force the trace of each matrix to be a certain value
-		if (restrictRankA){
-
-			// The real part should have trace one
-			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(ArOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), ArOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
-			for (int i=2; i<d; i++){
-				sum = mosek::fusion::Expr::add(sum, ArOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
-			}
-			modelA->constraint(sum, mosek::fusion::Domain::equalsTo(rankARef));
-
-			// The imaginary part should have trace one TODO
-			mosek::fusion::Expression::t sumImag = mosek::fusion::Expr::add(AiOpt->slice(columnsStartRefA[0], columnsEndRefA[0]), AiOpt->slice(columnsStartRefA[d+1], columnsEndRefA[d+1]));
-			for (int i=2; i<d; i++){
-				sumImag = mosek::fusion::Expr::add(sumImag, AiOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]));
-			}
-			modelA->constraint(sumImag, mosek::fusion::Domain::equalsTo(zeroRefA));
-
-		}
-
-		// Symmetry constraints 
-		for (int i=0; i<matchingRows.size(); i++){
-			modelA->constraint(mosek::fusion::Expr::sub(ArOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), ArOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
-			modelA->constraint(mosek::fusion::Expr::add(AiOpt->slice(columnsStartRefA[matchingRows[i][0]], columnsEndRefA[matchingRows[i][0]]), AiOpt->slice(columnsStartRefA[matchingRows[i][1]], columnsEndRefA[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefA));
-		}
 
 		// Solve the SDP
 		modelA->solve();
@@ -519,12 +564,9 @@ void seesawExtended(int d, int n){
 			Ai[i/matWidthA][i%matWidthA] = tempAi[i];
 		}
 
-		// Destroy the model
-		modelA->dispose();
-
 		// Output after this section
 		if (verbosity > 0){
-			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after A opt " << finalResult << std::endl;
+			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after A opt " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 
 		// If told to give per-iteration graphable output
 		} else if (outputMethod == 3){
@@ -540,63 +582,8 @@ void seesawExtended(int d, int n){
 		auto ArRef = monty::new_array_ptr(Ar);
 		auto AiRef = monty::new_array_ptr(Ai);
 
-		// Create the MOSEK model 
-		mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
-
-		// The moment matrices to optimise
-		mosek::fusion::Variable::t BrOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t BiOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
 		// Set up the objective function
 		modelB->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::dot(CRef, mosek::fusion::Expr::sub(mosek::fusion::Expr::mul(ArRef, BrOpt), mosek::fusion::Expr::mul(AiRef, BiOpt))));
-
-		// Ensure the probability isn't imaginary
-		//modelB->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(ArRef, BiOpt), mosek::fusion::Expr::mul(AiRef, BrOpt)), mosek::fusion::Domain::equalsTo(zero2DRef));
-
-		// Each section of B should also be >= 0
-		for (int i=0; i<columnsStartRefB.size(); i++){
-			modelB->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d), 
-										mosek::fusion::Expr::neg(BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d))
-									), 
-									mosek::fusion::Expr::hstack(
-										BiOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d),
-										BrOpt->slice(columnsStartRefB[i],columnsEndRefB[i])->reshape(d, d) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-		}
-
-		// Force the trace of each matrix to be a certain value
-		if (restrictRankB){
-
-			// Trace of real should be one
-			mosek::fusion::Expression::t sum = mosek::fusion::Expr::add(BrOpt->slice(rowsStartRefB[0], rowsEndRefB[0]), BrOpt->slice(rowsStartRefB[d+1], rowsEndRefB[d+1]));
-			for (int i=2; i<d; i++){
-				sum = mosek::fusion::Expr::add(sum, BrOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]));
-			}
-			modelB->constraint(sum, mosek::fusion::Domain::equalsTo(rankBRef));
-
-			// Trace of imaginary should be zero TODO
-			mosek::fusion::Expression::t sumImag = mosek::fusion::Expr::add(BiOpt->slice(rowsStartRefB[0], rowsEndRefB[0]), BiOpt->slice(rowsStartRefB[d+1], rowsEndRefB[d+1]));
-			for (int i=2; i<d; i++){
-				sumImag = mosek::fusion::Expr::add(sumImag, BiOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]));
-			}
-			modelB->constraint(sumImag, mosek::fusion::Domain::equalsTo(zeroRefB));
-
-		}
-
-		// For each set of measurements, the matrices should sum to the identity
-		for (int i=0; i<columnsStartRefB.size(); i+=numOutcomeB){
-			modelB->constraint(mosek::fusion::Expr::sum(BrOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(identityRef));
-			modelB->constraint(mosek::fusion::Expr::sum(BiOpt->slice(columnsStartRefB[i], columnsEndRefB[i+numOutcomeB-1]), 1), mosek::fusion::Domain::equalsTo(zero1DRef));
-		}
-
-		// Symmetry constraints 
-		for (int i=0; i<matchingRows.size(); i++){
-			modelB->constraint(mosek::fusion::Expr::sub(BrOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BrOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
-			modelB->constraint(mosek::fusion::Expr::add(BiOpt->slice(rowsStartRefB[matchingRows[i][0]], rowsEndRefB[matchingRows[i][0]]), BiOpt->slice(rowsStartRefB[matchingRows[i][1]], rowsEndRefB[matchingRows[i][1]])), mosek::fusion::Domain::equalsTo(zeroRefB));
-		}
 
 		// Solve the SDP
 		modelB->solve();
@@ -619,12 +606,9 @@ void seesawExtended(int d, int n){
 			Bi[i/matWidthB][i%matWidthB] = tempBi[i];
 		}
 
-		// Destroy the model
-		modelB->dispose();
-
 		// Output after this section
 		if (verbosity > 0){
-			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << std::endl;
+			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 
 		// If told to give per-iteration graphable output
 		} else if (outputMethod == 3){
@@ -670,57 +654,20 @@ void seesawExtended(int d, int n){
 		}
 	}
 
-	// Write some of the eigenvectors to file
-	if (d == 2){
-		std::ofstream outFile;
-		outFile.open ("vectors.dat");
-		for (int x=0; x<numMeasureB; x++){
-
-			// Copy the matrix
-			Eigen::Matrix2cd matTest;
-			for (int i=0; i<d; i++){
-				for (int j=0; j<d; j++){
-					matTest(i,j) = B[x][0][j][i];
-				}
-			}
-
-			// Get the eigenvalues
-			Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigensolver(matTest);
-			if (eigensolver.info() != Eigen::Success) abort();
-			std::vector<std::complex<double>> vec(d);
-			for (int i=0; i<d; i++){
-				vec[i] = eigensolver.eigenvectors().col(1)(i);
-			}
-
-			// Make sure the |0> component is real 
-			double phase = atan(-std::imag(vec[0]) / std::real(vec[0]));
-			std::complex<double> phaseComplex(cos(phase), sin(phase));
-			vec[0] *= phaseComplex;
-			vec[1] *= phaseComplex;
-
-			// Turn this into a point on the Bloch-sphere
-			double theta = 2*acos(std::real(vec[0]));
-			std::complex<double> test = vec[1] / sin(theta/2);
-			double phi = std::arg(test);
-			double xCoord = cos(phi)*sin(theta);
-			double yCoord = sin(phi)*sin(theta);
-			double zCoord = cos(theta);
-
-			// Write this to file
-			outFile << "0 0 0 " << xCoord << " " << yCoord << " " << zCoord << std::endl;;
-
-		}
-		outFile.close();
-	}
-
 	// Output after
 	exact = numPerm*sqrt(d*(d-1));
 	delta = exact-finalResult;
 	if (outputMethod == 2){
 		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;;
+	} else if (outputMethod == 4){
+		std::cout << std::fixed << iter << std::endl;;
 	} else if (outputMethod == 1){
 		std::cout << std::setprecision(5) << "final result = " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 	}
+
+	// Prevent memory leaks
+	modelA->dispose();
+	modelB->dispose();
 
 }
 
@@ -1126,49 +1073,6 @@ void seesaw(int d, int n){
 		}
 	}
 	
-	// Write some of the eigenvectors to file
-	if (d == 2){
-		std::ofstream outFile;
-		outFile.open ("vectors.dat");
-		for (int x=0; x<numMeasureA; x++){
-
-			// Copy the matrix
-			Eigen::Matrix2cd matTest;
-			for (int i=0; i<d; i++){
-				for (int j=0; j<d; j++){
-					matTest(i,j) = A[x][0][j][i];
-				}
-			}
-
-			// Get the eigenvalues
-			Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigensolver(matTest);
-			if (eigensolver.info() != Eigen::Success) abort();
-			std::vector<std::complex<double>> vec(d);
-			for (int i=0; i<d; i++){
-				vec[i] = eigensolver.eigenvectors().col(1)(i);
-			}
-
-			// Make sure the |0> component is real 
-			double phase = atan(-std::imag(vec[0]) / std::real(vec[0]));
-			std::complex<double> phaseComplex(cos(phase), sin(phase));
-			vec[0] *= phaseComplex;
-			vec[1] *= phaseComplex;
-
-			// Turn this into a point on the Bloch-sphere
-			double theta = 2*acos(std::real(vec[0]));
-			std::complex<double> test = vec[1] / sin(theta/2);
-			double phi = std::arg(test);
-			double xCoord = cos(phi)*sin(theta);
-			double yCoord = sin(phi)*sin(theta);
-			double zCoord = cos(theta);
-
-			// Write this to file
-			outFile << "0 0 0 " << xCoord << " " << yCoord << " " << zCoord << std::endl;;
-
-		}
-		outFile.close();
-	}
-
 	// Extract the results from the B matrix
 	complex4 B(numMeasureB, complex3(numOutcomeB, complex2(d, complex1(d))));
 	for (int y=0; y<numMeasureB; y++){
@@ -1225,6 +1129,7 @@ int main (int argc, char ** argv) {
 			std::cout << "-f [int*2] [dbl] set part of the initial array" << std::endl;
 			std::cout << "-D               only output the difference to the ideal" << std::endl;
 			std::cout << "-I               output for graphing the difference vs iteration" << std::endl;
+			std::cout << "-N               only output the number of iterations" << std::endl;
 			std::cout << "" << std::endl;
 			return 0;
 
@@ -1236,6 +1141,11 @@ int main (int argc, char ** argv) {
 		// Only output the delta
 		} else if (arg == "-I") {
 			outputMethod = 3;
+			verbosity = 0;
+
+		// Only output the number of iterations required
+		} else if (arg == "-N") {
+			outputMethod = 4;
 			verbosity = 0;
 
 		// If told not to use the G-S method

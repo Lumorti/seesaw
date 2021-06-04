@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Params
-numRepeats=1000
-d=2
-n=2
+numRepeats=100
+d=3
+n=3
 
 # Keep repeating
 total=0
@@ -11,13 +11,10 @@ for i in $(seq 1 $numRepeats)
 do
 	val=$(./seesaw -D -d $d -n $n)
 	echo "$i $val"
-	if (( $(echo "$val < 100" | bc -l) ))
-	then
-		total=$(echo "scale=5;$total+1" | bc)
-	fi
+	total=$(echo "scale=8;$total+$val" | bc)
 done
 
 # Calculate the average
-avg=$(echo "scale=0;100*$total/$numRepeats" | bc)
-echo "success chance = $avg%"
+avg=$(echo "scale=8;$total/$numRepeats" | bc)
+echo "average = $avg"
 
