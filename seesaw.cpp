@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <random>
 #include <fstream>
+#include <chrono>
 #include <math.h>
 
 // MOSEK
@@ -27,7 +28,7 @@ const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 // Seesaw iterations
 const int numIters = 10000;
-const double tol = 1E-6;
+double tol = 0.00000001;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
@@ -206,6 +207,9 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 // Perform the seesaw method to optimise both A and B 
 void seesawExtended(int d, int n){
 
+	// Start the timer 
+	auto t1 = std::chrono::high_resolution_clock::now();
+
 	// How many permutations
 	int numPerm = n*(n-1)/2;
 
@@ -213,6 +217,7 @@ void seesawExtended(int d, int n){
 	double finalResult = 0;
 	double exact = numPerm*sqrt(d*(d-1));
 	double delta = exact-finalResult;
+	double fromLast = 0;
 
 	// Amount to remove from each
 	double sub = sqrt(d*(d-1))*numPerm;
@@ -564,16 +569,6 @@ void seesawExtended(int d, int n){
 			Ai[i/matWidthA][i%matWidthA] = tempAi[i];
 		}
 
-		// Output after this section
-		if (verbosity > 0){
-			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after A opt " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
-
-		// If told to give per-iteration graphable output
-		} else if (outputMethod == 3){
-			std::cout << std::fixed << std::setprecision(5) << std::setw(3) << iter << " " << delta << std::endl;
-
-		}
-
 		// ----------------------------
 		//    Fixing A, optimising B
 		// ----------------------------
@@ -597,6 +592,7 @@ void seesawExtended(int d, int n){
 			break;
 		}
 		delta = exact-finalResult;
+		fromLast = std::abs(finalResult-prevResult);
 		int matHeightB = d*d;
 		int matWidthB = numMeasureB*numOutcomeB;
 		auto tempBr = *(BrOpt->level());
@@ -608,16 +604,26 @@ void seesawExtended(int d, int n){
 
 		// Output after this section
 		if (verbosity > 0){
-			std::cout << std::fixed << std::setprecision(5) << "iter " << std::setw(3) << iter << " after B opt " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
+			std::cout << std::fixed << std::setprecision(9) << "iter " << std::setw(4) << iter << " val " << finalResult << " (" << delta << " from ideal, " << fromLast << " from prev)" << std::endl;
 
 		// If told to give per-iteration graphable output
 		} else if (outputMethod == 3){
-			std::cout << std::fixed << std::setprecision(5) << std::setw(3) << iter << " " << delta << std::endl;
+			std::cout << std::fixed << std::setprecision(9) << std::setw(4) << iter << " " << delta << std::endl;
 
+		// If told to give per-iteration matrix output
+		} else if (outputMethod == 6){
+			std::cout << "[";
+			for (int i=0; i<matWidthB*matHeightB; i++){
+				std::cout << tempBr[i] << ", " << tempBi[i] << ", ";
+				if (i+1 < matWidthB*matHeightB){
+					std::cout << ", ";
+				}
+			}
+			std::cout << "]" << std::endl;
 		}
 
 		// See if it's converged within some tolerance
-		if (std::abs(finalResult-prevResult) < tol){
+		if (fromLast < tol){
 			break;
 		}
 
@@ -654,6 +660,9 @@ void seesawExtended(int d, int n){
 		}
 	}
 
+	// Stop the timer 
+	auto t2 = std::chrono::high_resolution_clock::now();
+
 	// Output after
 	exact = numPerm*sqrt(d*(d-1));
 	delta = exact-finalResult;
@@ -661,6 +670,8 @@ void seesawExtended(int d, int n){
 		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;;
 	} else if (outputMethod == 4){
 		std::cout << std::fixed << iter << std::endl;;
+	} else if (outputMethod == 5){
+		std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count() << std::endl;
 	} else if (outputMethod == 1){
 		std::cout << std::setprecision(5) << "final result = " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 	}
@@ -1121,6 +1132,8 @@ int main (int argc, char ** argv) {
 			std::cout << "-h               show the help" << std::endl;
 			std::cout << "-d [int]         set the dimension" << std::endl;
 			std::cout << "-n [int]         set the number of measurements" << std::endl;
+			std::cout << "-t [dbl]         set the convergence threshold" << std::endl;
+			std::cout << "-i [int]         set the iteration limit" << std::endl;
 			std::cout << "-v               verbose output" << std::endl;
 			std::cout << "-c               use the CHSH method" << std::endl;
 			std::cout << "-e               use the extended method" << std::endl;
@@ -1130,6 +1143,8 @@ int main (int argc, char ** argv) {
 			std::cout << "-D               only output the difference to the ideal" << std::endl;
 			std::cout << "-I               output for graphing the difference vs iteration" << std::endl;
 			std::cout << "-N               only output the number of iterations" << std::endl;
+			std::cout << "-T               only output the time taken" << std::endl;
+			std::cout << "-M               only output the flattened matrices" << std::endl;
 			std::cout << "" << std::endl;
 			return 0;
 
@@ -1141,6 +1156,16 @@ int main (int argc, char ** argv) {
 		// Only output the delta
 		} else if (arg == "-I") {
 			outputMethod = 3;
+			verbosity = 0;
+
+		// Only output the time taken
+		} else if (arg == "-T") {
+			outputMethod = 5;
+			verbosity = 0;
+
+		// Only output the time taken
+		} else if (arg == "-M") {
+			outputMethod = 6;
 			verbosity = 0;
 
 		// Only output the number of iterations required
@@ -1172,9 +1197,19 @@ int main (int argc, char ** argv) {
 			d = std::stoi(argv[i+1]);
 			i += 1;
 
+		// Set the iteration limit
+		} else if (arg == "-i") {
+			d = std::stoi(argv[i+1]);
+			i += 1;
+
 		// Set the verbosity
 		} else if (arg == "-v") {
 			verbosity = 2;
+
+		// Set the tolerance
+		} else if (arg == "-t") {
+			tol = std::stod(argv[i+1]);
+			i += 1;
 
 		// Use the standard method
 		} else if (arg == "-c") {
