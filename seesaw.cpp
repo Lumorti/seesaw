@@ -27,8 +27,11 @@ const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 // Seesaw iterations
-const int numIters = 10000;
-double tol = 0.00000001;
+const int numIters = 100000;
+
+// Convergence criteria
+double tol = 1e-8;
+int numInRowRequired = 10;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
@@ -535,6 +538,7 @@ void seesawExtended(int d, int n){
 	// Keep seesawing 
 	double prevResult = -1;
 	int iter = 0;
+	int lessTol = 0;
 	for (iter=0; iter<numIters; iter++){
 
 		// ----------------------------
@@ -591,7 +595,7 @@ void seesawExtended(int d, int n){
 			std::cout << e.what() << std::endl;
 			break;
 		}
-		delta = exact-finalResult;
+		delta = std::abs(exact-finalResult);
 		fromLast = std::abs(finalResult-prevResult);
 		int matHeightB = d*d;
 		int matWidthB = numMeasureB*numOutcomeB;
@@ -622,8 +626,15 @@ void seesawExtended(int d, int n){
 			std::cout << "]" << std::endl;
 		}
 
-		// See if it's converged within some tolerance
+		// If the change is less than the tolerance, increase the count
 		if (fromLast < tol){
+			lessTol += 1;
+		} else {
+			lessTol = 0;
+		}
+
+		// Once it's been less than the tolerance enough in a row
+		if (lessTol > numInRowRequired || delta < tol){
 			break;
 		}
 
