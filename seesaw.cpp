@@ -130,10 +130,10 @@ template <typename type> void prettyPrint(std::string pre, std::vector<type> arr
 }
 
 // Pretty print a generic 2D array with width w and height h
-template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr, int w, int h){
+template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr, int w, int h, int prec=2){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(2);
+	std::cout << std::fixed << std::setprecision(prec);
 
 	// Loop over the array
 	std::string rowText;
@@ -440,7 +440,7 @@ void seesawExtended(int d, int n){
 	// Create the MOSEK model 
 	mosek::fusion::Model::t modelA = new mosek::fusion::Model(); 
 
-	// The moment matrices to optimise
+	// The matrices to optimise
 	mosek::fusion::Variable::t ArOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
 	mosek::fusion::Variable::t AiOpt = modelA->variable(dimRefA, mosek::fusion::Domain::inRange(-1.0, 1.0));
 
@@ -471,12 +471,10 @@ void seesawExtended(int d, int n){
 	}
 	modelA->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumA)), mosek::fusion::Domain::equalsTo(rankARef));
 
-	// The imaginary part should have trace zero
-	auto sumAImag = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	// The imaginary part should have zero on the diags
 	for (int i=0; i<d; i++){
-		(*sumAImag)[i] = AiOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]);
+		modelA->constraint(AiOpt->slice(columnsStartRefA[i*(d+1)], columnsEndRefA[i*(d+1)]), mosek::fusion::Domain::equalsTo(zeroRefA));
 	}
-	modelA->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumAImag)), mosek::fusion::Domain::equalsTo(zeroRefA));
 
 	// Symmetry constraints 
 	for (int i=0; i<matchingRows.size(); i++){
@@ -491,7 +489,7 @@ void seesawExtended(int d, int n){
 	// Create the MOSEK model 
 	mosek::fusion::Model::t modelB = new mosek::fusion::Model(); 
 
-	// The moment matrices to optimise
+	// The matrices to optimise
 	mosek::fusion::Variable::t BrOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
 	mosek::fusion::Variable::t BiOpt = modelB->variable(dimRefB, mosek::fusion::Domain::inRange(-1.0, 1.0));
 
@@ -516,12 +514,10 @@ void seesawExtended(int d, int n){
 	}
 	modelB->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumB)), mosek::fusion::Domain::equalsTo(rankBRef));
 
-	// Trace of imaginary should be zero
-	auto sumBImag = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(d));
+	// The imaginary part should have zero on the diags
 	for (int i=0; i<d; i++){
-		(*sumBImag)[i] = BiOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]);
+		modelB->constraint(BiOpt->slice(rowsStartRefB[i*(d+1)], rowsEndRefB[i*(d+1)]), mosek::fusion::Domain::equalsTo(zeroRefB));
 	}
-	modelB->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(sumBImag)), mosek::fusion::Domain::equalsTo(zeroRefB));
 
 	// For each set of measurements, the matrices should sum to the identity
 	for (int i=0; i<columnsStartRefB.size(); i+=numOutcomeB){
@@ -668,6 +664,31 @@ void seesawExtended(int d, int n){
 				std::cout << std::endl;
 				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
 			}
+		}
+	}
+
+	// For each combination of measurements
+	for (int y1=0; y1<numMeasureB; y1++){
+		for (int y2=y1+1; y2<numMeasureB; y2++){
+
+			// Calculate the moment matrix between them
+			complex2 momentB(numOutcomeB, complex1(numOutcomeB));
+			for (int b1=0; b1<numOutcomeB; b1++){
+				for (int b2=0; b2<numOutcomeB; b2++){
+					for (int i=0; i<d; i++){
+						for (int j=0; j<d; j++){
+							momentB[b1][b2] += B[y1][b1][i][j]*B[y2][b2][j][i];
+						}
+					}
+				}
+			}
+
+			// Output if allowed
+			if (verbosity >= 2){
+				std::cout << std::endl;
+				prettyPrint("moments " + std::to_string(y1) + " " + std::to_string(y2) + " = ", momentB, numOutcomeB, numOutcomeB, 4);
+			}
+
 		}
 	}
 
