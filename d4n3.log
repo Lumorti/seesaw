@@ -1,0 +1,1843 @@
+before Br =  |  0.32  0.15  0.34  0.40  0.00  0.21  0.78  0.24  0.21  0.22  0.44  0.01 |
+             |  0.06 -0.22 -0.27 -0.09 -0.01  0.25 -0.34  0.07  0.16 -0.16  0.28 -0.05 |
+             | -0.23  0.01  0.08 -0.02  0.01 -0.13  0.10 -0.10 -0.16  0.02  0.02 -0.02 |
+             |  0.05  0.27  0.35 -0.45  0.01 -0.21  0.14 -0.16  0.30  0.03  0.11 -0.05 |
+             |  0.06 -0.22 -0.27 -0.09 -0.01  0.25 -0.34  0.07  0.16 -0.16  0.28 -0.05 |
+             |  0.26  0.31  0.27  0.09  0.59  0.31  0.16  0.32  0.12  0.16  0.33  0.32 |
+             | -0.24 -0.01 -0.09 -0.02 -0.42 -0.19 -0.05  0.25 -0.14 -0.17 -0.07  0.05 |
+             |  0.16 -0.39 -0.27  0.11 -0.21 -0.27 -0.08  0.06  0.22  0.01 -0.08  0.24 |
+             | -0.23  0.01  0.08 -0.02  0.01 -0.13  0.10 -0.10 -0.16  0.02  0.02 -0.02 |
+             | -0.24 -0.01 -0.09 -0.02 -0.42 -0.19 -0.05  0.25 -0.14 -0.17 -0.07  0.05 |
+             |  0.32  0.01  0.03  0.01  0.30  0.22  0.02  0.29  0.23  0.59  0.05  0.15 |
+             | -0.15  0.04  0.08  0.02  0.16  0.21  0.03  0.16 -0.21 -0.12  0.09  0.26 |
+             |  0.05  0.27  0.35 -0.45  0.01 -0.21  0.14 -0.16  0.30  0.03  0.11 -0.05 |
+             |  0.16 -0.39 -0.27  0.11 -0.21 -0.27 -0.08  0.06  0.22  0.01 -0.08  0.24 |
+             | -0.15  0.04  0.08  0.02  0.16  0.21  0.03  0.16 -0.21 -0.12  0.09  0.26 |
+             |  0.10  0.53  0.35  0.50  0.11  0.26  0.04  0.14  0.44  0.03  0.18  0.53 |
+
+before Bi =  |  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 |
+             | -0.28  0.00  0.14  0.17  0.02 -0.05 -0.09  0.27  0.03 -0.10 -0.26 -0.02 |
+             |  0.22 -0.04 -0.06 -0.07 -0.01  0.17  0.05  0.25 -0.15  0.36  0.15  0.03 |
+             | -0.17 -0.08  0.01  0.02 -0.01  0.10  0.12  0.10 -0.03 -0.08  0.26  0.04 |
+             |  0.28 -0.00 -0.14 -0.17 -0.02  0.05  0.09 -0.27 -0.03  0.10  0.26  0.02 |
+             |  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 |
+             | -0.16  0.05  0.01  0.02 -0.08  0.18 -0.01  0.19 -0.08 -0.25  0.11 -0.21 |
+             |  0.01  0.12 -0.16  0.18 -0.14  0.07 -0.04  0.20 -0.07  0.07  0.23 -0.33 |
+             | -0.22  0.04  0.06  0.07  0.01 -0.17 -0.05 -0.25  0.15 -0.36 -0.15 -0.03 |
+             |  0.16 -0.05 -0.01 -0.02  0.08 -0.18  0.01 -0.19  0.08  0.25 -0.11  0.21 |
+             |  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 |
+             |  0.09  0.06  0.06 -0.07  0.07  0.12  0.01  0.12  0.23 -0.06 -0.02  0.10 |
+             |  0.17  0.08 -0.01 -0.02  0.01 -0.10 -0.12 -0.10  0.03  0.08 -0.26 -0.04 |
+             | -0.01 -0.12  0.16 -0.18  0.14 -0.07  0.04 -0.20  0.07 -0.07 -0.23  0.33 |
+             | -0.09 -0.06 -0.06  0.07 -0.07 -0.12 -0.01 -0.12 -0.23  0.06  0.02 -0.10 |
+             |  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 |
+
+iter    0 val 4.493970505 (5.898334340 from ideal, 5.493970505 from prev)
+iter    1 val 10.259955222 (0.132349624 from ideal, 5.765984716 from prev)
+iter    2 val 10.277522761 (0.114782084 from ideal, 0.017567540 from prev)
+iter    3 val 10.290709623 (0.101595222 from ideal, 0.013186862 from prev)
+iter    4 val 10.301039692 (0.091265153 from ideal, 0.010330069 from prev)
+iter    5 val 10.309451069 (0.082853776 from ideal, 0.008411377 from prev)
+iter    6 val 10.316532887 (0.075771958 from ideal, 0.007081818 from prev)
+iter    7 val 10.322662238 (0.069642607 from ideal, 0.006129351 from prev)
+iter    8 val 10.328085564 (0.064219281 from ideal, 0.005423326 from prev)
+iter    9 val 10.332967572 (0.059337274 from ideal, 0.004882007 from prev)
+iter   10 val 10.337420833 (0.054884013 from ideal, 0.004453261 from prev)
+iter   11 val 10.341524019 (0.050780826 from ideal, 0.004103186 from prev)
+iter   12 val 10.345333091 (0.046971754 from ideal, 0.003809072 from prev)
+iter   13 val 10.348888191 (0.043416654 from ideal, 0.003555100 from prev)
+iter   14 val 10.352218338 (0.040086508 from ideal, 0.003330146 from prev)
+iter   15 val 10.355344558 (0.036960288 from ideal, 0.003126220 from prev)
+iter   16 val 10.358281746 (0.034023099 from ideal, 0.002937189 from prev)
+iter   17 val 10.361040474 (0.031264371 from ideal, 0.002758728 from prev)
+iter   18 val 10.363628196 (0.028676650 from ideal, 0.002587721 from prev)
+iter   19 val 10.366050362 (0.026254483 from ideal, 0.002422167 from prev)
+iter   20 val 10.368311208 (0.023993637 from ideal, 0.002260846 from prev)
+iter   21 val 10.370414436 (0.021890410 from ideal, 0.002103228 from prev)
+iter   22 val 10.372363707 (0.019941139 from ideal, 0.001949271 from prev)
+iter   23 val 10.374163058 (0.018141788 from ideal, 0.001799351 from prev)
+iter   24 val 10.375817119 (0.016487727 from ideal, 0.001654061 from prev)
+iter   25 val 10.377331215 (0.014973630 from ideal, 0.001514097 from prev)
+iter   26 val 10.378711477 (0.013593369 from ideal, 0.001380262 from prev)
+iter   27 val 10.379964784 (0.012340061 from ideal, 0.001253308 from prev)
+iter   28 val 10.381098630 (0.011206215 from ideal, 0.001133846 from prev)
+iter   29 val 10.382120921 (0.010183924 from ideal, 0.001022291 from prev)
+iter   30 val 10.383039888 (0.009264957 from ideal, 0.000918967 from prev)
+iter   31 val 10.383863876 (0.008440969 from ideal, 0.000823988 from prev)
+iter   32 val 10.384601142 (0.007703703 from ideal, 0.000737266 from prev)
+iter   33 val 10.385259731 (0.007045115 from ideal, 0.000658588 from prev)
+iter   34 val 10.385847283 (0.006457563 from ideal, 0.000587552 from prev)
+iter   35 val 10.386371911 (0.005932934 from ideal, 0.000524628 from prev)
+iter   36 val 10.386839625 (0.005465220 from ideal, 0.000467714 from prev)
+iter   37 val 10.387256742 (0.005048103 from ideal, 0.000417117 from prev)
+iter   38 val 10.387629024 (0.004675821 from ideal, 0.000372282 from prev)
+iter   39 val 10.387961735 (0.004343111 from ideal, 0.000332711 from prev)
+iter   40 val 10.388259581 (0.004045265 from ideal, 0.000297846 from prev)
+iter   41 val 10.388526699 (0.003778147 from ideal, 0.000267118 from prev)
+iter   42 val 10.388766796 (0.003538049 from ideal, 0.000240098 from prev)
+iter   43 val 10.388983146 (0.003321699 from ideal, 0.000216349 from prev)
+iter   44 val 10.389178618 (0.003126227 from ideal, 0.000195472 from prev)
+iter   45 val 10.389355737 (0.002949108 from ideal, 0.000177119 from prev)
+iter   46 val 10.389516641 (0.002788204 from ideal, 0.000160904 from prev)
+iter   47 val 10.389663351 (0.002641494 from ideal, 0.000146710 from prev)
+iter   48 val 10.389797478 (0.002507367 from ideal, 0.000134127 from prev)
+iter   49 val 10.389920468 (0.002384377 from ideal, 0.000122990 from prev)
+iter   50 val 10.390033578 (0.002271268 from ideal, 0.000113109 from prev)
+iter   51 val 10.390137906 (0.002166939 from ideal, 0.000104329 from prev)
+iter   52 val 10.390234350 (0.002070495 from ideal, 0.000096443 from prev)
+iter   53 val 10.390323814 (0.001981032 from ideal, 0.000089464 from prev)
+iter   54 val 10.390406987 (0.001897859 from ideal, 0.000083173 from prev)
+iter   55 val 10.390484544 (0.001820301 from ideal, 0.000077558 from prev)
+iter   56 val 10.390556811 (0.001748034 from ideal, 0.000072267 from prev)
+iter   57 val 10.390624551 (0.001680295 from ideal, 0.000067740 from prev)
+iter   58 val 10.390688074 (0.001616771 from ideal, 0.000063523 from prev)
+iter   59 val 10.390747754 (0.001557092 from ideal, 0.000059680 from prev)
+iter   60 val 10.390803921 (0.001500925 from ideal, 0.000056167 from prev)
+iter   61 val 10.390856868 (0.001447978 from ideal, 0.000052947 from prev)
+iter   62 val 10.390906856 (0.001397989 from ideal, 0.000049988 from prev)
+iter   63 val 10.390954119 (0.001350727 from ideal, 0.000047262 from prev)
+iter   64 val 10.390998864 (0.001305982 from ideal, 0.000044745 from prev)
+iter   65 val 10.391041279 (0.001263567 from ideal, 0.000042415 from prev)
+iter   66 val 10.391081533 (0.001223313 from ideal, 0.000040254 from prev)
+iter   67 val 10.391119779 (0.001185067 from ideal, 0.000038246 from prev)
+iter   68 val 10.391156155 (0.001148690 from ideal, 0.000036377 from prev)
+iter   69 val 10.391190788 (0.001114057 from ideal, 0.000034633 from prev)
+iter   70 val 10.391223792 (0.001081054 from ideal, 0.000033004 from prev)
+iter   71 val 10.391255285 (0.001049560 from ideal, 0.000031494 from prev)
+iter   72 val 10.391285330 (0.001019515 from ideal, 0.000030045 from prev)
+iter   73 val 10.391314036 (0.000990809 from ideal, 0.000028706 from prev)
+iter   74 val 10.391341484 (0.000963361 from ideal, 0.000027448 from prev)
+iter   75 val 10.391367749 (0.000937096 from ideal, 0.000026264 from prev)
+iter   76 val 10.391392900 (0.000911946 from ideal, 0.000025151 from prev)
+iter   77 val 10.391417001 (0.000887845 from ideal, 0.000024101 from prev)
+iter   78 val 10.391440111 (0.000864734 from ideal, 0.000023110 from prev)
+iter   79 val 10.391462286 (0.000842560 from ideal, 0.000022175 from prev)
+iter   80 val 10.391483576 (0.000821270 from ideal, 0.000021290 from prev)
+iter   81 val 10.391504029 (0.000800816 from ideal, 0.000020453 from prev)
+iter   82 val 10.391523690 (0.000781155 from ideal, 0.000019661 from prev)
+iter   83 val 10.391542600 (0.000762246 from ideal, 0.000018910 from prev)
+iter   84 val 10.391560797 (0.000744049 from ideal, 0.000018197 from prev)
+iter   85 val 10.391578318 (0.000726528 from ideal, 0.000017521 from prev)
+iter   86 val 10.391595196 (0.000709649 from ideal, 0.000016879 from prev)
+iter   87 val 10.391611464 (0.000693381 from ideal, 0.000016268 from prev)
+iter   88 val 10.391627151 (0.000677694 from ideal, 0.000015687 from prev)
+iter   89 val 10.391642285 (0.000662560 from ideal, 0.000015134 from prev)
+iter   90 val 10.391656892 (0.000647953 from ideal, 0.000014607 from prev)
+iter   91 val 10.391670998 (0.000633848 from ideal, 0.000014105 from prev)
+iter   92 val 10.391684625 (0.000620221 from ideal, 0.000013627 from prev)
+iter   93 val 10.391697794 (0.000607051 from ideal, 0.000013170 from prev)
+iter   94 val 10.391710528 (0.000594317 from ideal, 0.000012734 from prev)
+iter   95 val 10.391722846 (0.000582000 from ideal, 0.000012317 from prev)
+iter   96 val 10.391734765 (0.000570081 from ideal, 0.000011919 from prev)
+iter   97 val 10.391746303 (0.000558542 from ideal, 0.000011538 from prev)
+iter   98 val 10.391757477 (0.000547368 from ideal, 0.000011174 from prev)
+iter   99 val 10.391768303 (0.000536543 from ideal, 0.000010825 from prev)
+iter  100 val 10.391778794 (0.000526052 from ideal, 0.000010491 from prev)
+iter  101 val 10.391788965 (0.000515880 from ideal, 0.000010171 from prev)
+iter  102 val 10.391798829 (0.000506016 from ideal, 0.000009864 from prev)
+iter  103 val 10.391808399 (0.000496447 from ideal, 0.000009569 from prev)
+iter  104 val 10.391817686 (0.000487160 from ideal, 0.000009287 from prev)
+iter  105 val 10.391826702 (0.000478144 from ideal, 0.000009016 from prev)
+iter  106 val 10.391835457 (0.000469388 from ideal, 0.000008756 from prev)
+iter  107 val 10.391843962 (0.000460883 from ideal, 0.000008505 from prev)
+iter  108 val 10.391852227 (0.000452618 from ideal, 0.000008265 from prev)
+iter  109 val 10.391860261 (0.000444585 from ideal, 0.000008034 from prev)
+iter  110 val 10.391868072 (0.000436773 from ideal, 0.000007811 from prev)
+iter  111 val 10.391875669 (0.000429176 from ideal, 0.000007597 from prev)
+iter  112 val 10.391883052 (0.000421794 from ideal, 0.000007383 from prev)
+iter  113 val 10.391890242 (0.000414603 from ideal, 0.000007191 from prev)
+iter  114 val 10.391897242 (0.000407604 from ideal, 0.000006999 from prev)
+iter  115 val 10.391904057 (0.000400789 from ideal, 0.000006815 from prev)
+iter  116 val 10.391910694 (0.000394151 from ideal, 0.000006637 from prev)
+iter  117 val 10.391917160 (0.000387686 from ideal, 0.000006466 from prev)
+iter  118 val 10.391923460 (0.000381385 from ideal, 0.000006300 from prev)
+iter  119 val 10.391929601 (0.000375244 from ideal, 0.000006141 from prev)
+iter  120 val 10.391935588 (0.000369258 from ideal, 0.000005987 from prev)
+iter  121 val 10.391941425 (0.000363420 from ideal, 0.000005838 from prev)
+iter  122 val 10.391947119 (0.000357726 from ideal, 0.000005694 from prev)
+iter  123 val 10.391952674 (0.000352171 from ideal, 0.000005555 from prev)
+iter  124 val 10.391958095 (0.000346750 from ideal, 0.000005421 from prev)
+iter  125 val 10.391963386 (0.000341460 from ideal, 0.000005291 from prev)
+iter  126 val 10.391968550 (0.000336295 from ideal, 0.000005165 from prev)
+iter  127 val 10.391973594 (0.000331252 from ideal, 0.000005043 from prev)
+iter  128 val 10.391978519 (0.000326326 from ideal, 0.000004926 from prev)
+iter  129 val 10.391983331 (0.000321515 from ideal, 0.000004812 from prev)
+iter  130 val 10.391988032 (0.000316813 from ideal, 0.000004701 from prev)
+iter  131 val 10.391992626 (0.000312219 from ideal, 0.000004594 from prev)
+iter  132 val 10.391997117 (0.000307728 from ideal, 0.000004491 from prev)
+iter  133 val 10.392001508 (0.000303338 from ideal, 0.000004390 from prev)
+iter  134 val 10.392005800 (0.000299045 from ideal, 0.000004293 from prev)
+iter  135 val 10.392009999 (0.000294847 from ideal, 0.000004198 from prev)
+iter  136 val 10.392014106 (0.000290740 from ideal, 0.000004107 from prev)
+iter  137 val 10.392018124 (0.000286721 from ideal, 0.000004018 from prev)
+iter  138 val 10.392022056 (0.000282790 from ideal, 0.000003932 from prev)
+iter  139 val 10.392025904 (0.000278942 from ideal, 0.000003848 from prev)
+iter  140 val 10.392029671 (0.000275175 from ideal, 0.000003767 from prev)
+iter  141 val 10.392033359 (0.000271487 from ideal, 0.000003688 from prev)
+iter  142 val 10.392036970 (0.000267875 from ideal, 0.000003611 from prev)
+iter  143 val 10.392040507 (0.000264338 from ideal, 0.000003537 from prev)
+iter  144 val 10.392043971 (0.000260874 from ideal, 0.000003464 from prev)
+iter  145 val 10.392047365 (0.000257480 from ideal, 0.000003394 from prev)
+iter  146 val 10.392050691 (0.000254154 from ideal, 0.000003326 from prev)
+iter  147 val 10.392053950 (0.000250895 from ideal, 0.000003259 from prev)
+iter  148 val 10.392057145 (0.000247701 from ideal, 0.000003194 from prev)
+iter  149 val 10.392060276 (0.000244569 from ideal, 0.000003132 from prev)
+iter  150 val 10.392063346 (0.000241499 from ideal, 0.000003070 from prev)
+iter  151 val 10.392066357 (0.000238488 from ideal, 0.000003011 from prev)
+iter  152 val 10.392069310 (0.000235536 from ideal, 0.000002952 from prev)
+iter  153 val 10.392072206 (0.000232640 from ideal, 0.000002896 from prev)
+iter  154 val 10.392075047 (0.000229799 from ideal, 0.000002841 from prev)
+iter  155 val 10.392077834 (0.000227011 from ideal, 0.000002787 from prev)
+iter  156 val 10.392080570 (0.000224276 from ideal, 0.000002735 from prev)
+iter  157 val 10.392083254 (0.000221591 from ideal, 0.000002684 from prev)
+iter  158 val 10.392085889 (0.000218956 from ideal, 0.000002635 from prev)
+iter  159 val 10.392088475 (0.000216370 from ideal, 0.000002586 from prev)
+iter  160 val 10.392091015 (0.000213831 from ideal, 0.000002539 from prev)
+iter  161 val 10.392093508 (0.000211337 from ideal, 0.000002493 from prev)
+iter  162 val 10.392095957 (0.000208888 from ideal, 0.000002449 from prev)
+iter  163 val 10.392098362 (0.000206484 from ideal, 0.000002405 from prev)
+iter  164 val 10.392100724 (0.000204121 from ideal, 0.000002362 from prev)
+iter  165 val 10.392103045 (0.000201800 from ideal, 0.000002321 from prev)
+iter  166 val 10.392105325 (0.000199520 from ideal, 0.000002280 from prev)
+iter  167 val 10.392107566 (0.000197280 from ideal, 0.000002240 from prev)
+iter  168 val 10.392109767 (0.000195078 from ideal, 0.000002202 from prev)
+iter  169 val 10.392111931 (0.000192914 from ideal, 0.000002164 from prev)
+iter  170 val 10.392114059 (0.000190787 from ideal, 0.000002127 from prev)
+iter  171 val 10.392116150 (0.000188696 from ideal, 0.000002091 from prev)
+iter  172 val 10.392118206 (0.000186640 from ideal, 0.000002056 from prev)
+iter  173 val 10.392120227 (0.000184618 from ideal, 0.000002022 from prev)
+iter  174 val 10.392122215 (0.000182630 from ideal, 0.000001988 from prev)
+iter  175 val 10.392124171 (0.000180675 from ideal, 0.000001955 from prev)
+iter  176 val 10.392126094 (0.000178752 from ideal, 0.000001923 from prev)
+iter  177 val 10.392127985 (0.000176860 from ideal, 0.000001892 from prev)
+iter  178 val 10.392129846 (0.000174999 from ideal, 0.000001861 from prev)
+iter  179 val 10.392131678 (0.000173168 from ideal, 0.000001831 from prev)
+iter  180 val 10.392133479 (0.000171366 from ideal, 0.000001802 from prev)
+iter  181 val 10.392135252 (0.000169593 from ideal, 0.000001773 from prev)
+iter  182 val 10.392136997 (0.000167848 from ideal, 0.000001745 from prev)
+iter  183 val 10.392138715 (0.000166130 from ideal, 0.000001718 from prev)
+iter  184 val 10.392140406 (0.000164440 from ideal, 0.000001691 from prev)
+iter  185 val 10.392142070 (0.000162775 from ideal, 0.000001665 from prev)
+iter  186 val 10.392143709 (0.000161136 from ideal, 0.000001639 from prev)
+iter  187 val 10.392145323 (0.000159523 from ideal, 0.000001614 from prev)
+iter  188 val 10.392146912 (0.000157934 from ideal, 0.000001589 from prev)
+iter  189 val 10.392148477 (0.000156369 from ideal, 0.000001565 from prev)
+iter  190 val 10.392150018 (0.000154828 from ideal, 0.000001541 from prev)
+iter  191 val 10.392151536 (0.000153310 from ideal, 0.000001518 from prev)
+iter  192 val 10.392153031 (0.000151814 from ideal, 0.000001495 from prev)
+iter  193 val 10.392154504 (0.000150341 from ideal, 0.000001473 from prev)
+iter  194 val 10.392155956 (0.000148890 from ideal, 0.000001451 from prev)
+iter  195 val 10.392157386 (0.000147460 from ideal, 0.000001430 from prev)
+iter  196 val 10.392158795 (0.000146050 from ideal, 0.000001409 from prev)
+iter  197 val 10.392160184 (0.000144662 from ideal, 0.000001389 from prev)
+iter  198 val 10.392161552 (0.000143293 from ideal, 0.000001369 from prev)
+iter  199 val 10.392162901 (0.000141944 from ideal, 0.000001349 from prev)
+iter  200 val 10.392164231 (0.000140614 from ideal, 0.000001330 from prev)
+iter  201 val 10.392165542 (0.000139303 from ideal, 0.000001311 from prev)
+iter  202 val 10.392166835 (0.000138011 from ideal, 0.000001292 from prev)
+iter  203 val 10.392168109 (0.000136737 from ideal, 0.000001274 from prev)
+iter  204 val 10.392169365 (0.000135480 from ideal, 0.000001256 from prev)
+iter  205 val 10.392170604 (0.000134241 from ideal, 0.000001239 from prev)
+iter  206 val 10.392171826 (0.000133019 from ideal, 0.000001222 from prev)
+iter  207 val 10.392173031 (0.000131815 from ideal, 0.000001205 from prev)
+iter  208 val 10.392174219 (0.000130626 from ideal, 0.000001188 from prev)
+iter  209 val 10.392175392 (0.000129454 from ideal, 0.000001172 from prev)
+iter  210 val 10.392176548 (0.000128297 from ideal, 0.000001156 from prev)
+iter  211 val 10.392177689 (0.000127156 from ideal, 0.000001141 from prev)
+iter  212 val 10.392178814 (0.000126031 from ideal, 0.000001125 from prev)
+iter  213 val 10.392179925 (0.000124920 from ideal, 0.000001110 from prev)
+iter  214 val 10.392181021 (0.000123825 from ideal, 0.000001096 from prev)
+iter  215 val 10.392182102 (0.000122743 from ideal, 0.000001081 from prev)
+iter  216 val 10.392183169 (0.000121676 from ideal, 0.000001067 from prev)
+iter  217 val 10.392184222 (0.000120623 from ideal, 0.000001053 from prev)
+iter  218 val 10.392185262 (0.000119584 from ideal, 0.000001039 from prev)
+iter  219 val 10.392186288 (0.000118558 from ideal, 0.000001026 from prev)
+iter  220 val 10.392187300 (0.000117545 from ideal, 0.000001013 from prev)
+iter  221 val 10.392188300 (0.000116545 from ideal, 0.000001000 from prev)
+iter  222 val 10.392189287 (0.000115558 from ideal, 0.000000987 from prev)
+iter  223 val 10.392190262 (0.000114584 from ideal, 0.000000974 from prev)
+iter  224 val 10.392191224 (0.000113622 from ideal, 0.000000962 from prev)
+iter  225 val 10.392192174 (0.000112672 from ideal, 0.000000950 from prev)
+iter  226 val 10.392193112 (0.000111734 from ideal, 0.000000938 from prev)
+iter  227 val 10.392194038 (0.000110807 from ideal, 0.000000927 from prev)
+iter  228 val 10.392194953 (0.000109892 from ideal, 0.000000915 from prev)
+iter  229 val 10.392195857 (0.000108989 from ideal, 0.000000904 from prev)
+iter  230 val 10.392196749 (0.000108096 from ideal, 0.000000893 from prev)
+iter  231 val 10.392197631 (0.000107214 from ideal, 0.000000882 from prev)
+iter  232 val 10.392198502 (0.000106344 from ideal, 0.000000871 from prev)
+iter  233 val 10.392199362 (0.000105483 from ideal, 0.000000861 from prev)
+iter  234 val 10.392200212 (0.000104633 from ideal, 0.000000850 from prev)
+iter  235 val 10.392201052 (0.000103793 from ideal, 0.000000840 from prev)
+iter  236 val 10.392201882 (0.000102964 from ideal, 0.000000830 from prev)
+iter  237 val 10.392202702 (0.000102144 from ideal, 0.000000820 from prev)
+iter  238 val 10.392203512 (0.000101334 from ideal, 0.000000810 from prev)
+iter  239 val 10.392204312 (0.000100533 from ideal, 0.000000801 from prev)
+iter  240 val 10.392205103 (0.000099742 from ideal, 0.000000791 from prev)
+iter  241 val 10.392205885 (0.000098960 from ideal, 0.000000782 from prev)
+iter  242 val 10.392206658 (0.000098187 from ideal, 0.000000773 from prev)
+iter  243 val 10.392207422 (0.000097423 from ideal, 0.000000764 from prev)
+iter  244 val 10.392208177 (0.000096668 from ideal, 0.000000755 from prev)
+iter  245 val 10.392208924 (0.000095922 from ideal, 0.000000746 from prev)
+iter  246 val 10.392209661 (0.000095184 from ideal, 0.000000738 from prev)
+iter  247 val 10.392210391 (0.000094455 from ideal, 0.000000729 from prev)
+iter  248 val 10.392211112 (0.000093734 from ideal, 0.000000721 from prev)
+iter  249 val 10.392211825 (0.000093020 from ideal, 0.000000713 from prev)
+iter  250 val 10.392212530 (0.000092315 from ideal, 0.000000705 from prev)
+iter  251 val 10.392213227 (0.000091618 from ideal, 0.000000697 from prev)
+iter  252 val 10.392213916 (0.000090929 from ideal, 0.000000689 from prev)
+iter  253 val 10.392214598 (0.000090247 from ideal, 0.000000682 from prev)
+iter  254 val 10.392215272 (0.000089573 from ideal, 0.000000674 from prev)
+iter  255 val 10.392215939 (0.000088906 from ideal, 0.000000667 from prev)
+iter  256 val 10.392216598 (0.000088247 from ideal, 0.000000659 from prev)
+iter  257 val 10.392217251 (0.000087595 from ideal, 0.000000652 from prev)
+iter  258 val 10.392217896 (0.000086950 from ideal, 0.000000645 from prev)
+iter  259 val 10.392218534 (0.000086311 from ideal, 0.000000638 from prev)
+iter  260 val 10.392219165 (0.000085680 from ideal, 0.000000631 from prev)
+iter  261 val 10.392219790 (0.000085056 from ideal, 0.000000624 from prev)
+iter  262 val 10.392220408 (0.000084438 from ideal, 0.000000618 from prev)
+iter  263 val 10.392221019 (0.000083827 from ideal, 0.000000611 from prev)
+iter  264 val 10.392221624 (0.000083222 from ideal, 0.000000605 from prev)
+iter  265 val 10.392222222 (0.000082623 from ideal, 0.000000598 from prev)
+iter  266 val 10.392222814 (0.000082031 from ideal, 0.000000592 from prev)
+iter  267 val 10.392223400 (0.000081446 from ideal, 0.000000586 from prev)
+iter  268 val 10.392223979 (0.000080866 from ideal, 0.000000580 from prev)
+iter  269 val 10.392224553 (0.000080292 from ideal, 0.000000574 from prev)
+iter  270 val 10.392225121 (0.000079725 from ideal, 0.000000568 from prev)
+iter  271 val 10.392225683 (0.000079162 from ideal, 0.000000562 from prev)
+iter  272 val 10.392226239 (0.000078606 from ideal, 0.000000556 from prev)
+iter  273 val 10.392226789 (0.000078056 from ideal, 0.000000550 from prev)
+iter  274 val 10.392227334 (0.000077511 from ideal, 0.000000545 from prev)
+iter  275 val 10.392227873 (0.000076972 from ideal, 0.000000539 from prev)
+iter  276 val 10.392228407 (0.000076438 from ideal, 0.000000534 from prev)
+iter  277 val 10.392228936 (0.000075910 from ideal, 0.000000528 from prev)
+iter  278 val 10.392229459 (0.000075387 from ideal, 0.000000523 from prev)
+iter  279 val 10.392229977 (0.000074869 from ideal, 0.000000518 from prev)
+iter  280 val 10.392230489 (0.000074356 from ideal, 0.000000513 from prev)
+iter  281 val 10.392230997 (0.000073849 from ideal, 0.000000508 from prev)
+iter  282 val 10.392231499 (0.000073346 from ideal, 0.000000503 from prev)
+iter  283 val 10.392231997 (0.000072848 from ideal, 0.000000498 from prev)
+iter  284 val 10.392232490 (0.000072356 from ideal, 0.000000493 from prev)
+iter  285 val 10.392232978 (0.000071868 from ideal, 0.000000488 from prev)
+iter  286 val 10.392233461 (0.000071385 from ideal, 0.000000483 from prev)
+iter  287 val 10.392233939 (0.000070906 from ideal, 0.000000478 from prev)
+iter  288 val 10.392234413 (0.000070432 from ideal, 0.000000474 from prev)
+iter  289 val 10.392234882 (0.000069963 from ideal, 0.000000469 from prev)
+iter  290 val 10.392235347 (0.000069498 from ideal, 0.000000465 from prev)
+iter  291 val 10.392235807 (0.000069038 from ideal, 0.000000460 from prev)
+iter  292 val 10.392236263 (0.000068582 from ideal, 0.000000456 from prev)
+iter  293 val 10.392236715 (0.000068131 from ideal, 0.000000452 from prev)
+iter  294 val 10.392237162 (0.000067683 from ideal, 0.000000447 from prev)
+iter  295 val 10.392237605 (0.000067240 from ideal, 0.000000443 from prev)
+iter  296 val 10.392238044 (0.000066801 from ideal, 0.000000439 from prev)
+iter  297 val 10.392238479 (0.000066367 from ideal, 0.000000435 from prev)
+iter  298 val 10.392238910 (0.000065936 from ideal, 0.000000431 from prev)
+iter  299 val 10.392239336 (0.000065509 from ideal, 0.000000427 from prev)
+iter  300 val 10.392239759 (0.000065086 from ideal, 0.000000423 from prev)
+iter  301 val 10.392240178 (0.000064668 from ideal, 0.000000419 from prev)
+iter  302 val 10.392240593 (0.000064253 from ideal, 0.000000415 from prev)
+iter  303 val 10.392241004 (0.000063841 from ideal, 0.000000411 from prev)
+iter  304 val 10.392241411 (0.000063434 from ideal, 0.000000407 from prev)
+iter  305 val 10.392241815 (0.000063030 from ideal, 0.000000404 from prev)
+iter  306 val 10.392242215 (0.000062630 from ideal, 0.000000400 from prev)
+iter  307 val 10.392242611 (0.000062234 from ideal, 0.000000396 from prev)
+iter  308 val 10.392243004 (0.000061841 from ideal, 0.000000393 from prev)
+iter  309 val 10.392243393 (0.000061452 from ideal, 0.000000389 from prev)
+iter  310 val 10.392243779 (0.000061066 from ideal, 0.000000386 from prev)
+iter  311 val 10.392244162 (0.000060684 from ideal, 0.000000382 from prev)
+iter  312 val 10.392244541 (0.000060305 from ideal, 0.000000379 from prev)
+iter  313 val 10.392244916 (0.000059929 from ideal, 0.000000376 from prev)
+iter  314 val 10.392245288 (0.000059557 from ideal, 0.000000372 from prev)
+iter  315 val 10.392245657 (0.000059188 from ideal, 0.000000369 from prev)
+iter  316 val 10.392246023 (0.000058822 from ideal, 0.000000366 from prev)
+iter  317 val 10.392246386 (0.000058460 from ideal, 0.000000363 from prev)
+iter  318 val 10.392246745 (0.000058101 from ideal, 0.000000359 from prev)
+iter  319 val 10.392247101 (0.000057744 from ideal, 0.000000356 from prev)
+iter  320 val 10.392247454 (0.000057391 from ideal, 0.000000353 from prev)
+iter  321 val 10.392247804 (0.000057041 from ideal, 0.000000350 from prev)
+iter  322 val 10.392248151 (0.000056694 from ideal, 0.000000347 from prev)
+iter  323 val 10.392248495 (0.000056350 from ideal, 0.000000344 from prev)
+iter  324 val 10.392248836 (0.000056009 from ideal, 0.000000341 from prev)
+iter  325 val 10.392249175 (0.000055671 from ideal, 0.000000338 from prev)
+iter  326 val 10.392249510 (0.000055335 from ideal, 0.000000335 from prev)
+iter  327 val 10.392249842 (0.000055003 from ideal, 0.000000332 from prev)
+iter  328 val 10.392250172 (0.000054673 from ideal, 0.000000330 from prev)
+iter  329 val 10.392250499 (0.000054347 from ideal, 0.000000327 from prev)
+iter  330 val 10.392250823 (0.000054022 from ideal, 0.000000324 from prev)
+iter  331 val 10.392251144 (0.000053701 from ideal, 0.000000321 from prev)
+iter  332 val 10.392251463 (0.000053382 from ideal, 0.000000319 from prev)
+iter  333 val 10.392251779 (0.000053066 from ideal, 0.000000316 from prev)
+iter  334 val 10.392252093 (0.000052753 from ideal, 0.000000313 from prev)
+iter  335 val 10.392252403 (0.000052442 from ideal, 0.000000311 from prev)
+iter  336 val 10.392252712 (0.000052134 from ideal, 0.000000308 from prev)
+iter  337 val 10.392253017 (0.000051828 from ideal, 0.000000306 from prev)
+iter  338 val 10.392253321 (0.000051525 from ideal, 0.000000303 from prev)
+iter  339 val 10.392253621 (0.000051224 from ideal, 0.000000301 from prev)
+iter  340 val 10.392253920 (0.000050926 from ideal, 0.000000298 from prev)
+iter  341 val 10.392254215 (0.000050630 from ideal, 0.000000296 from prev)
+iter  342 val 10.392254509 (0.000050337 from ideal, 0.000000294 from prev)
+iter  343 val 10.392254800 (0.000050046 from ideal, 0.000000291 from prev)
+iter  344 val 10.392255089 (0.000049757 from ideal, 0.000000289 from prev)
+iter  345 val 10.392255375 (0.000049470 from ideal, 0.000000286 from prev)
+iter  346 val 10.392255659 (0.000049186 from ideal, 0.000000284 from prev)
+iter  347 val 10.392255941 (0.000048904 from ideal, 0.000000282 from prev)
+iter  348 val 10.392256221 (0.000048625 from ideal, 0.000000280 from prev)
+iter  349 val 10.392256498 (0.000048347 from ideal, 0.000000277 from prev)
+iter  350 val 10.392256773 (0.000048072 from ideal, 0.000000275 from prev)
+iter  351 val 10.392257046 (0.000047799 from ideal, 0.000000273 from prev)
+iter  352 val 10.392257317 (0.000047528 from ideal, 0.000000271 from prev)
+iter  353 val 10.392257586 (0.000047260 from ideal, 0.000000269 from prev)
+iter  354 val 10.392257852 (0.000046993 from ideal, 0.000000267 from prev)
+iter  355 val 10.392258117 (0.000046729 from ideal, 0.000000265 from prev)
+iter  356 val 10.392258379 (0.000046466 from ideal, 0.000000262 from prev)
+iter  357 val 10.392258640 (0.000046206 from ideal, 0.000000260 from prev)
+iter  358 val 10.392258898 (0.000045947 from ideal, 0.000000258 from prev)
+iter  359 val 10.392259154 (0.000045691 from ideal, 0.000000256 from prev)
+iter  360 val 10.392259409 (0.000045437 from ideal, 0.000000254 from prev)
+iter  361 val 10.392259661 (0.000045184 from ideal, 0.000000252 from prev)
+iter  362 val 10.392259912 (0.000044934 from ideal, 0.000000251 from prev)
+iter  363 val 10.392260160 (0.000044685 from ideal, 0.000000249 from prev)
+iter  364 val 10.392260407 (0.000044438 from ideal, 0.000000247 from prev)
+iter  365 val 10.392260652 (0.000044193 from ideal, 0.000000245 from prev)
+iter  366 val 10.392260895 (0.000043950 from ideal, 0.000000243 from prev)
+iter  367 val 10.392261136 (0.000043709 from ideal, 0.000000241 from prev)
+iter  368 val 10.392261376 (0.000043470 from ideal, 0.000000239 from prev)
+iter  369 val 10.392261613 (0.000043232 from ideal, 0.000000237 from prev)
+iter  370 val 10.392261849 (0.000042997 from ideal, 0.000000236 from prev)
+iter  371 val 10.392262083 (0.000042763 from ideal, 0.000000234 from prev)
+iter  372 val 10.392262315 (0.000042530 from ideal, 0.000000232 from prev)
+iter  373 val 10.392262545 (0.000042300 from ideal, 0.000000230 from prev)
+iter  374 val 10.392262774 (0.000042071 from ideal, 0.000000229 from prev)
+iter  375 val 10.392263001 (0.000041844 from ideal, 0.000000227 from prev)
+iter  376 val 10.392263227 (0.000041619 from ideal, 0.000000225 from prev)
+iter  377 val 10.392263451 (0.000041395 from ideal, 0.000000224 from prev)
+iter  378 val 10.392263673 (0.000041173 from ideal, 0.000000222 from prev)
+iter  379 val 10.392263893 (0.000040952 from ideal, 0.000000220 from prev)
+iter  380 val 10.392264112 (0.000040733 from ideal, 0.000000219 from prev)
+iter  381 val 10.392264329 (0.000040516 from ideal, 0.000000217 from prev)
+iter  382 val 10.392264545 (0.000040300 from ideal, 0.000000216 from prev)
+iter  383 val 10.392264759 (0.000040086 from ideal, 0.000000214 from prev)
+iter  384 val 10.392264972 (0.000039874 from ideal, 0.000000212 from prev)
+iter  385 val 10.392265183 (0.000039663 from ideal, 0.000000211 from prev)
+iter  386 val 10.392265392 (0.000039453 from ideal, 0.000000209 from prev)
+iter  387 val 10.392265600 (0.000039245 from ideal, 0.000000208 from prev)
+iter  388 val 10.392265807 (0.000039039 from ideal, 0.000000207 from prev)
+iter  389 val 10.392266012 (0.000038834 from ideal, 0.000000205 from prev)
+iter  390 val 10.392266215 (0.000038630 from ideal, 0.000000204 from prev)
+iter  391 val 10.392266418 (0.000038428 from ideal, 0.000000202 from prev)
+iter  392 val 10.392266618 (0.000038227 from ideal, 0.000000201 from prev)
+iter  393 val 10.392266817 (0.000038028 from ideal, 0.000000199 from prev)
+iter  394 val 10.392267015 (0.000037830 from ideal, 0.000000198 from prev)
+iter  395 val 10.392267212 (0.000037634 from ideal, 0.000000196 from prev)
+iter  396 val 10.392267407 (0.000037438 from ideal, 0.000000195 from prev)
+iter  397 val 10.392267601 (0.000037245 from ideal, 0.000000194 from prev)
+iter  398 val 10.392267793 (0.000037052 from ideal, 0.000000192 from prev)
+iter  399 val 10.392267984 (0.000036861 from ideal, 0.000000191 from prev)
+iter  400 val 10.392268174 (0.000036672 from ideal, 0.000000190 from prev)
+iter  401 val 10.392268362 (0.000036483 from ideal, 0.000000188 from prev)
+iter  402 val 10.392268549 (0.000036296 from ideal, 0.000000187 from prev)
+iter  403 val 10.392268735 (0.000036110 from ideal, 0.000000186 from prev)
+iter  404 val 10.392268920 (0.000035926 from ideal, 0.000000185 from prev)
+iter  405 val 10.392269103 (0.000035743 from ideal, 0.000000183 from prev)
+iter  406 val 10.392269285 (0.000035561 from ideal, 0.000000182 from prev)
+iter  407 val 10.392269466 (0.000035380 from ideal, 0.000000181 from prev)
+iter  408 val 10.392269645 (0.000035200 from ideal, 0.000000179 from prev)
+iter  409 val 10.392269823 (0.000035022 from ideal, 0.000000178 from prev)
+iter  410 val 10.392270000 (0.000034845 from ideal, 0.000000177 from prev)
+iter  411 val 10.392270176 (0.000034669 from ideal, 0.000000176 from prev)
+iter  412 val 10.392270351 (0.000034495 from ideal, 0.000000175 from prev)
+iter  413 val 10.392270524 (0.000034321 from ideal, 0.000000174 from prev)
+iter  414 val 10.392270697 (0.000034149 from ideal, 0.000000172 from prev)
+iter  415 val 10.392270868 (0.000033978 from ideal, 0.000000171 from prev)
+iter  416 val 10.392271038 (0.000033808 from ideal, 0.000000170 from prev)
+iter  417 val 10.392271207 (0.000033639 from ideal, 0.000000169 from prev)
+iter  418 val 10.392271374 (0.000033471 from ideal, 0.000000168 from prev)
+iter  419 val 10.392271541 (0.000033304 from ideal, 0.000000167 from prev)
+iter  420 val 10.392271706 (0.000033139 from ideal, 0.000000165 from prev)
+iter  421 val 10.392271871 (0.000032975 from ideal, 0.000000164 from prev)
+iter  422 val 10.392272034 (0.000032811 from ideal, 0.000000163 from prev)
+iter  423 val 10.392272196 (0.000032649 from ideal, 0.000000162 from prev)
+iter  424 val 10.392272357 (0.000032488 from ideal, 0.000000161 from prev)
+iter  425 val 10.392272518 (0.000032328 from ideal, 0.000000160 from prev)
+iter  426 val 10.392272677 (0.000032169 from ideal, 0.000000159 from prev)
+iter  427 val 10.392272835 (0.000032011 from ideal, 0.000000158 from prev)
+iter  428 val 10.392272992 (0.000031854 from ideal, 0.000000157 from prev)
+iter  429 val 10.392273147 (0.000031698 from ideal, 0.000000156 from prev)
+iter  430 val 10.392273302 (0.000031543 from ideal, 0.000000155 from prev)
+iter  431 val 10.392273456 (0.000031389 from ideal, 0.000000154 from prev)
+iter  432 val 10.392273609 (0.000031236 from ideal, 0.000000153 from prev)
+iter  433 val 10.392273761 (0.000031084 from ideal, 0.000000152 from prev)
+iter  434 val 10.392273912 (0.000030933 from ideal, 0.000000151 from prev)
+iter  435 val 10.392274062 (0.000030783 from ideal, 0.000000150 from prev)
+iter  436 val 10.392274211 (0.000030634 from ideal, 0.000000149 from prev)
+iter  437 val 10.392274359 (0.000030486 from ideal, 0.000000148 from prev)
+iter  438 val 10.392274506 (0.000030339 from ideal, 0.000000147 from prev)
+iter  439 val 10.392274652 (0.000030193 from ideal, 0.000000146 from prev)
+iter  440 val 10.392274798 (0.000030048 from ideal, 0.000000145 from prev)
+iter  441 val 10.392274942 (0.000029904 from ideal, 0.000000144 from prev)
+iter  442 val 10.392275085 (0.000029760 from ideal, 0.000000143 from prev)
+iter  443 val 10.392275228 (0.000029618 from ideal, 0.000000142 from prev)
+iter  444 val 10.392275369 (0.000029476 from ideal, 0.000000142 from prev)
+iter  445 val 10.392275510 (0.000029335 from ideal, 0.000000141 from prev)
+iter  446 val 10.392275650 (0.000029196 from ideal, 0.000000140 from prev)
+iter  447 val 10.392275789 (0.000029057 from ideal, 0.000000139 from prev)
+iter  448 val 10.392275927 (0.000028919 from ideal, 0.000000138 from prev)
+iter  449 val 10.392276064 (0.000028782 from ideal, 0.000000137 from prev)
+iter  450 val 10.392276200 (0.000028645 from ideal, 0.000000136 from prev)
+iter  451 val 10.392276336 (0.000028510 from ideal, 0.000000135 from prev)
+iter  452 val 10.392276470 (0.000028375 from ideal, 0.000000135 from prev)
+iter  453 val 10.392276604 (0.000028242 from ideal, 0.000000134 from prev)
+iter  454 val 10.392276737 (0.000028109 from ideal, 0.000000133 from prev)
+iter  455 val 10.392276869 (0.000027976 from ideal, 0.000000132 from prev)
+iter  456 val 10.392277000 (0.000027845 from ideal, 0.000000131 from prev)
+iter  457 val 10.392277131 (0.000027715 from ideal, 0.000000130 from prev)
+iter  458 val 10.392277260 (0.000027585 from ideal, 0.000000130 from prev)
+iter  459 val 10.392277389 (0.000027456 from ideal, 0.000000129 from prev)
+iter  460 val 10.392277517 (0.000027328 from ideal, 0.000000128 from prev)
+iter  461 val 10.392277645 (0.000027201 from ideal, 0.000000127 from prev)
+iter  462 val 10.392277771 (0.000027074 from ideal, 0.000000126 from prev)
+iter  463 val 10.392277897 (0.000026949 from ideal, 0.000000126 from prev)
+iter  464 val 10.392278022 (0.000026824 from ideal, 0.000000125 from prev)
+iter  465 val 10.392278146 (0.000026699 from ideal, 0.000000124 from prev)
+iter  466 val 10.392278269 (0.000026576 from ideal, 0.000000123 from prev)
+iter  467 val 10.392278392 (0.000026453 from ideal, 0.000000123 from prev)
+iter  468 val 10.392278514 (0.000026331 from ideal, 0.000000122 from prev)
+iter  469 val 10.392278635 (0.000026210 from ideal, 0.000000121 from prev)
+iter  470 val 10.392278756 (0.000026090 from ideal, 0.000000121 from prev)
+iter  471 val 10.392278876 (0.000025970 from ideal, 0.000000120 from prev)
+iter  472 val 10.392278995 (0.000025851 from ideal, 0.000000119 from prev)
+iter  473 val 10.392279113 (0.000025732 from ideal, 0.000000118 from prev)
+iter  474 val 10.392279231 (0.000025615 from ideal, 0.000000118 from prev)
+iter  475 val 10.392279347 (0.000025498 from ideal, 0.000000117 from prev)
+iter  476 val 10.392279464 (0.000025382 from ideal, 0.000000116 from prev)
+iter  477 val 10.392279579 (0.000025266 from ideal, 0.000000116 from prev)
+iter  478 val 10.392279694 (0.000025151 from ideal, 0.000000115 from prev)
+iter  479 val 10.392279808 (0.000025037 from ideal, 0.000000114 from prev)
+iter  480 val 10.392279922 (0.000024924 from ideal, 0.000000113 from prev)
+iter  481 val 10.392280034 (0.000024811 from ideal, 0.000000113 from prev)
+iter  482 val 10.392280147 (0.000024699 from ideal, 0.000000112 from prev)
+iter  483 val 10.392280258 (0.000024587 from ideal, 0.000000111 from prev)
+iter  484 val 10.392280369 (0.000024477 from ideal, 0.000000111 from prev)
+iter  485 val 10.392280479 (0.000024366 from ideal, 0.000000110 from prev)
+iter  486 val 10.392280588 (0.000024257 from ideal, 0.000000109 from prev)
+iter  487 val 10.392280697 (0.000024148 from ideal, 0.000000109 from prev)
+iter  488 val 10.392280806 (0.000024040 from ideal, 0.000000108 from prev)
+iter  489 val 10.392280913 (0.000023932 from ideal, 0.000000108 from prev)
+iter  490 val 10.392281020 (0.000023825 from ideal, 0.000000107 from prev)
+iter  491 val 10.392281126 (0.000023719 from ideal, 0.000000106 from prev)
+iter  492 val 10.392281232 (0.000023613 from ideal, 0.000000106 from prev)
+iter  493 val 10.392281337 (0.000023508 from ideal, 0.000000105 from prev)
+iter  494 val 10.392281442 (0.000023404 from ideal, 0.000000105 from prev)
+iter  495 val 10.392281546 (0.000023300 from ideal, 0.000000104 from prev)
+iter  496 val 10.392281649 (0.000023196 from ideal, 0.000000103 from prev)
+iter  497 val 10.392281752 (0.000023094 from ideal, 0.000000103 from prev)
+iter  498 val 10.392281854 (0.000022992 from ideal, 0.000000102 from prev)
+iter  499 val 10.392281955 (0.000022890 from ideal, 0.000000102 from prev)
+iter  500 val 10.392282056 (0.000022789 from ideal, 0.000000101 from prev)
+iter  501 val 10.392282157 (0.000022689 from ideal, 0.000000100 from prev)
+iter  502 val 10.392282256 (0.000022589 from ideal, 0.000000100 from prev)
+iter  503 val 10.392282356 (0.000022490 from ideal, 0.000000099 from prev)
+iter  504 val 10.392282454 (0.000022391 from ideal, 0.000000099 from prev)
+iter  505 val 10.392282552 (0.000022293 from ideal, 0.000000098 from prev)
+iter  506 val 10.392282650 (0.000022196 from ideal, 0.000000097 from prev)
+iter  507 val 10.392282747 (0.000022099 from ideal, 0.000000097 from prev)
+iter  508 val 10.392282843 (0.000022002 from ideal, 0.000000096 from prev)
+iter  509 val 10.392282939 (0.000021906 from ideal, 0.000000096 from prev)
+iter  510 val 10.392283034 (0.000021811 from ideal, 0.000000095 from prev)
+iter  511 val 10.392283129 (0.000021716 from ideal, 0.000000095 from prev)
+iter  512 val 10.392283223 (0.000021622 from ideal, 0.000000094 from prev)
+iter  513 val 10.392283317 (0.000021528 from ideal, 0.000000094 from prev)
+iter  514 val 10.392283410 (0.000021435 from ideal, 0.000000093 from prev)
+iter  515 val 10.392283503 (0.000021342 from ideal, 0.000000093 from prev)
+iter  516 val 10.392283595 (0.000021250 from ideal, 0.000000092 from prev)
+iter  517 val 10.392283687 (0.000021159 from ideal, 0.000000092 from prev)
+iter  518 val 10.392283778 (0.000021068 from ideal, 0.000000091 from prev)
+iter  519 val 10.392283868 (0.000020977 from ideal, 0.000000091 from prev)
+iter  520 val 10.392283959 (0.000020887 from ideal, 0.000000090 from prev)
+iter  521 val 10.392284048 (0.000020797 from ideal, 0.000000090 from prev)
+iter  522 val 10.392284137 (0.000020708 from ideal, 0.000000089 from prev)
+iter  523 val 10.392284226 (0.000020620 from ideal, 0.000000089 from prev)
+iter  524 val 10.392284314 (0.000020531 from ideal, 0.000000088 from prev)
+iter  525 val 10.392284402 (0.000020444 from ideal, 0.000000088 from prev)
+iter  526 val 10.392284489 (0.000020357 from ideal, 0.000000087 from prev)
+iter  527 val 10.392284575 (0.000020270 from ideal, 0.000000087 from prev)
+iter  528 val 10.392284662 (0.000020184 from ideal, 0.000000086 from prev)
+iter  529 val 10.392284747 (0.000020098 from ideal, 0.000000086 from prev)
+iter  530 val 10.392284833 (0.000020013 from ideal, 0.000000085 from prev)
+iter  531 val 10.392284917 (0.000019928 from ideal, 0.000000085 from prev)
+iter  532 val 10.392285002 (0.000019844 from ideal, 0.000000084 from prev)
+iter  533 val 10.392285085 (0.000019760 from ideal, 0.000000084 from prev)
+iter  534 val 10.392285169 (0.000019677 from ideal, 0.000000083 from prev)
+iter  535 val 10.392285252 (0.000019594 from ideal, 0.000000083 from prev)
+iter  536 val 10.392285334 (0.000019511 from ideal, 0.000000082 from prev)
+iter  537 val 10.392285416 (0.000019429 from ideal, 0.000000082 from prev)
+iter  538 val 10.392285498 (0.000019348 from ideal, 0.000000082 from prev)
+iter  539 val 10.392285579 (0.000019267 from ideal, 0.000000081 from prev)
+iter  540 val 10.392285660 (0.000019186 from ideal, 0.000000081 from prev)
+iter  541 val 10.392285740 (0.000019105 from ideal, 0.000000080 from prev)
+iter  542 val 10.392285820 (0.000019026 from ideal, 0.000000080 from prev)
+iter  543 val 10.392285899 (0.000018946 from ideal, 0.000000079 from prev)
+iter  544 val 10.392285978 (0.000018867 from ideal, 0.000000079 from prev)
+iter  545 val 10.392286057 (0.000018789 from ideal, 0.000000079 from prev)
+iter  546 val 10.392286135 (0.000018711 from ideal, 0.000000078 from prev)
+iter  547 val 10.392286212 (0.000018633 from ideal, 0.000000078 from prev)
+iter  548 val 10.392286290 (0.000018556 from ideal, 0.000000077 from prev)
+iter  549 val 10.392286367 (0.000018479 from ideal, 0.000000077 from prev)
+iter  550 val 10.392286443 (0.000018403 from ideal, 0.000000076 from prev)
+iter  551 val 10.392286519 (0.000018326 from ideal, 0.000000076 from prev)
+iter  552 val 10.392286595 (0.000018251 from ideal, 0.000000076 from prev)
+iter  553 val 10.392286670 (0.000018176 from ideal, 0.000000075 from prev)
+iter  554 val 10.392286745 (0.000018101 from ideal, 0.000000075 from prev)
+iter  555 val 10.392286819 (0.000018026 from ideal, 0.000000075 from prev)
+iter  556 val 10.392286893 (0.000017952 from ideal, 0.000000074 from prev)
+iter  557 val 10.392286967 (0.000017879 from ideal, 0.000000074 from prev)
+iter  558 val 10.392287040 (0.000017805 from ideal, 0.000000073 from prev)
+iter  559 val 10.392287113 (0.000017733 from ideal, 0.000000073 from prev)
+iter  560 val 10.392287185 (0.000017660 from ideal, 0.000000072 from prev)
+iter  561 val 10.392287257 (0.000017588 from ideal, 0.000000072 from prev)
+iter  562 val 10.392287329 (0.000017516 from ideal, 0.000000072 from prev)
+iter  563 val 10.392287400 (0.000017445 from ideal, 0.000000071 from prev)
+iter  564 val 10.392287471 (0.000017374 from ideal, 0.000000071 from prev)
+iter  565 val 10.392287542 (0.000017303 from ideal, 0.000000071 from prev)
+iter  566 val 10.392287612 (0.000017233 from ideal, 0.000000070 from prev)
+iter  567 val 10.392287682 (0.000017163 from ideal, 0.000000070 from prev)
+iter  568 val 10.392287751 (0.000017094 from ideal, 0.000000069 from prev)
+iter  569 val 10.392287821 (0.000017025 from ideal, 0.000000069 from prev)
+iter  570 val 10.392287889 (0.000016956 from ideal, 0.000000069 from prev)
+iter  571 val 10.392287958 (0.000016888 from ideal, 0.000000068 from prev)
+iter  572 val 10.392288026 (0.000016820 from ideal, 0.000000068 from prev)
+iter  573 val 10.392288093 (0.000016752 from ideal, 0.000000068 from prev)
+iter  574 val 10.392288161 (0.000016685 from ideal, 0.000000067 from prev)
+iter  575 val 10.392288228 (0.000016618 from ideal, 0.000000067 from prev)
+iter  576 val 10.392288294 (0.000016551 from ideal, 0.000000067 from prev)
+iter  577 val 10.392288361 (0.000016485 from ideal, 0.000000066 from prev)
+iter  578 val 10.392288427 (0.000016419 from ideal, 0.000000066 from prev)
+iter  579 val 10.392288492 (0.000016353 from ideal, 0.000000066 from prev)
+iter  580 val 10.392288557 (0.000016288 from ideal, 0.000000065 from prev)
+iter  581 val 10.392288622 (0.000016223 from ideal, 0.000000065 from prev)
+iter  582 val 10.392288687 (0.000016158 from ideal, 0.000000065 from prev)
+iter  583 val 10.392288751 (0.000016094 from ideal, 0.000000064 from prev)
+iter  584 val 10.392288815 (0.000016030 from ideal, 0.000000064 from prev)
+iter  585 val 10.392288879 (0.000015967 from ideal, 0.000000064 from prev)
+iter  586 val 10.392288942 (0.000015903 from ideal, 0.000000063 from prev)
+iter  587 val 10.392289005 (0.000015841 from ideal, 0.000000063 from prev)
+iter  588 val 10.392289068 (0.000015778 from ideal, 0.000000063 from prev)
+iter  589 val 10.392289130 (0.000015716 from ideal, 0.000000062 from prev)
+iter  590 val 10.392289192 (0.000015654 from ideal, 0.000000062 from prev)
+iter  591 val 10.392289253 (0.000015592 from ideal, 0.000000062 from prev)
+iter  592 val 10.392289315 (0.000015531 from ideal, 0.000000061 from prev)
+iter  593 val 10.392289376 (0.000015470 from ideal, 0.000000061 from prev)
+iter  594 val 10.392289436 (0.000015409 from ideal, 0.000000061 from prev)
+iter  595 val 10.392289497 (0.000015348 from ideal, 0.000000061 from prev)
+iter  596 val 10.392289557 (0.000015288 from ideal, 0.000000060 from prev)
+iter  597 val 10.392289617 (0.000015229 from ideal, 0.000000060 from prev)
+iter  598 val 10.392289676 (0.000015169 from ideal, 0.000000059 from prev)
+iter  599 val 10.392289736 (0.000015110 from ideal, 0.000000059 from prev)
+iter  600 val 10.392289794 (0.000015051 from ideal, 0.000000059 from prev)
+iter  601 val 10.392289853 (0.000014992 from ideal, 0.000000059 from prev)
+iter  602 val 10.392289911 (0.000014934 from ideal, 0.000000058 from prev)
+iter  603 val 10.392289969 (0.000014876 from ideal, 0.000000058 from prev)
+iter  604 val 10.392290027 (0.000014818 from ideal, 0.000000058 from prev)
+iter  605 val 10.392290084 (0.000014761 from ideal, 0.000000057 from prev)
+iter  606 val 10.392290141 (0.000014704 from ideal, 0.000000057 from prev)
+iter  607 val 10.392290198 (0.000014647 from ideal, 0.000000057 from prev)
+iter  608 val 10.392290255 (0.000014591 from ideal, 0.000000057 from prev)
+iter  609 val 10.392290311 (0.000014534 from ideal, 0.000000056 from prev)
+iter  610 val 10.392290367 (0.000014478 from ideal, 0.000000056 from prev)
+iter  611 val 10.392290423 (0.000014422 from ideal, 0.000000056 from prev)
+iter  612 val 10.392290478 (0.000014367 from ideal, 0.000000055 from prev)
+iter  613 val 10.392290533 (0.000014312 from ideal, 0.000000055 from prev)
+iter  614 val 10.392290588 (0.000014257 from ideal, 0.000000055 from prev)
+iter  615 val 10.392290643 (0.000014202 from ideal, 0.000000055 from prev)
+iter  616 val 10.392290697 (0.000014148 from ideal, 0.000000054 from prev)
+iter  617 val 10.392290751 (0.000014094 from ideal, 0.000000054 from prev)
+iter  618 val 10.392290805 (0.000014040 from ideal, 0.000000054 from prev)
+iter  619 val 10.392290859 (0.000013987 from ideal, 0.000000054 from prev)
+iter  620 val 10.392290912 (0.000013934 from ideal, 0.000000053 from prev)
+iter  621 val 10.392290965 (0.000013881 from ideal, 0.000000053 from prev)
+iter  622 val 10.392291018 (0.000013828 from ideal, 0.000000053 from prev)
+iter  623 val 10.392291070 (0.000013775 from ideal, 0.000000053 from prev)
+iter  624 val 10.392291122 (0.000013723 from ideal, 0.000000052 from prev)
+iter  625 val 10.392291174 (0.000013671 from ideal, 0.000000052 from prev)
+iter  626 val 10.392291226 (0.000013620 from ideal, 0.000000052 from prev)
+iter  627 val 10.392291277 (0.000013568 from ideal, 0.000000051 from prev)
+iter  628 val 10.392291328 (0.000013517 from ideal, 0.000000051 from prev)
+iter  629 val 10.392291379 (0.000013466 from ideal, 0.000000051 from prev)
+iter  630 val 10.392291430 (0.000013415 from ideal, 0.000000051 from prev)
+iter  631 val 10.392291480 (0.000013365 from ideal, 0.000000050 from prev)
+iter  632 val 10.392291531 (0.000013315 from ideal, 0.000000050 from prev)
+iter  633 val 10.392291581 (0.000013265 from ideal, 0.000000050 from prev)
+iter  634 val 10.392291630 (0.000013215 from ideal, 0.000000050 from prev)
+iter  635 val 10.392291680 (0.000013165 from ideal, 0.000000049 from prev)
+iter  636 val 10.392291729 (0.000013116 from ideal, 0.000000049 from prev)
+iter  637 val 10.392291778 (0.000013067 from ideal, 0.000000049 from prev)
+iter  638 val 10.392291827 (0.000013019 from ideal, 0.000000049 from prev)
+iter  639 val 10.392291875 (0.000012970 from ideal, 0.000000048 from prev)
+iter  640 val 10.392291924 (0.000012922 from ideal, 0.000000048 from prev)
+iter  641 val 10.392291972 (0.000012874 from ideal, 0.000000048 from prev)
+iter  642 val 10.392292019 (0.000012826 from ideal, 0.000000048 from prev)
+iter  643 val 10.392292067 (0.000012778 from ideal, 0.000000048 from prev)
+iter  644 val 10.392292114 (0.000012731 from ideal, 0.000000047 from prev)
+iter  645 val 10.392292162 (0.000012684 from ideal, 0.000000047 from prev)
+iter  646 val 10.392292208 (0.000012637 from ideal, 0.000000047 from prev)
+iter  647 val 10.392292255 (0.000012590 from ideal, 0.000000047 from prev)
+iter  648 val 10.392292301 (0.000012544 from ideal, 0.000000046 from prev)
+iter  649 val 10.392292348 (0.000012498 from ideal, 0.000000046 from prev)
+iter  650 val 10.392292394 (0.000012452 from ideal, 0.000000046 from prev)
+iter  651 val 10.392292439 (0.000012406 from ideal, 0.000000046 from prev)
+iter  652 val 10.392292485 (0.000012361 from ideal, 0.000000045 from prev)
+iter  653 val 10.392292530 (0.000012315 from ideal, 0.000000045 from prev)
+iter  654 val 10.392292575 (0.000012270 from ideal, 0.000000045 from prev)
+iter  655 val 10.392292620 (0.000012225 from ideal, 0.000000045 from prev)
+iter  656 val 10.392292665 (0.000012181 from ideal, 0.000000045 from prev)
+iter  657 val 10.392292709 (0.000012136 from ideal, 0.000000044 from prev)
+iter  658 val 10.392292753 (0.000012092 from ideal, 0.000000044 from prev)
+iter  659 val 10.392292798 (0.000012048 from ideal, 0.000000044 from prev)
+iter  660 val 10.392292841 (0.000012004 from ideal, 0.000000044 from prev)
+iter  661 val 10.392292885 (0.000011960 from ideal, 0.000000044 from prev)
+iter  662 val 10.392292928 (0.000011917 from ideal, 0.000000043 from prev)
+iter  663 val 10.392292972 (0.000011874 from ideal, 0.000000043 from prev)
+iter  664 val 10.392293014 (0.000011831 from ideal, 0.000000043 from prev)
+iter  665 val 10.392293057 (0.000011788 from ideal, 0.000000043 from prev)
+iter  666 val 10.392293100 (0.000011746 from ideal, 0.000000043 from prev)
+iter  667 val 10.392293142 (0.000011703 from ideal, 0.000000042 from prev)
+iter  668 val 10.392293184 (0.000011661 from ideal, 0.000000042 from prev)
+iter  669 val 10.392293226 (0.000011619 from ideal, 0.000000042 from prev)
+iter  670 val 10.392293268 (0.000011577 from ideal, 0.000000042 from prev)
+iter  671 val 10.392293310 (0.000011536 from ideal, 0.000000042 from prev)
+iter  672 val 10.392293351 (0.000011495 from ideal, 0.000000041 from prev)
+iter  673 val 10.392293392 (0.000011453 from ideal, 0.000000041 from prev)
+iter  674 val 10.392293433 (0.000011412 from ideal, 0.000000041 from prev)
+iter  675 val 10.392293474 (0.000011372 from ideal, 0.000000041 from prev)
+iter  676 val 10.392293514 (0.000011331 from ideal, 0.000000041 from prev)
+iter  677 val 10.392293555 (0.000011291 from ideal, 0.000000040 from prev)
+iter  678 val 10.392293595 (0.000011251 from ideal, 0.000000040 from prev)
+iter  679 val 10.392293635 (0.000011210 from ideal, 0.000000040 from prev)
+iter  680 val 10.392293675 (0.000011171 from ideal, 0.000000040 from prev)
+iter  681 val 10.392293714 (0.000011131 from ideal, 0.000000040 from prev)
+iter  682 val 10.392293754 (0.000011092 from ideal, 0.000000039 from prev)
+iter  683 val 10.392293793 (0.000011052 from ideal, 0.000000039 from prev)
+iter  684 val 10.392293832 (0.000011013 from ideal, 0.000000039 from prev)
+iter  685 val 10.392293871 (0.000010974 from ideal, 0.000000039 from prev)
+iter  686 val 10.392293910 (0.000010936 from ideal, 0.000000039 from prev)
+iter  687 val 10.392293948 (0.000010897 from ideal, 0.000000039 from prev)
+iter  688 val 10.392293987 (0.000010859 from ideal, 0.000000038 from prev)
+iter  689 val 10.392294025 (0.000010821 from ideal, 0.000000038 from prev)
+iter  690 val 10.392294063 (0.000010783 from ideal, 0.000000038 from prev)
+iter  691 val 10.392294101 (0.000010745 from ideal, 0.000000038 from prev)
+iter  692 val 10.392294138 (0.000010707 from ideal, 0.000000038 from prev)
+iter  693 val 10.392294176 (0.000010670 from ideal, 0.000000038 from prev)
+iter  694 val 10.392294213 (0.000010633 from ideal, 0.000000037 from prev)
+iter  695 val 10.392294250 (0.000010596 from ideal, 0.000000037 from prev)
+iter  696 val 10.392294287 (0.000010559 from ideal, 0.000000037 from prev)
+iter  697 val 10.392294324 (0.000010522 from ideal, 0.000000037 from prev)
+iter  698 val 10.392294360 (0.000010485 from ideal, 0.000000037 from prev)
+iter  699 val 10.392294397 (0.000010449 from ideal, 0.000000036 from prev)
+iter  700 val 10.392294433 (0.000010413 from ideal, 0.000000036 from prev)
+iter  701 val 10.392294469 (0.000010377 from ideal, 0.000000036 from prev)
+iter  702 val 10.392294505 (0.000010341 from ideal, 0.000000036 from prev)
+iter  703 val 10.392294540 (0.000010305 from ideal, 0.000000036 from prev)
+iter  704 val 10.392294576 (0.000010269 from ideal, 0.000000036 from prev)
+iter  705 val 10.392294611 (0.000010234 from ideal, 0.000000035 from prev)
+iter  706 val 10.392294647 (0.000010199 from ideal, 0.000000035 from prev)
+iter  707 val 10.392294682 (0.000010164 from ideal, 0.000000035 from prev)
+iter  708 val 10.392294717 (0.000010129 from ideal, 0.000000035 from prev)
+iter  709 val 10.392294751 (0.000010094 from ideal, 0.000000035 from prev)
+iter  710 val 10.392294786 (0.000010059 from ideal, 0.000000035 from prev)
+iter  711 val 10.392294820 (0.000010025 from ideal, 0.000000034 from prev)
+iter  712 val 10.392294855 (0.000009991 from ideal, 0.000000034 from prev)
+iter  713 val 10.392294889 (0.000009957 from ideal, 0.000000034 from prev)
+iter  714 val 10.392294923 (0.000009923 from ideal, 0.000000034 from prev)
+iter  715 val 10.392294957 (0.000009889 from ideal, 0.000000034 from prev)
+iter  716 val 10.392294990 (0.000009855 from ideal, 0.000000034 from prev)
+iter  717 val 10.392295024 (0.000009822 from ideal, 0.000000033 from prev)
+iter  718 val 10.392295057 (0.000009788 from ideal, 0.000000033 from prev)
+iter  719 val 10.392295090 (0.000009755 from ideal, 0.000000033 from prev)
+iter  720 val 10.392295123 (0.000009722 from ideal, 0.000000033 from prev)
+iter  721 val 10.392295156 (0.000009689 from ideal, 0.000000033 from prev)
+iter  722 val 10.392295189 (0.000009657 from ideal, 0.000000033 from prev)
+iter  723 val 10.392295221 (0.000009624 from ideal, 0.000000033 from prev)
+iter  724 val 10.392295254 (0.000009592 from ideal, 0.000000032 from prev)
+iter  725 val 10.392295286 (0.000009559 from ideal, 0.000000032 from prev)
+iter  726 val 10.392295318 (0.000009527 from ideal, 0.000000032 from prev)
+iter  727 val 10.392295350 (0.000009495 from ideal, 0.000000032 from prev)
+iter  728 val 10.392295382 (0.000009463 from ideal, 0.000000032 from prev)
+iter  729 val 10.392295414 (0.000009432 from ideal, 0.000000032 from prev)
+iter  730 val 10.392295445 (0.000009400 from ideal, 0.000000032 from prev)
+iter  731 val 10.392295477 (0.000009369 from ideal, 0.000000031 from prev)
+iter  732 val 10.392295508 (0.000009338 from ideal, 0.000000031 from prev)
+iter  733 val 10.392295539 (0.000009307 from ideal, 0.000000031 from prev)
+iter  734 val 10.392295570 (0.000009275 from ideal, 0.000000031 from prev)
+iter  735 val 10.392295601 (0.000009245 from ideal, 0.000000031 from prev)
+iter  736 val 10.392295631 (0.000009214 from ideal, 0.000000031 from prev)
+iter  737 val 10.392295662 (0.000009183 from ideal, 0.000000030 from prev)
+iter  738 val 10.392295692 (0.000009153 from ideal, 0.000000030 from prev)
+iter  739 val 10.392295723 (0.000009123 from ideal, 0.000000030 from prev)
+iter  740 val 10.392295753 (0.000009093 from ideal, 0.000000030 from prev)
+iter  741 val 10.392295783 (0.000009063 from ideal, 0.000000030 from prev)
+iter  742 val 10.392295813 (0.000009033 from ideal, 0.000000030 from prev)
+iter  743 val 10.392295842 (0.000009003 from ideal, 0.000000030 from prev)
+iter  744 val 10.392295872 (0.000008973 from ideal, 0.000000030 from prev)
+iter  745 val 10.392295901 (0.000008944 from ideal, 0.000000029 from prev)
+iter  746 val 10.392295931 (0.000008915 from ideal, 0.000000029 from prev)
+iter  747 val 10.392295960 (0.000008885 from ideal, 0.000000029 from prev)
+iter  748 val 10.392295989 (0.000008856 from ideal, 0.000000029 from prev)
+iter  749 val 10.392296018 (0.000008827 from ideal, 0.000000029 from prev)
+iter  750 val 10.392296047 (0.000008799 from ideal, 0.000000029 from prev)
+iter  751 val 10.392296075 (0.000008770 from ideal, 0.000000029 from prev)
+iter  752 val 10.392296104 (0.000008741 from ideal, 0.000000029 from prev)
+iter  753 val 10.392296132 (0.000008713 from ideal, 0.000000028 from prev)
+iter  754 val 10.392296161 (0.000008685 from ideal, 0.000000028 from prev)
+iter  755 val 10.392296189 (0.000008657 from ideal, 0.000000028 from prev)
+iter  756 val 10.392296217 (0.000008629 from ideal, 0.000000028 from prev)
+iter  757 val 10.392296245 (0.000008601 from ideal, 0.000000028 from prev)
+iter  758 val 10.392296272 (0.000008573 from ideal, 0.000000028 from prev)
+iter  759 val 10.392296300 (0.000008545 from ideal, 0.000000028 from prev)
+iter  760 val 10.392296328 (0.000008518 from ideal, 0.000000028 from prev)
+iter  761 val 10.392296355 (0.000008491 from ideal, 0.000000027 from prev)
+iter  762 val 10.392296382 (0.000008463 from ideal, 0.000000027 from prev)
+iter  763 val 10.392296409 (0.000008436 from ideal, 0.000000027 from prev)
+iter  764 val 10.392296436 (0.000008409 from ideal, 0.000000027 from prev)
+iter  765 val 10.392296463 (0.000008382 from ideal, 0.000000027 from prev)
+iter  766 val 10.392296490 (0.000008355 from ideal, 0.000000027 from prev)
+iter  767 val 10.392296517 (0.000008329 from ideal, 0.000000027 from prev)
+iter  768 val 10.392296543 (0.000008302 from ideal, 0.000000026 from prev)
+iter  769 val 10.392296570 (0.000008276 from ideal, 0.000000026 from prev)
+iter  770 val 10.392296596 (0.000008250 from ideal, 0.000000026 from prev)
+iter  771 val 10.392296622 (0.000008223 from ideal, 0.000000026 from prev)
+iter  772 val 10.392296648 (0.000008197 from ideal, 0.000000026 from prev)
+iter  773 val 10.392296674 (0.000008171 from ideal, 0.000000026 from prev)
+iter  774 val 10.392296700 (0.000008146 from ideal, 0.000000026 from prev)
+iter  775 val 10.392296726 (0.000008120 from ideal, 0.000000026 from prev)
+iter  776 val 10.392296751 (0.000008094 from ideal, 0.000000026 from prev)
+iter  777 val 10.392296777 (0.000008069 from ideal, 0.000000025 from prev)
+iter  778 val 10.392296802 (0.000008043 from ideal, 0.000000025 from prev)
+iter  779 val 10.392296827 (0.000008018 from ideal, 0.000000025 from prev)
+iter  780 val 10.392296853 (0.000007993 from ideal, 0.000000025 from prev)
+iter  781 val 10.392296877 (0.000007968 from ideal, 0.000000025 from prev)
+iter  782 val 10.392296902 (0.000007943 from ideal, 0.000000025 from prev)
+iter  783 val 10.392296927 (0.000007918 from ideal, 0.000000025 from prev)
+iter  784 val 10.392296952 (0.000007893 from ideal, 0.000000025 from prev)
+iter  785 val 10.392296977 (0.000007869 from ideal, 0.000000025 from prev)
+iter  786 val 10.392297001 (0.000007844 from ideal, 0.000000024 from prev)
+iter  787 val 10.392297025 (0.000007820 from ideal, 0.000000024 from prev)
+iter  788 val 10.392297050 (0.000007796 from ideal, 0.000000024 from prev)
+iter  789 val 10.392297074 (0.000007772 from ideal, 0.000000024 from prev)
+iter  790 val 10.392297098 (0.000007748 from ideal, 0.000000024 from prev)
+iter  791 val 10.392297122 (0.000007724 from ideal, 0.000000024 from prev)
+iter  792 val 10.392297146 (0.000007700 from ideal, 0.000000024 from prev)
+iter  793 val 10.392297169 (0.000007676 from ideal, 0.000000024 from prev)
+iter  794 val 10.392297193 (0.000007652 from ideal, 0.000000024 from prev)
+iter  795 val 10.392297217 (0.000007629 from ideal, 0.000000024 from prev)
+iter  796 val 10.392297240 (0.000007605 from ideal, 0.000000023 from prev)
+iter  797 val 10.392297263 (0.000007582 from ideal, 0.000000023 from prev)
+iter  798 val 10.392297287 (0.000007559 from ideal, 0.000000023 from prev)
+iter  799 val 10.392297310 (0.000007536 from ideal, 0.000000023 from prev)
+iter  800 val 10.392297333 (0.000007513 from ideal, 0.000000023 from prev)
+iter  801 val 10.392297356 (0.000007490 from ideal, 0.000000023 from prev)
+iter  802 val 10.392297378 (0.000007467 from ideal, 0.000000023 from prev)
+iter  803 val 10.392297401 (0.000007444 from ideal, 0.000000023 from prev)
+iter  804 val 10.392297424 (0.000007422 from ideal, 0.000000023 from prev)
+iter  805 val 10.392297446 (0.000007399 from ideal, 0.000000022 from prev)
+iter  806 val 10.392297469 (0.000007377 from ideal, 0.000000022 from prev)
+iter  807 val 10.392297491 (0.000007354 from ideal, 0.000000022 from prev)
+iter  808 val 10.392297513 (0.000007332 from ideal, 0.000000022 from prev)
+iter  809 val 10.392297535 (0.000007310 from ideal, 0.000000022 from prev)
+iter  810 val 10.392297557 (0.000007288 from ideal, 0.000000022 from prev)
+iter  811 val 10.392297579 (0.000007266 from ideal, 0.000000022 from prev)
+iter  812 val 10.392297601 (0.000007244 from ideal, 0.000000022 from prev)
+iter  813 val 10.392297623 (0.000007222 from ideal, 0.000000022 from prev)
+iter  814 val 10.392297645 (0.000007201 from ideal, 0.000000022 from prev)
+iter  815 val 10.392297666 (0.000007179 from ideal, 0.000000021 from prev)
+iter  816 val 10.392297688 (0.000007158 from ideal, 0.000000022 from prev)
+iter  817 val 10.392297709 (0.000007136 from ideal, 0.000000021 from prev)
+iter  818 val 10.392297730 (0.000007115 from ideal, 0.000000021 from prev)
+iter  819 val 10.392297752 (0.000007094 from ideal, 0.000000021 from prev)
+iter  820 val 10.392297773 (0.000007073 from ideal, 0.000000021 from prev)
+iter  821 val 10.392297794 (0.000007052 from ideal, 0.000000021 from prev)
+iter  822 val 10.392297815 (0.000007031 from ideal, 0.000000021 from prev)
+iter  823 val 10.392297835 (0.000007010 from ideal, 0.000000021 from prev)
+iter  824 val 10.392297856 (0.000006989 from ideal, 0.000000021 from prev)
+iter  825 val 10.392297877 (0.000006969 from ideal, 0.000000021 from prev)
+iter  826 val 10.392297897 (0.000006948 from ideal, 0.000000021 from prev)
+iter  827 val 10.392297918 (0.000006928 from ideal, 0.000000020 from prev)
+iter  828 val 10.392297938 (0.000006907 from ideal, 0.000000020 from prev)
+iter  829 val 10.392297958 (0.000006887 from ideal, 0.000000020 from prev)
+iter  830 val 10.392297979 (0.000006867 from ideal, 0.000000020 from prev)
+iter  831 val 10.392297999 (0.000006847 from ideal, 0.000000020 from prev)
+iter  832 val 10.392298019 (0.000006827 from ideal, 0.000000020 from prev)
+iter  833 val 10.392298039 (0.000006807 from ideal, 0.000000020 from prev)
+iter  834 val 10.392298058 (0.000006787 from ideal, 0.000000020 from prev)
+iter  835 val 10.392298078 (0.000006767 from ideal, 0.000000020 from prev)
+iter  836 val 10.392298098 (0.000006747 from ideal, 0.000000020 from prev)
+iter  837 val 10.392298118 (0.000006728 from ideal, 0.000000020 from prev)
+iter  838 val 10.392298137 (0.000006708 from ideal, 0.000000019 from prev)
+iter  839 val 10.392298157 (0.000006689 from ideal, 0.000000019 from prev)
+iter  840 val 10.392298176 (0.000006670 from ideal, 0.000000019 from prev)
+iter  841 val 10.392298195 (0.000006650 from ideal, 0.000000019 from prev)
+iter  842 val 10.392298214 (0.000006631 from ideal, 0.000000019 from prev)
+iter  843 val 10.392298233 (0.000006612 from ideal, 0.000000019 from prev)
+iter  844 val 10.392298253 (0.000006593 from ideal, 0.000000019 from prev)
+iter  845 val 10.392298271 (0.000006574 from ideal, 0.000000019 from prev)
+iter  846 val 10.392298290 (0.000006555 from ideal, 0.000000019 from prev)
+iter  847 val 10.392298309 (0.000006536 from ideal, 0.000000019 from prev)
+iter  848 val 10.392298328 (0.000006518 from ideal, 0.000000019 from prev)
+iter  849 val 10.392298346 (0.000006499 from ideal, 0.000000019 from prev)
+iter  850 val 10.392298365 (0.000006481 from ideal, 0.000000018 from prev)
+iter  851 val 10.392298383 (0.000006462 from ideal, 0.000000018 from prev)
+iter  852 val 10.392298402 (0.000006444 from ideal, 0.000000018 from prev)
+iter  853 val 10.392298420 (0.000006425 from ideal, 0.000000018 from prev)
+iter  854 val 10.392298438 (0.000006407 from ideal, 0.000000018 from prev)
+iter  855 val 10.392298456 (0.000006389 from ideal, 0.000000018 from prev)
+iter  856 val 10.392298474 (0.000006371 from ideal, 0.000000018 from prev)
+iter  857 val 10.392298492 (0.000006353 from ideal, 0.000000018 from prev)
+iter  858 val 10.392298510 (0.000006335 from ideal, 0.000000018 from prev)
+iter  859 val 10.392298528 (0.000006317 from ideal, 0.000000018 from prev)
+iter  860 val 10.392298546 (0.000006299 from ideal, 0.000000018 from prev)
+iter  861 val 10.392298564 (0.000006282 from ideal, 0.000000018 from prev)
+iter  862 val 10.392298581 (0.000006264 from ideal, 0.000000018 from prev)
+iter  863 val 10.392298599 (0.000006246 from ideal, 0.000000018 from prev)
+iter  864 val 10.392298616 (0.000006229 from ideal, 0.000000017 from prev)
+iter  865 val 10.392298634 (0.000006212 from ideal, 0.000000017 from prev)
+iter  866 val 10.392298651 (0.000006194 from ideal, 0.000000017 from prev)
+iter  867 val 10.392298668 (0.000006177 from ideal, 0.000000017 from prev)
+iter  868 val 10.392298686 (0.000006160 from ideal, 0.000000017 from prev)
+iter  869 val 10.392298703 (0.000006143 from ideal, 0.000000017 from prev)
+iter  870 val 10.392298720 (0.000006126 from ideal, 0.000000017 from prev)
+iter  871 val 10.392298737 (0.000006109 from ideal, 0.000000017 from prev)
+iter  872 val 10.392298754 (0.000006092 from ideal, 0.000000017 from prev)
+iter  873 val 10.392298770 (0.000006075 from ideal, 0.000000017 from prev)
+iter  874 val 10.392298787 (0.000006058 from ideal, 0.000000017 from prev)
+iter  875 val 10.392298804 (0.000006041 from ideal, 0.000000017 from prev)
+iter  876 val 10.392298821 (0.000006025 from ideal, 0.000000017 from prev)
+iter  877 val 10.392298837 (0.000006008 from ideal, 0.000000017 from prev)
+iter  878 val 10.392298854 (0.000005992 from ideal, 0.000000016 from prev)
+iter  879 val 10.392298870 (0.000005975 from ideal, 0.000000016 from prev)
+iter  880 val 10.392298886 (0.000005959 from ideal, 0.000000016 from prev)
+iter  881 val 10.392298903 (0.000005943 from ideal, 0.000000016 from prev)
+iter  882 val 10.392298919 (0.000005927 from ideal, 0.000000016 from prev)
+iter  883 val 10.392298935 (0.000005910 from ideal, 0.000000016 from prev)
+iter  884 val 10.392298951 (0.000005894 from ideal, 0.000000016 from prev)
+iter  885 val 10.392298967 (0.000005878 from ideal, 0.000000016 from prev)
+iter  886 val 10.392298983 (0.000005862 from ideal, 0.000000016 from prev)
+iter  887 val 10.392298999 (0.000005847 from ideal, 0.000000016 from prev)
+iter  888 val 10.392299015 (0.000005831 from ideal, 0.000000016 from prev)
+iter  889 val 10.392299030 (0.000005815 from ideal, 0.000000016 from prev)
+iter  890 val 10.392299046 (0.000005799 from ideal, 0.000000016 from prev)
+iter  891 val 10.392299062 (0.000005784 from ideal, 0.000000016 from prev)
+iter  892 val 10.392299077 (0.000005768 from ideal, 0.000000016 from prev)
+iter  893 val 10.392299093 (0.000005753 from ideal, 0.000000016 from prev)
+iter  894 val 10.392299108 (0.000005737 from ideal, 0.000000015 from prev)
+iter  895 val 10.392299123 (0.000005722 from ideal, 0.000000015 from prev)
+iter  896 val 10.392299139 (0.000005707 from ideal, 0.000000015 from prev)
+iter  897 val 10.392299154 (0.000005691 from ideal, 0.000000015 from prev)
+iter  898 val 10.392299169 (0.000005676 from ideal, 0.000000015 from prev)
+iter  899 val 10.392299184 (0.000005661 from ideal, 0.000000015 from prev)
+iter  900 val 10.392299199 (0.000005646 from ideal, 0.000000015 from prev)
+iter  901 val 10.392299214 (0.000005631 from ideal, 0.000000015 from prev)
+iter  902 val 10.392299229 (0.000005616 from ideal, 0.000000015 from prev)
+iter  903 val 10.392299244 (0.000005602 from ideal, 0.000000015 from prev)
+iter  904 val 10.392299259 (0.000005587 from ideal, 0.000000015 from prev)
+iter  905 val 10.392299273 (0.000005572 from ideal, 0.000000015 from prev)
+iter  906 val 10.392299288 (0.000005557 from ideal, 0.000000015 from prev)
+iter  907 val 10.392299303 (0.000005543 from ideal, 0.000000015 from prev)
+iter  908 val 10.392299317 (0.000005528 from ideal, 0.000000015 from prev)
+iter  909 val 10.392299332 (0.000005514 from ideal, 0.000000014 from prev)
+iter  910 val 10.392299346 (0.000005499 from ideal, 0.000000014 from prev)
+iter  911 val 10.392299360 (0.000005485 from ideal, 0.000000014 from prev)
+iter  912 val 10.392299375 (0.000005471 from ideal, 0.000000014 from prev)
+iter  913 val 10.392299389 (0.000005456 from ideal, 0.000000014 from prev)
+iter  914 val 10.392299403 (0.000005442 from ideal, 0.000000014 from prev)
+iter  915 val 10.392299417 (0.000005428 from ideal, 0.000000014 from prev)
+iter  916 val 10.392299431 (0.000005414 from ideal, 0.000000014 from prev)
+iter  917 val 10.392299445 (0.000005400 from ideal, 0.000000014 from prev)
+iter  918 val 10.392299459 (0.000005386 from ideal, 0.000000014 from prev)
+iter  919 val 10.392299473 (0.000005372 from ideal, 0.000000014 from prev)
+iter  920 val 10.392299487 (0.000005358 from ideal, 0.000000014 from prev)
+iter  921 val 10.392299501 (0.000005344 from ideal, 0.000000014 from prev)
+iter  922 val 10.392299515 (0.000005331 from ideal, 0.000000014 from prev)
+iter  923 val 10.392299528 (0.000005317 from ideal, 0.000000014 from prev)
+iter  924 val 10.392299542 (0.000005303 from ideal, 0.000000014 from prev)
+iter  925 val 10.392299556 (0.000005290 from ideal, 0.000000014 from prev)
+iter  926 val 10.392299569 (0.000005276 from ideal, 0.000000013 from prev)
+iter  927 val 10.392299583 (0.000005263 from ideal, 0.000000014 from prev)
+iter  928 val 10.392299596 (0.000005250 from ideal, 0.000000013 from prev)
+iter  929 val 10.392299609 (0.000005236 from ideal, 0.000000013 from prev)
+iter  930 val 10.392299623 (0.000005223 from ideal, 0.000000013 from prev)
+iter  931 val 10.392299636 (0.000005210 from ideal, 0.000000013 from prev)
+iter  932 val 10.392299649 (0.000005196 from ideal, 0.000000013 from prev)
+iter  933 val 10.392299662 (0.000005183 from ideal, 0.000000013 from prev)
+iter  934 val 10.392299675 (0.000005170 from ideal, 0.000000013 from prev)
+iter  935 val 10.392299688 (0.000005157 from ideal, 0.000000013 from prev)
+iter  936 val 10.392299701 (0.000005144 from ideal, 0.000000013 from prev)
+iter  937 val 10.392299714 (0.000005131 from ideal, 0.000000013 from prev)
+iter  938 val 10.392299727 (0.000005119 from ideal, 0.000000013 from prev)
+iter  939 val 10.392299740 (0.000005106 from ideal, 0.000000013 from prev)
+iter  940 val 10.392299753 (0.000005093 from ideal, 0.000000013 from prev)
+iter  941 val 10.392299765 (0.000005080 from ideal, 0.000000013 from prev)
+iter  942 val 10.392299778 (0.000005068 from ideal, 0.000000013 from prev)
+iter  943 val 10.392299790 (0.000005055 from ideal, 0.000000013 from prev)
+iter  944 val 10.392299803 (0.000005042 from ideal, 0.000000013 from prev)
+iter  945 val 10.392299816 (0.000005030 from ideal, 0.000000013 from prev)
+iter  946 val 10.392299828 (0.000005017 from ideal, 0.000000012 from prev)
+iter  947 val 10.392299840 (0.000005005 from ideal, 0.000000012 from prev)
+iter  948 val 10.392299853 (0.000004993 from ideal, 0.000000012 from prev)
+iter  949 val 10.392299865 (0.000004980 from ideal, 0.000000012 from prev)
+iter  950 val 10.392299877 (0.000004968 from ideal, 0.000000012 from prev)
+iter  951 val 10.392299890 (0.000004956 from ideal, 0.000000012 from prev)
+iter  952 val 10.392299902 (0.000004944 from ideal, 0.000000012 from prev)
+iter  953 val 10.392299914 (0.000004932 from ideal, 0.000000012 from prev)
+iter  954 val 10.392299926 (0.000004920 from ideal, 0.000000012 from prev)
+iter  955 val 10.392299938 (0.000004908 from ideal, 0.000000012 from prev)
+iter  956 val 10.392299950 (0.000004896 from ideal, 0.000000012 from prev)
+iter  957 val 10.392299962 (0.000004884 from ideal, 0.000000012 from prev)
+iter  958 val 10.392299974 (0.000004872 from ideal, 0.000000012 from prev)
+iter  959 val 10.392299985 (0.000004860 from ideal, 0.000000012 from prev)
+iter  960 val 10.392299997 (0.000004848 from ideal, 0.000000012 from prev)
+iter  961 val 10.392300009 (0.000004836 from ideal, 0.000000012 from prev)
+iter  962 val 10.392300021 (0.000004825 from ideal, 0.000000012 from prev)
+iter  963 val 10.392300032 (0.000004813 from ideal, 0.000000012 from prev)
+iter  964 val 10.392300044 (0.000004802 from ideal, 0.000000012 from prev)
+iter  965 val 10.392300055 (0.000004790 from ideal, 0.000000012 from prev)
+iter  966 val 10.392300067 (0.000004779 from ideal, 0.000000011 from prev)
+iter  967 val 10.392300078 (0.000004767 from ideal, 0.000000011 from prev)
+iter  968 val 10.392300090 (0.000004756 from ideal, 0.000000011 from prev)
+iter  969 val 10.392300101 (0.000004744 from ideal, 0.000000012 from prev)
+iter  970 val 10.392300112 (0.000004733 from ideal, 0.000000011 from prev)
+iter  971 val 10.392300124 (0.000004722 from ideal, 0.000000011 from prev)
+iter  972 val 10.392300135 (0.000004711 from ideal, 0.000000011 from prev)
+iter  973 val 10.392300146 (0.000004699 from ideal, 0.000000011 from prev)
+iter  974 val 10.392300157 (0.000004688 from ideal, 0.000000011 from prev)
+iter  975 val 10.392300168 (0.000004677 from ideal, 0.000000011 from prev)
+iter  976 val 10.392300179 (0.000004666 from ideal, 0.000000011 from prev)
+iter  977 val 10.392300190 (0.000004655 from ideal, 0.000000011 from prev)
+iter  978 val 10.392300201 (0.000004644 from ideal, 0.000000011 from prev)
+iter  979 val 10.392300212 (0.000004633 from ideal, 0.000000011 from prev)
+iter  980 val 10.392300223 (0.000004622 from ideal, 0.000000011 from prev)
+iter  981 val 10.392300234 (0.000004612 from ideal, 0.000000011 from prev)
+iter  982 val 10.392300245 (0.000004601 from ideal, 0.000000011 from prev)
+iter  983 val 10.392300255 (0.000004590 from ideal, 0.000000011 from prev)
+iter  984 val 10.392300266 (0.000004579 from ideal, 0.000000011 from prev)
+iter  985 val 10.392300277 (0.000004569 from ideal, 0.000000011 from prev)
+iter  986 val 10.392300287 (0.000004558 from ideal, 0.000000011 from prev)
+iter  987 val 10.392300298 (0.000004547 from ideal, 0.000000011 from prev)
+iter  988 val 10.392300308 (0.000004537 from ideal, 0.000000010 from prev)
+iter  989 val 10.392300319 (0.000004527 from ideal, 0.000000010 from prev)
+iter  990 val 10.392300329 (0.000004516 from ideal, 0.000000010 from prev)
+iter  991 val 10.392300340 (0.000004506 from ideal, 0.000000010 from prev)
+iter  992 val 10.392300350 (0.000004495 from ideal, 0.000000010 from prev)
+iter  993 val 10.392300360 (0.000004485 from ideal, 0.000000010 from prev)
+iter  994 val 10.392300371 (0.000004475 from ideal, 0.000000010 from prev)
+iter  995 val 10.392300381 (0.000004464 from ideal, 0.000000010 from prev)
+iter  996 val 10.392300391 (0.000004454 from ideal, 0.000000010 from prev)
+iter  997 val 10.392300401 (0.000004444 from ideal, 0.000000010 from prev)
+iter  998 val 10.392300412 (0.000004434 from ideal, 0.000000010 from prev)
+iter  999 val 10.392300422 (0.000004424 from ideal, 0.000000010 from prev)
+iter 1000 val 10.392300432 (0.000004414 from ideal, 0.000000010 from prev)
+iter 1001 val 10.392300442 (0.000004404 from ideal, 0.000000010 from prev)
+iter 1002 val 10.392300452 (0.000004394 from ideal, 0.000000010 from prev)
+iter 1003 val 10.392300462 (0.000004384 from ideal, 0.000000010 from prev)
+iter 1004 val 10.392300472 (0.000004374 from ideal, 0.000000010 from prev)
+iter 1005 val 10.392300481 (0.000004364 from ideal, 0.000000010 from prev)
+iter 1006 val 10.392300491 (0.000004354 from ideal, 0.000000010 from prev)
+iter 1007 val 10.392300501 (0.000004344 from ideal, 0.000000010 from prev)
+iter 1008 val 10.392300511 (0.000004335 from ideal, 0.000000010 from prev)
+iter 1009 val 10.392300520 (0.000004325 from ideal, 0.000000010 from prev)
+iter 1010 val 10.392300530 (0.000004315 from ideal, 0.000000010 from prev)
+iter 1011 val 10.392300540 (0.000004306 from ideal, 0.000000010 from prev)
+iter 1012 val 10.392300549 (0.000004296 from ideal, 0.000000010 from prev)
+
+A[0][0] =  |  0.46+0.00i  0.14+0.15i -0.02-0.38i -0.08+0.23i |
+           |  0.14-0.15i  0.09+0.00i -0.13-0.11i  0.05+0.10i |
+           | -0.02+0.38i -0.13+0.11i  0.32+0.00i -0.19-0.07i |
+           | -0.08-0.23i  0.05-0.10i -0.19+0.07i  0.13+0.00i |
+
+A[0][1] =  |  0.16+0.00i  0.16-0.26i  0.14+0.14i -0.03-0.01i |
+           |  0.16+0.26i  0.59+0.00i -0.09+0.37i -0.01-0.07i |
+           |  0.14-0.14i -0.09-0.37i  0.25+0.00i -0.04+0.02i |
+           | -0.03+0.01i -0.01+0.07i -0.04-0.02i  0.01+0.00i |
+
+A[0][2] =  |  0.39+0.00i -0.30+0.12i -0.12+0.24i  0.11-0.22i |
+           | -0.30-0.12i  0.32+0.00i  0.22-0.25i -0.04-0.03i |
+           | -0.12-0.24i  0.22+0.25i  0.43+0.00i  0.23+0.06i |
+           |  0.11+0.22i -0.04+0.03i  0.23-0.06i  0.86+0.00i |
+
+A[1][0] =  |  0.41+0.00i  0.24+0.25i -0.16-0.30i  0.06+0.07i |
+           |  0.24-0.25i  0.29+0.00i -0.27-0.08i  0.08+0.01i |
+           | -0.16+0.30i -0.27+0.08i  0.28+0.00i -0.07+0.01i |
+           |  0.06-0.07i  0.08-0.01i -0.07-0.01i  0.02+0.00i |
+
+A[1][1] =  |  0.01+0.00i  0.02+0.01i  0.01+0.00i -0.06-0.10i |
+           |  0.02-0.01i  0.04+0.00i  0.02-0.00i -0.18-0.08i |
+           |  0.01-0.00i  0.02+0.00i  0.01+0.00i -0.08-0.06i |
+           | -0.06+0.10i -0.18+0.08i -0.08+0.06i  0.94+0.00i |
+
+A[1][2] =  |  0.58+0.00i -0.26-0.26i  0.15+0.30i  0.00+0.02i |
+           | -0.26+0.26i  0.67+0.00i  0.25+0.08i  0.10+0.07i |
+           |  0.15-0.30i  0.25-0.08i  0.71+0.00i  0.16+0.04i |
+           |  0.00-0.02i  0.10-0.07i  0.16-0.04i  0.04+0.00i |
+
+A[2][0] =  |  0.21+0.00i  0.22+0.06i -0.20-0.21i  0.00+0.17i |
+           |  0.22-0.06i  0.25+0.00i -0.27-0.16i  0.05+0.18i |
+           | -0.20+0.21i -0.27+0.16i  0.40+0.00i -0.17-0.16i |
+           |  0.00-0.17i  0.05-0.18i -0.17+0.16i  0.14+0.00i |
+
+A[2][1] =  |  0.66+0.00i -0.32+0.14i  0.13+0.25i  0.15+0.00i |
+           | -0.32-0.14i  0.19+0.00i -0.01-0.15i -0.07-0.03i |
+           |  0.13-0.25i -0.01+0.15i  0.12+0.00i  0.03-0.06i |
+           |  0.15-0.00i -0.07+0.03i  0.03+0.06i  0.03+0.00i |
+
+A[2][2] =  |  0.13+0.00i  0.11-0.20i  0.08-0.04i -0.15-0.18i |
+           |  0.11+0.20i  0.57+0.00i  0.28+0.31i  0.02-0.15i |
+           |  0.08+0.04i  0.28-0.31i  0.48+0.00i  0.14+0.22i |
+           | -0.15+0.18i  0.02+0.15i  0.14-0.22i  0.83+0.00i |
+
+A[3][0] =  |  0.35+0.00i  0.17+0.29i -0.11-0.19i -0.08+0.25i |
+           |  0.17-0.29i  0.32+0.00i -0.21+0.00i  0.16+0.19i |
+           | -0.11+0.19i -0.21-0.00i  0.14+0.00i -0.11-0.12i |
+           | -0.08-0.25i  0.16-0.19i -0.11+0.12i  0.19+0.00i |
+
+A[3][1] =  |  0.05+0.00i -0.06-0.09i -0.15-0.10i -0.03-0.09i |
+           | -0.06+0.09i  0.20+0.00i  0.32-0.12i  0.17+0.05i |
+           | -0.15+0.10i  0.32+0.12i  0.59+0.00i  0.24+0.19i |
+           | -0.03+0.09i  0.17-0.05i  0.24-0.19i  0.16+0.00i |
+
+A[3][2] =  |  0.60+0.00i -0.11-0.20i  0.26+0.29i  0.11-0.16i |
+           | -0.11+0.20i  0.48+0.00i -0.11+0.12i -0.33-0.24i |
+           |  0.26-0.29i -0.11-0.12i  0.28+0.00i -0.13-0.06i |
+           |  0.11+0.16i -0.33+0.24i -0.13+0.06i  0.65+0.00i |
+
+A[4][0] =  |  0.08+0.00i -0.15+0.10i -0.11+0.13i  0.11-0.04i |
+           | -0.15-0.10i  0.39+0.00i  0.35-0.11i -0.25-0.07i |
+           | -0.11-0.13i  0.35+0.11i  0.35+0.00i -0.21-0.14i |
+           |  0.11+0.04i -0.25+0.07i -0.21+0.14i  0.17+0.00i |
+
+A[4][1] =  |  0.16+0.00i  0.18-0.23i -0.03+0.21i  0.05-0.00i |
+           |  0.18+0.23i  0.54+0.00i -0.34+0.19i  0.07+0.07i |
+           | -0.03-0.21i -0.34-0.19i  0.28+0.00i -0.02-0.07i |
+           |  0.05+0.00i  0.07-0.07i -0.02+0.07i  0.02+0.00i |
+
+A[4][2] =  |  0.76+0.00i -0.03+0.13i  0.14-0.34i -0.17+0.04i |
+           | -0.03-0.13i  0.06+0.00i -0.01-0.08i  0.19-0.00i |
+           |  0.14+0.34i -0.01+0.08i  0.37+0.00i  0.22+0.20i |
+           | -0.17-0.04i  0.19+0.00i  0.22-0.20i  0.81+0.00i |
+
+A[5][0] =  |  0.07+0.00i -0.09+0.19i -0.09+0.11i  0.03-0.01i |
+           | -0.09-0.19i  0.62+0.00i  0.41+0.10i -0.08-0.07i |
+           | -0.09-0.11i  0.41-0.10i  0.29+0.00i -0.06-0.03i |
+           |  0.03+0.01i -0.08+0.07i -0.06+0.03i  0.02+0.00i |
+
+A[5][1] =  |  0.05+0.00i  0.01+0.04i -0.01-0.03i -0.19+0.10i |
+           |  0.01-0.04i  0.03+0.00i -0.02+0.00i  0.05+0.15i |
+           | -0.01+0.03i -0.02-0.00i  0.02+0.00i -0.03-0.13i |
+           | -0.19-0.10i  0.05-0.15i -0.03+0.13i  0.90+0.00i |
+
+A[5][2] =  |  0.88+0.00i  0.09-0.23i  0.10-0.08i  0.15-0.09i |
+           |  0.09+0.23i  0.35+0.00i -0.39-0.11i  0.03-0.08i |
+           |  0.10+0.08i -0.39+0.11i  0.69+0.00i  0.09+0.16i |
+           |  0.15+0.09i  0.03+0.08i  0.09-0.16i  0.08+0.00i |
+
+A[6][0] =  |  0.00+0.00i  0.02-0.02i  0.02-0.01i -0.01+0.00i |
+           |  0.02+0.02i  0.48+0.00i  0.40+0.12i -0.24-0.13i |
+           |  0.02+0.01i  0.40-0.12i  0.36+0.00i -0.23-0.05i |
+           | -0.01-0.00i -0.24+0.13i -0.23+0.05i  0.16+0.00i |
+
+A[6][1] =  |  0.83+0.00i -0.21+0.14i  0.26+0.00i  0.03+0.11i |
+           | -0.21-0.14i  0.08+0.00i -0.06-0.05i  0.01-0.03i |
+           |  0.26-0.00i -0.06+0.05i  0.08+0.00i  0.01+0.04i |
+           |  0.03-0.11i  0.01+0.03i  0.01-0.04i  0.02+0.00i |
+
+A[6][2] =  |  0.17+0.00i  0.19-0.13i -0.28+0.01i -0.01-0.12i |
+           |  0.19+0.13i  0.45+0.00i -0.33-0.08i  0.23+0.16i |
+           | -0.28-0.01i -0.33+0.08i  0.55+0.00i  0.23+0.01i |
+           | -0.01+0.12i  0.23-0.16i  0.23-0.01i  0.83+0.00i |
+
+A[7][0] =  |  0.09+0.00i -0.01+0.21i -0.04+0.10i  0.10-0.11i |
+           | -0.01-0.21i  0.54+0.00i  0.25+0.10i -0.29-0.23i |
+           | -0.04-0.10i  0.25-0.10i  0.13+0.00i -0.17-0.05i |
+           |  0.10+0.11i -0.29+0.23i -0.17+0.05i  0.24+0.00i |
+
+A[7][1] =  |  0.17+0.00i  0.08-0.08i -0.16-0.27i  0.05-0.16i |
+           |  0.08+0.08i  0.08+0.00i  0.05-0.21i  0.10-0.06i |
+           | -0.16+0.27i  0.05+0.21i  0.58+0.00i  0.22+0.23i |
+           |  0.05+0.16i  0.10+0.06i  0.22-0.23i  0.17+0.00i |
+
+A[7][2] =  |  0.75+0.00i -0.07-0.13i  0.20+0.17i -0.14+0.27i |
+           | -0.07+0.13i  0.38+0.00i -0.30+0.11i  0.18+0.28i |
+           |  0.20-0.17i -0.30-0.11i  0.29+0.00i -0.05-0.18i |
+           | -0.14-0.27i  0.18-0.28i -0.05+0.18i  0.58+0.00i |
+
+A[8][0] =  |  0.27+0.00i -0.04-0.03i  0.20-0.11i  0.32-0.19i |
+           | -0.04+0.03i  0.01+0.00i -0.02+0.04i -0.03+0.06i |
+           |  0.20+0.11i -0.02-0.04i  0.20+0.00i  0.32-0.01i |
+           |  0.32+0.19i -0.03-0.06i  0.32+0.01i  0.52+0.00i |
+
+A[8][1] =  |  0.11+0.00i  0.26-0.04i -0.08+0.11i -0.01-0.07i |
+           |  0.26+0.04i  0.68+0.00i -0.24+0.25i  0.00-0.17i |
+           | -0.08-0.11i -0.24-0.25i  0.18+0.00i -0.06+0.06i |
+           | -0.01+0.07i  0.00+0.17i -0.06-0.06i  0.04+0.00i |
+
+A[8][2] =  |  0.63+0.00i -0.23+0.07i -0.12-0.00i -0.31+0.25i |
+           | -0.23-0.07i  0.31+0.00i  0.26-0.29i  0.03+0.11i |
+           | -0.12+0.00i  0.26+0.29i  0.63+0.00i -0.26-0.05i |
+           | -0.31-0.25i  0.03-0.11i -0.26+0.05i  0.43+0.00i |
+
+A[9][0] =  |  0.36+0.00i -0.03-0.19i  0.34-0.09i  0.25-0.08i |
+           | -0.03+0.19i  0.10+0.00i  0.02+0.19i  0.02+0.14i |
+           |  0.34+0.09i  0.02-0.19i  0.34+0.00i  0.26-0.01i |
+           |  0.25+0.08i  0.02-0.14i  0.26+0.01i  0.20+0.00i |
+
+A[9][1] =  |  0.10+0.00i  0.04-0.03i  0.07-0.08i -0.24+0.12i |
+           |  0.04+0.03i  0.03+0.00i  0.06-0.02i -0.14-0.01i |
+           |  0.07+0.08i  0.06+0.02i  0.12+0.00i -0.28-0.11i |
+           | -0.24-0.12i -0.14+0.01i -0.28+0.11i  0.75+0.00i |
+
+A[9][2] =  |  0.54+0.00i -0.02+0.22i -0.41+0.17i -0.01-0.04i |
+           | -0.02-0.22i  0.87+0.00i -0.07-0.17i  0.12-0.13i |
+           | -0.41-0.17i -0.07+0.17i  0.53+0.00i  0.02+0.12i |
+           | -0.01+0.04i  0.12+0.13i  0.02-0.12i  0.05+0.00i |
+
+A[10][0] =  |  0.09+0.00i -0.01-0.12i  0.15-0.04i  0.19-0.09i |
+            | -0.01+0.12i  0.17+0.00i  0.04+0.20i  0.11+0.26i |
+            |  0.15+0.04i  0.04-0.20i  0.26+0.00i  0.35-0.07i |
+            |  0.19+0.09i  0.11-0.26i  0.35+0.07i  0.49+0.00i |
+
+A[10][1] =  |  0.68+0.00i -0.26+0.35i  0.03+0.12i -0.05+0.11i |
+            | -0.26-0.35i  0.28+0.00i  0.05-0.06i  0.07-0.02i |
+            |  0.03-0.12i  0.05+0.06i  0.02+0.00i  0.02+0.01i |
+            | -0.05-0.11i  0.07+0.02i  0.02-0.01i  0.02+0.00i |
+
+A[10][2] =  |  0.24+0.00i  0.27-0.23i -0.18-0.08i -0.14-0.02i |
+            |  0.27+0.23i  0.55+0.00i -0.09-0.14i -0.18-0.25i |
+            | -0.18+0.08i -0.09+0.14i  0.72+0.00i -0.36+0.05i |
+            | -0.14+0.02i -0.18+0.25i -0.36-0.05i  0.49+0.00i |
+
+A[11][0] =  |  0.28+0.00i -0.08-0.17i  0.20+0.10i  0.33-0.08i |
+            | -0.08+0.17i  0.12+0.00i -0.12+0.09i -0.04+0.22i |
+            |  0.20-0.10i -0.12-0.09i  0.19+0.00i  0.21-0.18i |
+            |  0.33+0.08i -0.04-0.22i  0.21+0.18i  0.41+0.00i |
+
+A[11][1] =  |  0.12+0.00i -0.01-0.15i -0.27-0.11i  0.01-0.05i |
+            | -0.01+0.15i  0.17+0.00i  0.16-0.31i  0.05+0.01i |
+            | -0.27+0.11i  0.16+0.31i  0.68+0.00i  0.02+0.11i |
+            |  0.01+0.05i  0.05-0.01i  0.02-0.11i  0.02+0.00i |
+
+A[11][2] =  |  0.60+0.00i  0.09+0.31i  0.07+0.01i -0.34+0.12i |
+            |  0.09-0.31i  0.71+0.00i -0.04+0.21i -0.01-0.23i |
+            |  0.07-0.01i -0.04-0.21i  0.13+0.00i -0.23+0.07i |
+            | -0.34-0.12i -0.01+0.23i -0.23-0.07i  0.57+0.00i |
+
+A[12][0] =  |  0.33+0.00i -0.17-0.07i -0.08+0.21i -0.37+0.01i |
+            | -0.17+0.07i  0.10+0.00i -0.00-0.12i  0.19-0.08i |
+            | -0.08-0.21i -0.00+0.12i  0.15+0.00i  0.09+0.23i |
+            | -0.37-0.01i  0.19+0.08i  0.09-0.23i  0.41+0.00i |
+
+A[12][1] =  |  0.06+0.00i  0.21-0.01i -0.02+0.11i  0.03+0.03i |
+            |  0.21+0.01i  0.70+0.00i -0.10+0.37i  0.09+0.12i |
+            | -0.02-0.11i -0.10-0.37i  0.21+0.00i  0.05-0.07i |
+            |  0.03-0.03i  0.09-0.12i  0.05+0.07i  0.03+0.00i |
+
+A[12][2] =  |  0.61+0.00i -0.03+0.08i  0.11-0.32i  0.34-0.04i |
+            | -0.03-0.08i  0.20+0.00i  0.10-0.24i -0.28-0.04i |
+            |  0.11+0.32i  0.10+0.24i  0.64+0.00i -0.14-0.17i |
+            |  0.34+0.04i -0.28+0.04i -0.14+0.17i  0.56+0.00i |
+
+A[13][0] =  |  0.38+0.00i -0.14-0.25i -0.10+0.31i -0.22-0.03i |
+            | -0.14+0.25i  0.22+0.00i -0.17-0.18i  0.10-0.13i |
+            | -0.10-0.31i -0.17+0.18i  0.28+0.00i  0.03+0.19i |
+            | -0.22+0.03i  0.10+0.13i  0.03-0.19i  0.13+0.00i |
+
+A[13][1] =  |  0.01+0.00i  0.01-0.02i -0.03-0.01i  0.02+0.07i |
+            |  0.01+0.02i  0.07+0.00i -0.01-0.10i -0.19+0.14i |
+            | -0.03+0.01i -0.01+0.10i  0.13+0.00i -0.17-0.27i |
+            |  0.02-0.07i -0.19-0.14i -0.17+0.27i  0.79+0.00i |
+
+A[13][2] =  |  0.61+0.00i  0.13+0.27i  0.13-0.30i  0.20-0.04i |
+            |  0.13-0.27i  0.71+0.00i  0.18+0.28i  0.08-0.01i |
+            |  0.13+0.30i  0.18-0.28i  0.59+0.00i  0.14+0.09i |
+            |  0.20+0.04i  0.08+0.01i  0.14-0.09i  0.08+0.00i |
+
+A[14][0] =  |  0.21+0.00i  0.02-0.19i -0.11+0.16i -0.27-0.14i |
+            |  0.02+0.19i  0.17+0.00i -0.16-0.08i  0.09-0.26i |
+            | -0.11-0.16i -0.16+0.08i  0.18+0.00i  0.04+0.28i |
+            | -0.27+0.14i  0.09+0.26i  0.04-0.28i  0.44+0.00i |
+
+A[14][1] =  |  0.68+0.00i -0.15+0.35i  0.12-0.01i  0.23-0.03i |
+            | -0.15-0.35i  0.22+0.00i -0.03-0.06i -0.07-0.11i |
+            |  0.12+0.01i -0.03+0.06i  0.02+0.00i  0.04-0.00i |
+            |  0.23+0.03i -0.07+0.11i  0.04+0.00i  0.08+0.00i |
+
+A[14][2] =  |  0.11+0.00i  0.13-0.16i -0.02-0.15i  0.04+0.17i |
+            |  0.13+0.16i  0.61+0.00i  0.19+0.14i -0.03+0.37i |
+            | -0.02+0.15i  0.19-0.14i  0.80+0.00i -0.08-0.27i |
+            |  0.04-0.17i -0.03-0.37i -0.08+0.27i  0.48+0.00i |
+
+A[15][0] =  |  0.42+0.00i -0.10-0.22i  0.11+0.21i -0.36+0.03i |
+            | -0.10+0.22i  0.13+0.00i -0.13+0.01i  0.07-0.19i |
+            |  0.11-0.21i -0.13-0.01i  0.13+0.00i -0.08+0.19i |
+            | -0.36-0.03i  0.07+0.19i -0.08-0.19i  0.32+0.00i |
+
+A[15][1] =  |  0.16+0.00i  0.04-0.13i -0.02-0.33i  0.05-0.03i |
+            |  0.04+0.13i  0.11+0.00i  0.26-0.11i  0.04+0.03i |
+            | -0.02+0.33i  0.26+0.11i  0.71+0.00i  0.07+0.11i |
+            |  0.05+0.03i  0.04-0.03i  0.07-0.11i  0.02+0.00i |
+
+A[15][2] =  |  0.42+0.00i  0.05+0.34i -0.09+0.13i  0.32+0.01i |
+            |  0.05-0.34i  0.75+0.00i -0.13+0.10i -0.11+0.16i |
+            | -0.09-0.13i -0.13-0.10i  0.16+0.00i  0.02-0.29i |
+            |  0.32-0.01i -0.11-0.16i  0.02+0.29i  0.66+0.00i |
+
+A[16][0] =  |  0.53+0.00i  0.13+0.32i -0.03-0.30i -0.04+0.18i |
+            |  0.13-0.32i  0.23+0.00i -0.19-0.05i  0.10+0.07i |
+            | -0.03+0.30i -0.19+0.05i  0.18+0.00i -0.10-0.03i |
+            | -0.04-0.18i  0.10-0.07i -0.10+0.03i  0.07+0.00i |
+
+A[16][1] =  |  0.35+0.00i -0.24-0.13i -0.06+0.33i  0.19-0.02i |
+            | -0.24+0.13i  0.22+0.00i -0.09-0.25i -0.12+0.09i |
+            | -0.06-0.33i -0.09+0.25i  0.32+0.00i -0.05-0.18i |
+            |  0.19+0.02i -0.12-0.09i -0.05+0.18i  0.11+0.00i |
+
+A[16][2] =  |  0.12+0.00i  0.12-0.19i  0.09-0.03i -0.15-0.16i |
+            |  0.12+0.19i  0.55+0.00i  0.28+0.30i  0.02-0.16i |
+            |  0.09+0.03i  0.28-0.30i  0.50+0.00i  0.16+0.21i |
+            | -0.15+0.16i  0.02+0.16i  0.16-0.21i  0.83+0.00i |
+
+A[17][0] =  |  0.29+0.00i  0.29+0.18i -0.21-0.16i -0.01+0.14i |
+            |  0.29-0.18i  0.40+0.00i -0.30-0.03i  0.08+0.15i |
+            | -0.21+0.16i -0.30+0.03i  0.23+0.00i -0.07-0.11i |
+            | -0.01-0.14i  0.08-0.15i -0.07+0.11i  0.07+0.00i |
+
+A[17][1] =  |  0.28+0.00i -0.01-0.26i  0.32-0.07i -0.09+0.14i |
+            | -0.01+0.26i  0.25+0.00i  0.06+0.30i -0.13-0.09i |
+            |  0.32+0.07i  0.06-0.30i  0.37+0.00i -0.13+0.14i |
+            | -0.09-0.14i -0.13+0.09i -0.13-0.14i  0.10+0.00i |
+
+A[17][2] =  |  0.43+0.00i -0.29+0.08i -0.11+0.23i  0.10-0.29i |
+            | -0.29-0.08i  0.35+0.00i  0.25-0.26i  0.05-0.06i |
+            | -0.11-0.23i  0.25+0.26i  0.40+0.00i  0.21-0.03i |
+            |  0.10+0.29i  0.05+0.06i  0.21+0.03i  0.83+0.00i |
+
+A[18][0] =  |  0.26+0.00i  0.14+0.14i -0.11-0.25i -0.08+0.27i |
+            |  0.14-0.14i  0.15+0.00i -0.19-0.07i  0.11+0.18i |
+            | -0.11+0.25i -0.19+0.07i  0.28+0.00i -0.23-0.18i |
+            | -0.08-0.27i  0.11-0.18i -0.23+0.18i  0.30+0.00i |
+
+A[18][1] =  |  0.19+0.00i  0.16+0.09i -0.01-0.04i  0.06-0.34i |
+            |  0.16-0.09i  0.18+0.00i -0.03-0.03i -0.12-0.31i |
+            | -0.01+0.04i -0.03+0.03i  0.01+0.00i  0.07+0.04i |
+            |  0.06+0.34i -0.12+0.31i  0.07-0.04i  0.62+0.00i |
+
+A[18][2] =  |  0.55+0.00i -0.29-0.24i  0.12+0.29i  0.01+0.06i |
+            | -0.29+0.24i  0.67+0.00i  0.22+0.10i  0.01+0.13i |
+            |  0.12-0.29i  0.22-0.10i  0.71+0.00i  0.16+0.15i |
+            |  0.01-0.06i  0.01-0.13i  0.16-0.15i  0.07+0.00i |
+
+A[19][0] =  |  0.34+0.00i  0.22+0.09i -0.15-0.36i  0.03+0.12i |
+            |  0.22-0.09i  0.16+0.00i -0.19-0.19i  0.05+0.07i |
+            | -0.15+0.36i -0.19+0.19i  0.45+0.00i -0.14-0.02i |
+            |  0.03-0.12i  0.05-0.07i -0.14+0.02i  0.05+0.00i |
+
+A[19][1] =  |  0.07+0.00i -0.12+0.10i -0.12+0.06i -0.14+0.02i |
+            | -0.12-0.10i  0.37+0.00i  0.30+0.07i  0.28+0.19i |
+            | -0.12-0.06i  0.30-0.07i  0.26+0.00i  0.27+0.09i |
+            | -0.14-0.02i  0.28-0.19i  0.27-0.09i  0.31+0.00i |
+
+A[19][2] =  |  0.59+0.00i -0.10-0.19i  0.27+0.30i  0.11-0.14i |
+            | -0.10+0.19i  0.47+0.00i -0.11+0.12i -0.33-0.26i |
+            |  0.27-0.30i -0.11-0.12i  0.29+0.00i -0.12-0.07i |
+            |  0.11+0.14i -0.33+0.26i -0.12+0.07i  0.65+0.00i |
+
+A[20][0] =  |  0.03+0.00i  0.05+0.12i -0.02+0.08i  0.02-0.05i |
+            |  0.05-0.12i  0.64+0.00i  0.32+0.23i -0.18-0.16i |
+            | -0.02-0.08i  0.32-0.23i  0.24+0.00i -0.15-0.02i |
+            |  0.02+0.05i -0.18+0.16i -0.15+0.02i  0.09+0.00i |
+
+A[20][1] =  |  0.23+0.00i -0.00-0.25i -0.13+0.27i  0.15+0.02i |
+            | -0.00+0.25i  0.28+0.00i -0.30-0.15i -0.03+0.16i |
+            | -0.13-0.27i -0.30+0.15i  0.39+0.00i -0.06-0.19i |
+            |  0.15-0.02i -0.03-0.16i -0.06+0.19i  0.10+0.00i |
+
+A[20][2] =  |  0.74+0.00i -0.05+0.13i  0.15-0.35i -0.16+0.02i |
+            | -0.05-0.13i  0.08+0.00i -0.02-0.08i  0.21-0.00i |
+            |  0.15+0.35i -0.02+0.08i  0.37+0.00i  0.20+0.20i |
+            | -0.16-0.02i  0.21+0.00i  0.20-0.20i  0.81+0.00i |
+
+A[21][0] =  |  0.16+0.00i -0.13+0.27i -0.05+0.17i  0.11-0.07i |
+            | -0.13-0.27i  0.54+0.00i  0.32-0.05i -0.19-0.13i |
+            | -0.05-0.17i  0.32+0.05i  0.20+0.00i -0.10-0.09i |
+            |  0.11+0.07i -0.19+0.13i -0.10+0.09i  0.10+0.00i |
+
+A[21][1] =  |  0.53+0.00i -0.10-0.10i  0.38-0.18i -0.08+0.21i |
+            | -0.10+0.10i  0.04+0.00i -0.04+0.11i -0.02-0.05i |
+            |  0.38+0.18i -0.04-0.11i  0.34+0.00i -0.13+0.13i |
+            | -0.08-0.21i -0.02+0.05i -0.13-0.13i  0.10+0.00i |
+
+A[21][2] =  |  0.31+0.00i  0.23-0.17i -0.33+0.00i -0.03-0.14i |
+            |  0.23+0.17i  0.42+0.00i -0.28-0.06i  0.22+0.18i |
+            | -0.33-0.00i -0.28+0.06i  0.46+0.00i  0.23-0.04i |
+            | -0.03+0.14i  0.22-0.18i  0.23+0.04i  0.81+0.00i |
+
+A[22][0] =  |  0.04+0.00i -0.13+0.03i -0.12+0.02i  0.05-0.00i |
+            | -0.13-0.03i  0.46+0.00i  0.45+0.02i -0.16-0.03i |
+            | -0.12-0.02i  0.45-0.02i  0.44+0.00i -0.16-0.03i |
+            |  0.05+0.00i -0.16+0.03i -0.16+0.03i  0.06+0.00i |
+
+A[22][1] =  |  0.33+0.00i  0.22+0.06i -0.12-0.21i  0.08-0.33i |
+            |  0.22-0.06i  0.15+0.00i -0.11-0.11i -0.00-0.23i |
+            | -0.12+0.21i -0.11+0.11i  0.17+0.00i  0.18+0.17i |
+            |  0.08+0.33i -0.00+0.23i  0.18-0.17i  0.35+0.00i |
+
+A[22][2] =  |  0.63+0.00i -0.09-0.09i  0.24+0.19i -0.13+0.33i |
+            | -0.09+0.09i  0.39+0.00i -0.34+0.10i  0.16+0.26i |
+            |  0.24-0.19i -0.34-0.10i  0.39+0.00i -0.02-0.14i |
+            | -0.13-0.33i  0.16-0.26i -0.02+0.14i  0.60+0.00i |
+
+A[23][0] =  |  0.01+0.00i -0.03+0.07i -0.03+0.05i  0.06-0.04i |
+            | -0.03-0.07i  0.39+0.00i  0.31+0.01i -0.33-0.17i |
+            | -0.03-0.05i  0.31-0.01i  0.25+0.00i -0.26-0.13i |
+            |  0.06+0.04i -0.33+0.17i -0.26+0.13i  0.35+0.00i |
+
+A[23][1] =  |  0.11+0.00i -0.05+0.16i -0.08+0.03i -0.22+0.14i |
+            | -0.05-0.16i  0.25+0.00i  0.08+0.10i  0.28+0.25i |
+            | -0.08-0.03i  0.08-0.10i  0.06+0.00i  0.18-0.04i |
+            | -0.22-0.14i  0.28-0.25i  0.18+0.04i  0.57+0.00i |
+
+A[23][2] =  |  0.87+0.00i  0.08-0.23i  0.11-0.08i  0.16-0.09i |
+            |  0.08+0.23i  0.36+0.00i -0.39-0.11i  0.04-0.08i |
+            |  0.11+0.08i -0.39+0.11i  0.69+0.00i  0.08+0.17i |
+            |  0.16+0.09i  0.04+0.08i  0.08-0.17i  0.08+0.00i |
+
+A[24][0] =  |  0.21+0.00i -0.00-0.12i  0.21-0.17i  0.24-0.14i |
+            | -0.00+0.12i  0.07+0.00i  0.09+0.12i  0.08+0.14i |
+            |  0.21+0.17i  0.09-0.12i  0.34+0.00i  0.35+0.05i |
+            |  0.24+0.14i  0.08-0.14i  0.35-0.05i  0.38+0.00i |
+
+A[24][1] =  |  0.17+0.00i -0.08-0.18i -0.26+0.17i  0.10+0.01i |
+            | -0.08+0.18i  0.23+0.00i -0.06-0.35i -0.06+0.10i |
+            | -0.26-0.17i -0.06+0.35i  0.54+0.00i -0.13-0.12i |
+            |  0.10-0.01i -0.06-0.10i -0.13+0.12i  0.06+0.00i |
+
+A[24][2] =  |  0.61+0.00i  0.09+0.31i  0.05+0.00i -0.34+0.13i |
+            |  0.09-0.31i  0.70+0.00i -0.04+0.23i -0.02-0.24i |
+            |  0.05-0.00i -0.04-0.23i  0.12+0.00i -0.22+0.06i |
+            | -0.34-0.13i -0.02+0.24i -0.22-0.06i  0.57+0.00i |
+
+A[25][0] =  |  0.14+0.00i -0.03-0.08i  0.15+0.01i  0.27-0.15i |
+            | -0.03+0.08i  0.05+0.00i -0.03+0.09i  0.04+0.18i |
+            |  0.15-0.01i -0.03-0.09i  0.16+0.00i  0.27-0.17i |
+            |  0.27+0.15i  0.04-0.18i  0.27+0.17i  0.65+0.00i |
+
+A[25][1] =  |  0.27+0.00i -0.03-0.13i  0.23-0.20i -0.19+0.22i |
+            | -0.03+0.13i  0.07+0.00i  0.07+0.14i -0.09-0.12i |
+            |  0.23+0.20i  0.07-0.14i  0.34+0.00i -0.33+0.05i |
+            | -0.19-0.22i -0.09+0.12i -0.33-0.05i  0.32+0.00i |
+
+A[25][2] =  |  0.59+0.00i  0.06+0.22i -0.38+0.19i -0.07-0.07i |
+            |  0.06-0.22i  0.88+0.00i -0.04-0.22i  0.05-0.06i |
+            | -0.38-0.19i -0.04+0.22i  0.50+0.00i  0.06+0.12i |
+            | -0.07+0.07i  0.05+0.06i  0.06-0.12i  0.04+0.00i |
+
+A[26][0] =  |  0.20+0.00i -0.01-0.21i  0.23+0.05i  0.24-0.02i |
+            | -0.01+0.21i  0.23+0.00i -0.06+0.24i  0.01+0.26i |
+            |  0.23-0.05i -0.06-0.24i  0.28+0.00i  0.28-0.08i |
+            |  0.24+0.02i  0.01-0.26i  0.28+0.08i  0.29+0.00i |
+
+A[26][1] =  |  0.26+0.00i  0.31+0.13i -0.11-0.04i  0.01-0.26i |
+            |  0.31-0.13i  0.43+0.00i -0.15+0.01i -0.12-0.31i |
+            | -0.11+0.04i -0.15-0.01i  0.06+0.00i  0.03+0.11i |
+            |  0.01+0.26i -0.12+0.31i  0.03-0.11i  0.25+0.00i |
+
+A[26][2] =  |  0.54+0.00i -0.30+0.08i -0.12-0.01i -0.25+0.27i |
+            | -0.30-0.08i  0.34+0.00i  0.21-0.26i  0.11+0.05i |
+            | -0.12+0.01i  0.21+0.26i  0.66+0.00i -0.31-0.03i |
+            | -0.25-0.27i  0.11-0.05i -0.31+0.03i  0.45+0.00i |
+
+A[27][0] =  |  0.44+0.00i -0.11-0.09i  0.30-0.02i  0.34-0.13i |
+            | -0.11+0.09i  0.05+0.00i -0.07+0.07i -0.06+0.10i |
+            |  0.30+0.02i -0.07-0.07i  0.21+0.00i  0.24-0.07i |
+            |  0.34+0.13i -0.06-0.10i  0.24+0.07i  0.30+0.00i |
+
+A[27][1] =  |  0.30+0.00i -0.16+0.32i -0.10+0.10i -0.21+0.14i |
+            | -0.16-0.32i  0.43+0.00i  0.16+0.06i  0.26+0.15i |
+            | -0.10-0.10i  0.16-0.06i  0.07+0.00i  0.12+0.02i |
+            | -0.21-0.14i  0.26-0.15i  0.12-0.02i  0.21+0.00i |
+
+A[27][2] =  |  0.26+0.00i  0.27-0.23i -0.20-0.08i -0.14-0.01i |
+            |  0.27+0.23i  0.53+0.00i -0.09-0.12i -0.19-0.25i |
+            | -0.20+0.08i -0.09+0.12i  0.72+0.00i -0.36+0.05i |
+            | -0.14+0.01i -0.19+0.25i -0.36-0.05i  0.49+0.00i |
+
+A[28][0] =  |  0.27+0.00i -0.06-0.14i -0.00+0.15i -0.39-0.01i |
+            | -0.06+0.14i  0.08+0.00i -0.07-0.04i  0.10-0.19i |
+            | -0.00-0.15i -0.07+0.04i  0.08+0.00i  0.00+0.21i |
+            | -0.39+0.01i  0.10+0.19i  0.00-0.21i  0.57+0.00i |
+
+A[28][1] =  |  0.12+0.00i -0.07-0.13i -0.13+0.16i  0.20+0.05i |
+            | -0.07+0.13i  0.17+0.00i -0.10-0.23i -0.16+0.19i |
+            | -0.13-0.16i -0.10+0.23i  0.35+0.00i -0.15-0.32i |
+            |  0.20-0.05i -0.16-0.19i -0.15+0.32i  0.35+0.00i |
+
+A[28][2] =  |  0.61+0.00i  0.13+0.27i  0.14-0.31i  0.19-0.04i |
+            |  0.13-0.27i  0.74+0.00i  0.17+0.26i  0.06+0.01i |
+            |  0.14+0.31i  0.17-0.26i  0.57+0.00i  0.15+0.11i |
+            |  0.19+0.04i  0.06-0.01i  0.15-0.11i  0.08+0.00i |
+
+A[29][0] =  |  0.30+0.00i -0.10-0.19i -0.20+0.19i -0.27-0.12i |
+            | -0.10+0.19i  0.15+0.00i -0.05-0.19i  0.17-0.13i |
+            | -0.20-0.19i -0.05+0.19i  0.25+0.00i  0.10+0.25i |
+            | -0.27+0.12i  0.17+0.13i  0.10-0.25i  0.30+0.00i |
+
+A[29][1] =  |  0.31+0.00i -0.03-0.17i  0.22-0.34i  0.01+0.15i |
+            | -0.03+0.17i  0.10+0.00i  0.17+0.15i -0.08-0.01i |
+            |  0.22+0.34i  0.17-0.15i  0.52+0.00i -0.15+0.11i |
+            |  0.01-0.15i -0.08+0.01i -0.15-0.11i  0.07+0.00i |
+
+A[29][2] =  |  0.39+0.00i  0.12+0.36i -0.02+0.15i  0.26-0.02i |
+            |  0.12-0.36i  0.75+0.00i -0.11+0.04i -0.08+0.14i |
+            | -0.02-0.15i -0.11-0.04i  0.22+0.00i  0.05-0.37i |
+            |  0.26+0.02i -0.08-0.14i  0.05+0.37i  0.63+0.00i |
+
+A[30][0] =  |  0.45+0.00i -0.23-0.12i  0.05+0.29i -0.30+0.07i |
+            | -0.23+0.12i  0.15+0.00i -0.10-0.13i  0.14-0.11i |
+            |  0.05-0.29i -0.10+0.13i  0.19+0.00i  0.01+0.20i |
+            | -0.30-0.07i  0.14+0.11i  0.01-0.20i  0.21+0.00i |
+
+A[30][1] =  |  0.40+0.00i  0.16+0.30i  0.04-0.12i  0.20-0.27i |
+            |  0.16-0.30i  0.28+0.00i -0.07-0.08i -0.12-0.25i |
+            |  0.04+0.12i -0.07+0.08i  0.04+0.00i  0.10+0.03i |
+            |  0.20+0.27i -0.12+0.25i  0.10-0.03i  0.28+0.00i |
+
+A[30][2] =  |  0.15+0.00i  0.07-0.18i -0.09-0.16i  0.11+0.20i |
+            |  0.07+0.18i  0.57+0.00i  0.17+0.21i -0.02+0.36i |
+            | -0.09+0.16i  0.17-0.21i  0.77+0.00i -0.11-0.23i |
+            |  0.11-0.20i -0.02-0.36i -0.11+0.23i  0.51+0.00i |
+
+A[31][0] =  |  0.32+0.00i  0.00-0.28i -0.02+0.26i -0.26-0.06i |
+            |  0.00+0.28i  0.24+0.00i -0.23-0.01i  0.05-0.22i |
+            | -0.02-0.26i -0.23+0.01i  0.21+0.00i -0.04+0.21i |
+            | -0.26+0.06i  0.05+0.22i -0.04-0.21i  0.22+0.00i |
+
+A[31][1] =  |  0.08+0.00i  0.04+0.20i -0.09+0.06i -0.07+0.11i |
+            |  0.04-0.20i  0.55+0.00i  0.13+0.26i  0.25+0.25i |
+            | -0.09-0.06i  0.13-0.26i  0.15+0.00i  0.18-0.06i |
+            | -0.07-0.11i  0.25-0.25i  0.18+0.06i  0.22+0.00i |
+
+A[31][2] =  |  0.60+0.00i -0.04+0.08i  0.11-0.33i  0.33-0.04i |
+            | -0.04-0.08i  0.21+0.00i  0.10-0.24i -0.30-0.03i |
+            |  0.11+0.33i  0.10+0.24i  0.63+0.00i -0.14-0.16i |
+            |  0.33+0.04i -0.30+0.03i -0.14+0.16i  0.55+0.00i |
+
+A[32][0] =  |  0.06+0.00i  0.20-0.04i  0.02+0.11i -0.01-0.03i |
+            |  0.20+0.04i  0.72+0.00i -0.03+0.38i -0.01-0.10i |
+            |  0.02-0.11i -0.03-0.38i  0.20+0.00i -0.05+0.01i |
+            | -0.01+0.03i -0.01+0.10i -0.05-0.01i  0.01+0.00i |
+
+A[32][1] =  |  0.19+0.00i -0.18-0.09i -0.17+0.22i  0.18+0.01i |
+            | -0.18+0.09i  0.21+0.00i  0.04-0.30i -0.18+0.08i |
+            | -0.17-0.22i  0.04+0.30i  0.42+0.00i -0.15-0.23i |
+            |  0.18-0.01i -0.18-0.08i -0.15+0.23i  0.18+0.00i |
+
+A[32][2] =  |  0.75+0.00i -0.03+0.14i  0.15-0.34i -0.17+0.02i |
+            | -0.03-0.14i  0.07+0.00i -0.01-0.08i  0.19+0.02i |
+            |  0.15+0.34i -0.01+0.08i  0.37+0.00i  0.21+0.22i |
+            | -0.17-0.02i  0.19-0.02i  0.21-0.22i  0.81+0.00i |
+
+A[33][0] =  |  0.14+0.00i  0.30-0.04i -0.11+0.11i  0.05+0.02i |
+            |  0.30+0.04i  0.66+0.00i -0.27+0.20i  0.10+0.05i |
+            | -0.11-0.11i -0.27-0.20i  0.17+0.00i -0.03-0.05i |
+            |  0.05-0.02i  0.10-0.05i -0.03+0.05i  0.02+0.00i |
+
+A[33][1] =  |  0.43+0.00i -0.00-0.08i  0.25-0.32i -0.07+0.26i |
+            | -0.00+0.08i  0.01+0.00i  0.05+0.05i -0.05-0.02i |
+            |  0.25+0.32i  0.05-0.05i  0.38+0.00i -0.24+0.10i |
+            | -0.07-0.26i -0.05+0.02i -0.24-0.10i  0.17+0.00i |
+
+A[33][2] =  |  0.43+0.00i -0.30+0.11i -0.14+0.21i  0.02-0.28i |
+            | -0.30-0.11i  0.32+0.00i  0.22-0.25i -0.06-0.04i |
+            | -0.14-0.21i  0.22+0.25i  0.44+0.00i  0.26-0.05i |
+            |  0.02+0.28i -0.06+0.04i  0.26+0.05i  0.81+0.00i |
+
+A[34][0] =  |  0.10+0.00i  0.11-0.21i  0.09+0.14i  0.06+0.00i |
+            |  0.11+0.21i  0.58+0.00i -0.20+0.36i  0.06+0.13i |
+            |  0.09-0.14i -0.20-0.36i  0.29+0.00i  0.06-0.08i |
+            |  0.06-0.00i  0.06-0.13i  0.06+0.08i  0.03+0.00i |
+
+A[34][1] =  |  0.32+0.00i  0.12+0.15i  0.03-0.17i  0.16-0.36i |
+            |  0.12-0.15i  0.11+0.00i -0.07-0.08i -0.11-0.20i |
+            |  0.03+0.17i -0.07+0.08i  0.09+0.00i  0.20+0.05i |
+            |  0.16+0.36i -0.11+0.20i  0.20-0.05i  0.48+0.00i |
+
+A[34][2] =  |  0.58+0.00i -0.23+0.06i -0.12+0.03i -0.21+0.35i |
+            | -0.23-0.06i  0.31+0.00i  0.26-0.28i  0.05+0.08i |
+            | -0.12-0.03i  0.26+0.28i  0.61+0.00i -0.26+0.03i |
+            | -0.21-0.35i  0.05-0.08i -0.26-0.03i  0.49+0.00i |
+
+A[35][0] =  |  0.18+0.00i  0.19-0.25i  0.01+0.21i -0.06-0.04i |
+            |  0.19+0.25i  0.55+0.00i -0.28+0.23i -0.00-0.13i |
+            |  0.01-0.21i -0.28-0.23i  0.24+0.00i -0.05+0.07i |
+            | -0.06+0.04i -0.00+0.13i -0.05-0.07i  0.03+0.00i |
+
+A[35][1] =  |  0.21+0.00i -0.16+0.17i -0.11+0.11i -0.28+0.10i |
+            | -0.16-0.17i  0.26+0.00i  0.18+0.01i  0.29+0.15i |
+            | -0.11-0.11i  0.18-0.01i  0.12+0.00i  0.21+0.09i |
+            | -0.28-0.10i  0.29-0.15i  0.21-0.09i  0.41+0.00i |
+
+A[35][2] =  |  0.61+0.00i -0.04+0.08i  0.11-0.32i  0.34-0.05i |
+            | -0.04-0.08i  0.20+0.00i  0.10-0.24i -0.29-0.02i |
+            |  0.11+0.32i  0.10+0.24i  0.64+0.00i -0.15-0.16i |
+            |  0.34+0.05i -0.29+0.02i -0.15+0.16i  0.56+0.00i |
+
+A[36][0] =  |  0.09+0.00i  0.02-0.02i  0.03-0.01i -0.27+0.04i |
+            |  0.02+0.02i  0.01+0.00i  0.01+0.00i -0.06-0.04i |
+            |  0.03+0.01i  0.01-0.00i  0.01+0.00i -0.10-0.01i |
+            | -0.27-0.04i -0.06+0.04i -0.10+0.01i  0.90+0.00i |
+
+A[36][1] =  |  0.31+0.00i -0.13-0.24i -0.17+0.32i  0.08-0.00i |
+            | -0.13+0.24i  0.24+0.00i -0.18-0.27i -0.03+0.06i |
+            | -0.17-0.32i -0.18+0.27i  0.43+0.00i -0.04-0.08i |
+            |  0.08+0.00i -0.03-0.06i -0.04+0.08i  0.02+0.00i |
+
+A[36][2] =  |  0.61+0.00i  0.12+0.26i  0.14-0.32i  0.20-0.04i |
+            |  0.12-0.26i  0.75+0.00i  0.17+0.26i  0.09-0.02i |
+            |  0.14+0.32i  0.17-0.26i  0.56+0.00i  0.14+0.09i |
+            |  0.20+0.04i  0.09+0.02i  0.14-0.09i  0.08+0.00i |
+
+A[37][0] =  |  0.00+0.00i -0.01+0.01i  0.01-0.01i -0.02-0.06i |
+            | -0.01-0.01i  0.03+0.00i -0.03-0.02i -0.10+0.14i |
+            |  0.01+0.01i -0.03+0.02i  0.05+0.00i  0.01-0.21i |
+            | -0.02+0.06i -0.10-0.14i  0.01+0.21i  0.91+0.00i |
+
+A[37][1] =  |  0.39+0.00i -0.08-0.20i  0.36-0.22i  0.02+0.10i |
+            | -0.08+0.20i  0.12+0.00i  0.03+0.23i -0.06-0.01i |
+            |  0.36+0.22i  0.03-0.23i  0.46+0.00i -0.04+0.11i |
+            |  0.02-0.10i -0.06+0.01i -0.04-0.11i  0.03+0.00i |
+
+A[37][2] =  |  0.60+0.00i  0.09+0.19i -0.38+0.22i  0.01-0.04i |
+            |  0.09-0.19i  0.85+0.00i -0.00-0.21i  0.16-0.12i |
+            | -0.38-0.22i -0.00+0.21i  0.49+0.00i  0.03+0.11i |
+            |  0.01+0.04i  0.16+0.12i  0.03-0.11i  0.06+0.00i |
+
+A[38][0] =  |  0.07+0.00i  0.05+0.02i -0.01-0.09i -0.12+0.21i |
+            |  0.05-0.02i  0.04+0.00i -0.03-0.06i -0.04+0.17i |
+            | -0.01+0.09i -0.03+0.06i  0.10+0.00i -0.23-0.18i |
+            | -0.12-0.21i -0.04-0.17i -0.23+0.18i  0.78+0.00i |
+
+A[38][1] =  |  0.40+0.00i  0.29+0.20i -0.09-0.18i  0.14-0.23i |
+            |  0.29-0.20i  0.32+0.00i -0.16-0.09i -0.01-0.24i |
+            | -0.09+0.18i -0.16+0.09i  0.10+0.00i  0.07+0.12i |
+            |  0.14+0.23i -0.01+0.24i  0.07-0.12i  0.18+0.00i |
+
+A[38][2] =  |  0.53+0.00i -0.35-0.21i  0.10+0.27i -0.02+0.02i |
+            | -0.35+0.21i  0.64+0.00i  0.18+0.15i  0.06+0.07i |
+            |  0.10-0.27i  0.18-0.15i  0.79+0.00i  0.15+0.06i |
+            | -0.02-0.02i  0.06-0.07i  0.15-0.06i  0.04+0.00i |
+
+A[39][0] =  |  0.00+0.00i  0.02-0.01i  0.01-0.01i -0.05+0.01i |
+            |  0.02+0.01i  0.09+0.00i  0.10-0.04i -0.26-0.06i |
+            |  0.01+0.01i  0.10+0.04i  0.12+0.00i -0.25-0.18i |
+            | -0.05-0.01i -0.26+0.06i -0.25+0.18i  0.79+0.00i |
+
+A[39][1] =  |  0.13+0.00i -0.10+0.24i -0.12+0.10i -0.10+0.08i |
+            | -0.10-0.24i  0.54+0.00i  0.29+0.15i  0.23+0.14i |
+            | -0.12-0.10i  0.29-0.15i  0.20+0.00i  0.16+0.01i |
+            | -0.10-0.08i  0.23-0.14i  0.16-0.01i  0.13+0.00i |
+
+A[39][2] =  |  0.87+0.00i  0.08-0.24i  0.11-0.09i  0.16-0.09i |
+            |  0.08+0.24i  0.37+0.00i -0.39-0.12i  0.03-0.08i |
+            |  0.11+0.09i -0.39+0.12i  0.68+0.00i  0.09+0.16i |
+            |  0.16+0.09i  0.03+0.08i  0.09-0.16i  0.08+0.00i |
+
+A[40][0] =  |  0.75+0.00i -0.14+0.36i  0.14-0.07i  0.04+0.11i |
+            | -0.14-0.36i  0.20+0.00i -0.06-0.05i  0.04-0.04i |
+            |  0.14+0.07i -0.06+0.05i  0.03+0.00i -0.00+0.02i |
+            |  0.04-0.11i  0.04+0.04i -0.00-0.02i  0.02+0.00i |
+
+A[40][1] =  |  0.12+0.00i  0.04-0.17i -0.21+0.11i  0.13+0.07i |
+            |  0.04+0.17i  0.25+0.00i -0.22-0.26i -0.06+0.19i |
+            | -0.21-0.11i -0.22+0.26i  0.46+0.00i -0.15-0.23i |
+            |  0.13-0.07i -0.06-0.19i -0.15+0.23i  0.16+0.00i |
+
+A[40][2] =  |  0.13+0.00i  0.10-0.19i  0.07-0.04i -0.16-0.17i |
+            |  0.10+0.19i  0.55+0.00i  0.28+0.32i  0.01-0.16i |
+            |  0.07+0.04i  0.28-0.32i  0.50+0.00i  0.16+0.20i |
+            | -0.16+0.17i  0.01+0.16i  0.16-0.20i  0.82+0.00i |
+
+A[41][0] =  |  0.63+0.00i -0.23+0.35i  0.04+0.19i  0.13-0.03i |
+            | -0.23-0.35i  0.28+0.00i  0.09-0.09i -0.07-0.06i |
+            |  0.04-0.19i  0.09+0.09i  0.06+0.00i -0.00-0.04i |
+            |  0.13+0.03i -0.07+0.06i -0.00+0.04i  0.03+0.00i |
+
+A[41][1] =  |  0.17+0.00i  0.01-0.17i  0.23-0.17i -0.09+0.14i |
+            |  0.01+0.17i  0.18+0.00i  0.19+0.23i -0.15-0.09i |
+            |  0.23+0.17i  0.19-0.23i  0.48+0.00i -0.27+0.10i |
+            | -0.09-0.14i -0.15+0.09i -0.27-0.10i  0.17+0.00i |
+
+A[41][2] =  |  0.21+0.00i  0.22-0.18i -0.27-0.03i -0.04-0.11i |
+            |  0.22+0.18i  0.54+0.00i -0.29-0.13i  0.22+0.15i |
+            | -0.27+0.03i -0.29+0.13i  0.45+0.00i  0.27-0.06i |
+            | -0.04+0.11i  0.22-0.15i  0.27+0.06i  0.80+0.00i |
+
+A[42][0] =  |  0.72+0.00i -0.34+0.13i  0.13+0.18i -0.04+0.14i |
+            | -0.34-0.13i  0.18+0.00i -0.03-0.11i  0.04-0.06i |
+            |  0.13-0.18i -0.03+0.11i  0.07+0.00i  0.03+0.04i |
+            | -0.04-0.14i  0.04+0.06i  0.03-0.04i  0.03+0.00i |
+
+A[42][1] =  |  0.20+0.00i  0.23+0.00i -0.11-0.06i -0.04-0.30i |
+            |  0.23-0.00i  0.27+0.00i -0.13-0.07i -0.05-0.35i |
+            | -0.11+0.06i -0.13+0.07i  0.08+0.00i  0.12+0.15i |
+            | -0.04+0.30i -0.05+0.35i  0.12-0.15i  0.46+0.00i |
+
+A[42][2] =  |  0.08+0.00i  0.11-0.13i -0.02-0.12i  0.09+0.16i |
+            |  0.11+0.13i  0.55+0.00i  0.15+0.18i  0.01+0.40i |
+            | -0.02+0.12i  0.15-0.18i  0.85+0.00i -0.15-0.18i |
+            |  0.09-0.16i  0.01-0.40i -0.15+0.18i  0.51+0.00i |
+
+A[43][0] =  |  0.75+0.00i -0.24+0.14i  0.24+0.06i  0.23-0.03i |
+            | -0.24-0.14i  0.10+0.00i -0.06-0.06i -0.08-0.04i |
+            |  0.24-0.06i -0.06+0.06i  0.08+0.00i  0.07-0.03i |
+            |  0.23+0.03i -0.08+0.04i  0.07+0.03i  0.07+0.00i |
+
+A[43][1] =  |  0.02+0.00i -0.03+0.08i -0.05+0.02i -0.08+0.04i |
+            | -0.03-0.08i  0.37+0.00i  0.16+0.19i  0.28+0.29i |
+            | -0.05-0.02i  0.16-0.19i  0.17+0.00i  0.28-0.02i |
+            | -0.08-0.04i  0.28-0.29i  0.28+0.02i  0.44+0.00i |
+
+A[43][2] =  |  0.24+0.00i  0.26-0.22i -0.18-0.08i -0.15-0.01i |
+            |  0.26+0.22i  0.53+0.00i -0.10-0.13i -0.20-0.25i |
+            | -0.18+0.08i -0.10+0.13i  0.74+0.00i -0.35+0.04i |
+            | -0.15+0.01i -0.20+0.25i -0.35-0.04i  0.49+0.00i |
+
+A[44][0] =  |  0.14+0.00i  0.02-0.11i -0.03-0.28i  0.08-0.14i |
+            |  0.02+0.11i  0.10+0.00i  0.23-0.07i  0.12+0.04i |
+            | -0.03+0.28i  0.23+0.07i  0.59+0.00i  0.26+0.19i |
+            |  0.08+0.14i  0.12-0.04i  0.26-0.19i  0.18+0.00i |
+
+A[44][1] =  |  0.26+0.00i -0.12-0.20i -0.02+0.27i  0.25-0.01i |
+            | -0.12+0.20i  0.21+0.00i -0.20-0.14i -0.11+0.20i |
+            | -0.02-0.27i -0.20+0.14i  0.29+0.00i -0.03-0.27i |
+            |  0.25+0.01i -0.11-0.20i -0.03+0.27i  0.25+0.00i |
+
+A[44][2] =  |  0.61+0.00i  0.10+0.31i  0.06+0.01i -0.33+0.14i |
+            |  0.10-0.31i  0.70+0.00i -0.03+0.22i -0.01-0.24i |
+            |  0.06-0.01i -0.03-0.22i  0.12+0.00i -0.23+0.08i |
+            | -0.33-0.14i -0.01+0.24i -0.23-0.08i  0.57+0.00i |
+
+A[45][0] =  |  0.12+0.00i -0.02-0.14i -0.25-0.09i -0.06-0.12i |
+            | -0.02+0.14i  0.17+0.00i  0.14-0.27i  0.15-0.06i |
+            | -0.25+0.09i  0.14+0.27i  0.56+0.00i  0.21+0.19i |
+            | -0.06+0.12i  0.15+0.06i  0.21-0.19i  0.15+0.00i |
+
+A[45][1] =  |  0.40+0.00i -0.09-0.21i  0.31-0.08i -0.20+0.22i |
+            | -0.09+0.21i  0.13+0.00i -0.03+0.18i -0.07-0.15i |
+            |  0.31+0.08i -0.03-0.18i  0.25+0.00i -0.19+0.13i |
+            | -0.20-0.22i -0.07+0.15i -0.19-0.13i  0.21+0.00i |
+
+A[45][2] =  |  0.48+0.00i  0.11+0.36i -0.06+0.16i  0.26-0.10i |
+            |  0.11-0.36i  0.70+0.00i -0.12+0.09i -0.08+0.21i |
+            | -0.06-0.16i -0.12-0.09i  0.19+0.00i -0.02-0.32i |
+            |  0.26+0.10i -0.08-0.21i -0.02+0.32i  0.64+0.00i |
+
+A[46][0] =  |  0.06+0.00i -0.05-0.09i -0.16-0.12i  0.01-0.03i |
+            | -0.05+0.09i  0.19+0.00i  0.35-0.14i  0.04+0.05i |
+            | -0.16+0.12i  0.35+0.14i  0.73+0.00i  0.03+0.13i |
+            |  0.01+0.03i  0.04-0.05i  0.03-0.13i  0.02+0.00i |
+
+A[46][1] =  |  0.27+0.00i  0.20+0.23i -0.03+0.00i  0.10-0.31i |
+            |  0.20-0.23i  0.34+0.00i -0.02+0.03i -0.19-0.31i |
+            | -0.03-0.00i -0.02-0.03i  0.00+0.00i -0.02+0.03i |
+            |  0.10+0.31i -0.19+0.31i -0.02-0.03i  0.38+0.00i |
+
+A[46][2] =  |  0.67+0.00i -0.14-0.14i  0.19+0.12i -0.11+0.34i |
+            | -0.14+0.14i  0.46+0.00i -0.33+0.11i  0.15+0.25i |
+            |  0.19-0.12i -0.33-0.11i  0.27+0.00i -0.02-0.16i |
+            | -0.11-0.34i  0.15-0.25i -0.02+0.16i  0.60+0.00i |
+
+A[47][0] =  |  0.19+0.00i  0.10-0.09i -0.16-0.32i  0.05-0.05i |
+            |  0.10+0.09i  0.11+0.00i  0.07-0.26i  0.05+0.00i |
+            | -0.16+0.32i  0.07+0.26i  0.68+0.00i  0.03+0.13i |
+            |  0.05+0.05i  0.05-0.00i  0.03-0.13i  0.03+0.00i |
+
+A[47][1] =  |  0.20+0.00i -0.00+0.30i -0.09+0.02i -0.18+0.19i |
+            | -0.00-0.30i  0.43+0.00i  0.03+0.13i  0.27+0.25i |
+            | -0.09-0.02i  0.03-0.13i  0.04+0.00i  0.10-0.07i |
+            | -0.18-0.19i  0.27-0.25i  0.10+0.07i  0.32+0.00i |
+
+A[47][2] =  |  0.61+0.00i -0.10-0.20i  0.25+0.30i  0.12-0.14i |
+            | -0.10+0.20i  0.46+0.00i -0.10+0.13i -0.33-0.25i |
+            |  0.25-0.30i -0.10-0.13i  0.28+0.00i -0.13-0.06i |
+            |  0.12+0.14i -0.33+0.25i -0.13+0.06i  0.65+0.00i |
+
+B[0][0] =  |  0.37+0.00i  0.21-0.20i -0.13+0.30i -0.03-0.20i |
+           |  0.21+0.20i  0.24+0.00i -0.24+0.10i  0.09-0.13i |
+           | -0.13-0.30i -0.24-0.10i  0.29+0.00i -0.15+0.10i |
+           | -0.03+0.20i  0.09+0.13i -0.15-0.10i  0.11+0.00i |
+
+B[0][1] =  |  0.04+0.00i -0.07-0.13i -0.06-0.09i  0.06+0.04i |
+           | -0.07+0.13i  0.53+0.00i  0.39-0.06i -0.24+0.14i |
+           | -0.06+0.09i  0.39+0.06i  0.29+0.00i -0.18+0.07i |
+           |  0.06-0.04i -0.24-0.14i -0.18-0.07i  0.14+0.00i |
+
+B[0][2] =  |  0.25+0.00i -0.04+0.14i  0.25+0.04i  0.30+0.12i |
+           | -0.04-0.14i  0.08+0.00i -0.02-0.14i  0.02-0.19i |
+           |  0.25-0.04i -0.02+0.14i  0.25+0.00i  0.31+0.07i |
+           |  0.30-0.12i  0.02+0.19i  0.31-0.07i  0.42+0.00i |
+
+B[0][3] =  |  0.34+0.00i -0.11+0.20i -0.05-0.24i -0.34+0.04i |
+           | -0.11-0.20i  0.15+0.00i -0.12+0.10i  0.13+0.18i |
+           | -0.05+0.24i -0.12-0.10i  0.18+0.00i  0.02-0.24i |
+           | -0.34-0.04i  0.13-0.18i  0.02+0.24i  0.33+0.00i |
+
+B[1][0] =  |  0.11+0.00i  0.22+0.15i  0.00-0.16i  0.01+0.01i |
+           |  0.22-0.15i  0.66+0.00i -0.21-0.32i  0.04+0.01i |
+           |  0.00+0.16i -0.21+0.32i  0.23+0.00i -0.02+0.01i |
+           |  0.01-0.01i  0.04-0.01i -0.02-0.01i  0.00+0.00i |
+
+B[1][1] =  |  0.02+0.00i  0.02-0.00i  0.01+0.03i -0.13-0.05i |
+           |  0.02+0.00i  0.02+0.00i  0.01+0.03i -0.13-0.06i |
+           |  0.01-0.03i  0.01-0.03i  0.05+0.00i -0.16+0.16i |
+           | -0.13+0.05i -0.13+0.06i -0.16-0.16i  0.90+0.00i |
+
+B[1][2] =  |  0.76+0.00i -0.26-0.27i  0.15-0.10i  0.10-0.05i |
+           | -0.26+0.27i  0.18+0.00i -0.02+0.09i -0.01+0.05i |
+           |  0.15+0.10i -0.02-0.09i  0.04+0.00i  0.03+0.00i |
+           |  0.10+0.05i -0.01-0.05i  0.03-0.00i  0.02+0.00i |
+
+B[1][3] =  |  0.11+0.00i  0.02+0.12i -0.16+0.22i  0.02+0.09i |
+           |  0.02-0.12i  0.13+0.00i  0.22+0.20i  0.10-0.01i |
+           | -0.16-0.22i  0.22-0.20i  0.68+0.00i  0.15-0.17i |
+           |  0.02-0.09i  0.10+0.01i  0.15+0.17i  0.08+0.00i |
+
+B[2][0] =  |  0.22+0.00i -0.11+0.19i -0.16-0.26i  0.17-0.02i |
+           | -0.11-0.19i  0.23+0.00i -0.15+0.27i -0.10-0.15i |
+           | -0.16+0.26i -0.15-0.27i  0.42+0.00i -0.10+0.22i |
+           |  0.17+0.02i -0.10+0.15i -0.10-0.22i  0.14+0.00i |
+
+B[2][1] =  |  0.36+0.00i -0.05+0.18i  0.32+0.21i -0.10-0.20i |
+           | -0.05-0.18i  0.10+0.00i  0.07-0.19i -0.09+0.07i |
+           |  0.32-0.21i  0.07+0.19i  0.41+0.00i -0.20-0.12i |
+           | -0.10+0.20i -0.09-0.07i -0.20+0.12i  0.14+0.00i |
+
+B[2][2] =  |  0.30+0.00i  0.23-0.16i -0.05+0.11i  0.10+0.33i |
+           |  0.23+0.16i  0.26+0.00i -0.10+0.06i -0.10+0.30i |
+           | -0.05-0.11i -0.10-0.06i  0.05+0.00i  0.10-0.10i |
+           |  0.10-0.33i -0.10-0.30i  0.10+0.10i  0.39+0.00i |
+
+B[2][3] =  |  0.13+0.00i -0.08-0.22i -0.10-0.07i -0.18-0.11i |
+           | -0.08+0.22i  0.41+0.00i  0.18-0.13i  0.29-0.23i |
+           | -0.10+0.07i  0.18+0.13i  0.12+0.00i  0.20-0.01i |
+           | -0.18+0.11i  0.29+0.23i  0.20+0.01i  0.33+0.00i |
+
+moments 0 1 =  | (0.2492,0.0000) (0.2484,0.0000) (0.2510,0.0000) (0.2513,0.0000) |
+               | (0.2508,0.0000) (0.2516,-0.0000) (0.2484,0.0000) (0.2493,0.0000) |
+               | (0.2480,-0.0000) (0.2491,-0.0000) (0.2517,-0.0000) (0.2512,0.0000) |
+               | (0.2520,-0.0000) (0.2508,0.0000) (0.2489,0.0000) (0.2482,0.0000) |
+
+moments 0 2 =  | (0.2501,0.0000) (0.2502,-0.0000) (0.2501,-0.0000) (0.2497,0.0000) |
+               | (0.2495,0.0000) (0.2496,0.0000) (0.2506,0.0000) (0.2503,0.0000) |
+               | (0.2502,0.0000) (0.2508,0.0000) (0.2490,0.0000) (0.2500,0.0000) |
+               | (0.2502,0.0000) (0.2494,0.0000) (0.2503,0.0000) (0.2501,0.0000) |
+
+moments 1 2 =  | (0.2501,-0.0000) (0.2509,-0.0000) (0.2489,-0.0000) (0.2501,-0.0000) |
+               | (0.2497,0.0000) (0.2501,0.0000) (0.2501,0.0000) (0.2502,-0.0000) |
+               | (0.2504,0.0000) (0.2498,-0.0000) (0.2501,0.0000) (0.2497,-0.0000) |
+               | (0.2498,0.0000) (0.2492,0.0000) (0.2509,0.0000) (0.2501,0.0000) |
+final result = 10.39230 <= 10.39230 (0.00000 away)
