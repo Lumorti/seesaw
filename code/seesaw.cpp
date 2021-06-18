@@ -207,13 +207,50 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 
 }
 
+// Use the jointly-constrained bilinear SDP method TODO
+// https://arxiv.org/pdf/1808.03182.pdf
+void JCB(int d, int n){
+
+	// How many permutations required
+	int numPerm = n*(n-1)/2;
+
+	// The width/height of the X matrix
+	int p = d * d * numPerm;
+
+	// The width/height of the Y matrix
+	int q = d * d;
+
+	// The bases of these matrices 
+	complex2 eta(p*p, complex1(p*p));
+	complex2 xi(q*q, complex1(q*q));
+
+	// The matrix defining the entire problem
+	complex2 Q(p*p, complex1(q*q));
+
+	// Initially just use the standard computation basis
+	std::complex<double> etaFactor = 1 / sqrt(eta.size());
+	for (int i=0; i<eta.size(); i++){
+		eta[i][i] = etaFactor;
+	}
+	std::complex<double> xiFactor = 1 / sqrt(xi.size());
+	for (int i=0; i<xi.size(); i++){
+		xi[i][i] = xiFactor;
+	}
+
+	// Pre-calculate the decomposition U = S Delta T
+
+	// Get the initial hyperrectangle
+
+
+}
+
 // Perform the seesaw method to optimise both A and B 
 void seesawExtended(int d, int n){
 
 	// Start the timer 
 	auto t1 = std::chrono::high_resolution_clock::now();
 
-	// How many permutations
+	// How many permutations required
 	int numPerm = n*(n-1)/2;
 
 	// The inequality value to eventually return
