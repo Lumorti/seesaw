@@ -9,6 +9,9 @@
 #include <chrono>
 #include <math.h>
 
+// Eigen
+#include <Eigen/Dense>
+
 // MOSEK
 #include "fusion.h"
 
@@ -21,6 +24,21 @@ using real1 = std::vector<double>;
 using real2 = std::vector<real1>;
 using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
+
+// Hyperrectangle structure
+class hyperRect {
+	public:
+		real1 l;
+		real1 L;
+		real1 m;
+		real1 M;
+		hyperRect(int a, int b){
+			l = real1(a*a);
+			L = real1(a*a);
+			m = real1(b*b);
+			M = real1(b*b);
+		};
+};
 
 // Useful values
 const double root2 = sqrt(2.0);
@@ -52,6 +70,25 @@ int outputMethod = 1;
 bool restrictRankA = false;
 bool restrictRankB = false;
 
+// Turn an Eigen matix to a std::vector
+complex2 matToVec(Eigen::MatrixXcd mat){
+	complex2 data;
+	for (int i=0; i<mat.size(); i++){
+		Eigen::VectorXcd row = mat.row(i);
+		data.push_back(complex1(row.data(), row.data() + mat.size()));
+	}
+	return data;
+}
+
+// Turn a std::vector into an Eigen matrix
+Eigen::MatrixXcd vecToMat(complex2 data){
+	Eigen::MatrixXcd mat;
+	for (int i=0; i<data.size(); i++){
+		mat.row(i) = Eigen::VectorXcd::Map(&data[i][0], data[i].size());
+	}
+	return mat;
+}
+
 // Dot product of two 1D vectors
 double dot(real1 a1, real1 a2){
 	double toReturn = 0;
@@ -68,6 +105,111 @@ std::complex<double> dot(complex1 a1, complex1 a2){
 		toReturn += a1[i]*std::conj(a2[i]);
 	}
 	return toReturn;
+}
+
+// Get the trace of a matrix (summing the diagonals)
+std::complex<double> trace(complex2 mat){
+	std::complex<double> sum = 0;
+	for (int i=0; i<mat.size(); i++){
+		sum += mat[i][i];
+	}
+	return sum;
+}
+
+// Get the inner product of two matrices 
+std::complex<double> inner(complex2 mat1, complex2 mat2){
+	std::complex<double> sum = 0;
+	for (int i=0; i<mat1.size(); i++){
+		for (int j=0; j<mat1[0].size(); j++){
+			sum += mat1[i][j] * mat2[i][j];
+		}
+	}
+	return sum;
+}
+
+// Transpose a matrix
+complex2 transpose(complex2 mat){
+	complex2 matTran(mat[0].size(), complex1(mat.size()));
+	for (int i=0; i<mat.size(); i++){
+		for (int j=0; j<mat[0].size(); j++){
+			matTran[j][i] = mat[i][j];
+		}
+	}
+	return matTran;
+}
+
+// Multiply two matrices
+complex2 multiply(complex2 mat1, complex2 mat2){
+
+	// Set the dimensions: n x m (x) m x q = n x q
+	complex2 mult(mat1.size(), std::vector<std::complex<double>>(mat2[0].size()));
+
+	// For each element in the new matrix
+	for (int i=0; i<mult.size(); i++){
+		for (int j=0; j<mult[0].size(); j++){
+
+			// Add the row from mat1 times the column from mat2
+			for (int k=0; k<mat2.size(); k++){
+				mult[i][j] += mat1[i][k] * mat2[k][j];
+			}
+
+		}
+	}
+
+	return mult;
+
+}
+
+// Get the output product of two vectors (assuming second is transposed)
+complex2 outer(complex1 mat1, complex1 mat2){
+
+	// Set the dimensions: n x m (x) p x q = np x mq
+	complex2 product(mat1.size(), complex1(mat2.size()));
+
+	// Loop over the first matrix
+	for (int i=0; i<mat1.size(); i++){
+
+		// And also the second
+		for (int j=0; j<mat2.size(); j++){
+
+				// The components of the outer product
+				product[i][j] = mat1[i] * mat2[j];
+
+		}
+
+	}
+
+	// Return this much larger matrix
+	return product;
+
+}
+
+// Get the output product of two matrices
+complex2 outer(complex2 mat1, complex2 mat2){
+
+	// Set the dimensions: n x m (x) p x q = np x mq
+	complex2 product(mat1.size()*mat2.size(), std::vector<std::complex<double>>(mat1[0].size()*mat2[0].size()));
+
+	// Loop over the first matrix
+	for (int i=0; i<mat1.size(); i++){
+		for (int j=0; j<mat1[0].size(); j++){
+
+			// And also the second
+			for (int k=0; k<mat2.size(); k++){
+				for (int l=0; l<mat2[0].size(); l++){
+
+					// The components of the outer product
+					product[i*mat2.size()+k][j*mat2[0].size()+l] = mat1[i][j] * mat2[k][l];
+
+				}
+			}
+
+		}
+	}
+
+	// Return this much larger matrix
+	return product;
+
 }
 
 // Projector operator on two 1D vectors
@@ -111,16 +253,16 @@ void makeOrthonormal(complex2 v, complex2 &u){
 }
 
 // Pretty print a generic 1D vector with length n 
-template <typename type> void prettyPrint(std::string pre, std::vector<type> arr, int n){
+template <typename type> void prettyPrint(std::string pre, std::vector<type> arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(2);
+	std::cout << std::fixed << std::setprecision(3);
 
 	// For the first line, add the pre text
 	std::cout << pre << " | ";
 
 	// For the x values, combine them all on one line
-	for (int x=0; x<n; x++){
+	for (int x=0; x<arr.size(); x++){
 		std::cout << std::setw(5) << arr[x] << " ";
 	}
 
@@ -130,14 +272,14 @@ template <typename type> void prettyPrint(std::string pre, std::vector<type> arr
 }
 
 // Pretty print a generic 2D array with width w and height h
-template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr, int w, int h, int prec=2){
+template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(prec);
+	std::cout << std::fixed << std::setprecision(3);
 
 	// Loop over the array
 	std::string rowText;
-	for (int y=0; y<h; y++){
+	for (int y=0; y<arr.size(); y++){
 
 		// For the first line, add the pre text
 		if (y == 0){
@@ -155,7 +297,7 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 		std::cout << rowText << " | ";
 
 		// For the x values, combine them all on one line
-		for (int x=0; x<w; x++){
+		for (int x=0; x<arr[y].size(); x++){
 			std::cout << std::setw(5) << arr[y][x] << " ";
 		}
 
@@ -167,14 +309,14 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 }
 
 // Pretty print a complex 2D array with width w and height h
-void prettyPrint(std::string pre, complex2 arr, int w, int h){
+void prettyPrint(std::string pre, complex2 arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(2);
+	std::cout << std::fixed << std::setprecision(3);
 
 	// Loop over the array
 	std::string rowText;
-	for (int y=0; y<h; y++){
+	for (int y=0; y<arr.size(); y++){
 
 		// For the first line, add the pre text
 		if (y == 0){
@@ -192,7 +334,7 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 		std::cout << rowText << " | ";
 
 		// For the x values, combine them all on one line
-		for (int x=0; x<w; x++){
+		for (int x=0; x<arr[y].size(); x++){
 			if (std::imag(arr[y][x]) >= 0){
 				std::cout << std::setw(5) << std::real(arr[y][x]) << "+" << std::abs(std::imag(arr[y][x])) << "i ";
 			} else {
@@ -204,6 +346,17 @@ void prettyPrint(std::string pre, complex2 arr, int w, int h){
 		std::cout << "|" << std::endl;
 
 	}
+
+}
+
+// Pretty print a hyperrect
+void prettyPrint(std::string pre, hyperRect arr){
+
+	// Print each section
+	prettyPrint(pre, arr.l);
+	prettyPrint(pre, arr.L);
+	prettyPrint(pre, arr.m);
+	prettyPrint(pre, arr.M);
 
 }
 
@@ -221,26 +374,138 @@ void JCB(int d, int n){
 	int q = d * d;
 
 	// The bases of these matrices 
-	complex2 eta(p*p, complex1(p*p));
-	complex2 xi(q*q, complex1(q*q));
+	complex3 eta(p*p, complex2(p, complex1(p)));
+	complex3 xi(q*q, complex2(q, complex1(q)));
 
-	// The matrix defining the entire problem
+	// The matrix defining the entire problem TODO
 	complex2 Q(p*p, complex1(q*q));
 
-	// Initially just use the standard computation basis
-	std::complex<double> etaFactor = 1 / sqrt(eta.size());
-	for (int i=0; i<eta.size(); i++){
-		eta[i][i] = etaFactor;
+	// Initially just use the standard computation basis TODO
+	std::complex<double> etaFactor = 1.0 / sqrt(eta.size());
+	for (int i=0; i<p; i++){
+		eta[i][i][i] = etaFactor;
 	}
-	std::complex<double> xiFactor = 1 / sqrt(xi.size());
-	for (int i=0; i<xi.size(); i++){
-		xi[i][i] = xiFactor;
+	std::complex<double> xiFactor = 1.0 / sqrt(xi.size());
+	for (int i=0; i<q; i++){
+		xi[i][i][i] = xiFactor;
 	}
 
+	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
+	complex2 U(p*p, complex1(q*q));
+	for (int j=0; j<p*p; j++){
+		for (int k=0; k<q*q; k++){
+			U[j][k] = inner(Q, outer(eta[j], xi[k]));
+		}
+	}
+	
 	// Pre-calculate the decomposition U = S Delta T
+	Eigen::JacobiSVD<Eigen::MatrixXcd> svd(vecToMat(U), Eigen::ComputeFullU | Eigen::ComputeFullV);
+	complex2 Delta = matToVec(svd.singularValues());
+	complex2 S = matToVec(svd.matrixU());
+	complex2 T = matToVec(svd.matrixV());
 
-	// Get the initial hyperrectangle
+	// Dimensions of X and Y for MOSEK
+	auto dimXRef = monty::new_array_ptr(std::vector<int>({p, p}));
+	auto dimYRef = monty::new_array_ptr(std::vector<int>({q, q}));
 
+	// Locations of the start/end of each section for MOSEK
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
+	for (int i=0; i<p; i+=d){
+		startX.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
+		endX.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
+	}
+
+	// Cached things for MOSEK
+	auto zero2DRef = monty::new_array_ptr(real2(p, real1(p)));
+
+	// The initial hyperrectangle
+	hyperRect D(p, q);
+
+	// Get the X sections TODO
+	for (int j=0; j<p*p; j++){
+
+		// Generate C = sum_k S_{kj} eta_k^T
+		real2 Cr(p, real1(p));
+		real2 Ci(p, real1(p));
+		for (int k=0; k<p*p; k++){
+			for (int l=0; l<p; l++){
+				for (int m=0; m<p; m++){
+					Cr[l][m] = std::real(S[k][j] * eta[k][m][l]);
+					Ci[l][m] = std::imag(S[k][j] * eta[k][m][l]);
+				}
+			}
+		}
+		auto CrRef = monty::new_array_ptr(Cr);
+		auto CiRef = monty::new_array_ptr(Ci);
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
+
+		// The matrices to optimise
+		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Sections need to be semidefinite
+		for (int i=0; i<startX.size(); i++){
+			lModel->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										XrOpt->slice(startX[i], endX[i]), 
+										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
+									), 
+									mosek::fusion::Expr::hstack(
+										XiOpt->slice(startX[i], endX[i]),
+										XrOpt->slice(startX[i], endX[i]) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+		}
+
+		// The objective function should be real
+		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(XrOpt, CiRef), mosek::fusion::Expr::mul(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
+
+		// Setup the objective function
+		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, CrRef), mosek::fusion::Expr::dot(XiOpt, CiRef));
+
+		// Minimise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		lModel->solve();
+
+		// Maximise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		lModel->solve();
+
+	}
+
+	// Get the Y sections
+	for (int k=0; k<q*q; k++){
+
+	}
+
+	// Output the initial hyperrect
+	prettyPrint("initial hyperrect", D);
+	
+	// Get the initial upper/lower bounds
+	double upperBound = 0;
+	double lowerBound = 0;
+
+	// The tolerance until deemed to have converged
+	double epsilon = 1e-5;
+	
+	// Keep looping until the bounds match
+	while (upperBound - lowerBound > epsilon){
+		break;
+
+		// Choose a lower-bounding hyperrectangle
+
+		// Branch at this point 
+
+		// Compute the bounds for each branched hyperrectangle
+
+		// Update the best upper/lower bounds
+
+	}
+
+	// Return the best
 
 }
 
@@ -464,9 +729,9 @@ void seesawExtended(int d, int n){
 
 	// Output before
 	if (verbosity >= 2){
-		prettyPrint("before Br = ", Br, numMeasureB*numOutcomeB, d*d);
+		prettyPrint("before Br = ", Br);
 		std::cout << std::endl;
-		prettyPrint("before Bi = ", Bi, numMeasureB*numOutcomeB, d*d);
+		prettyPrint("before Bi = ", Bi);
 		std::cout << std::endl;
 	}
 
@@ -685,7 +950,7 @@ void seesawExtended(int d, int n){
 			}
 			if (verbosity >= 2){
 				std::cout << std::endl;
-				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
+				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a]);
 			}
 		}
 	}
@@ -699,7 +964,7 @@ void seesawExtended(int d, int n){
 			}
 			if (verbosity >= 2){
 				std::cout << std::endl;
-				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
+				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b]);
 			}
 		}
 	}
@@ -723,7 +988,7 @@ void seesawExtended(int d, int n){
 			// Output if allowed
 			if (verbosity >= 2){
 				std::cout << std::endl;
-				prettyPrint("moments " + std::to_string(y1) + " " + std::to_string(y2) + " = ", momentB, numOutcomeB, numOutcomeB, 4);
+				prettyPrint("moments " + std::to_string(y1) + " " + std::to_string(y2) + " = ", momentB);
 			}
 
 		}
@@ -890,11 +1155,11 @@ void seesaw(int d, int n){
 
 	// Output the raw arrays
 	if (verbosity >= 2){
-		prettyPrint("C = ", C, numOutcomeB*numMeasureB, numOutcomeA*numMeasureA);
+		prettyPrint("C = ", C);
 		std::cout << std::endl;
-		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+		prettyPrint("Ar =", Ar);
 		std::cout << std::endl;
-		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+		prettyPrint("Ai =", Ai);
 		std::cout << std::endl;
 	}
 
@@ -1129,13 +1394,13 @@ void seesaw(int d, int n){
 	// Output the raw arrays
 	if (verbosity >= 2){
 		std::cout << std::endl;
-		prettyPrint("Ar =", Ar, d*d, numMeasureA*numOutcomeA);
+		prettyPrint("Ar =", Ar);
 		std::cout << std::endl;
-		prettyPrint("Ai =", Ai, d*d, numMeasureA*numOutcomeA);
+		prettyPrint("Ai =", Ai);
 		std::cout << std::endl;
-		prettyPrint("Br =", Br, numMeasureB*numOutcomeB, d*d);
+		prettyPrint("Br =", Br);
 		std::cout << std::endl;
-		prettyPrint("Bi =", Bi, numMeasureB*numOutcomeB, d*d);
+		prettyPrint("Bi =", Bi);
 		std::cout << std::endl;
 	}
 
@@ -1147,7 +1412,7 @@ void seesaw(int d, int n){
 				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
 			}
 			if (verbosity > 2){
-				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a], d, d);
+				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a]);
 				std::cout << std::endl;
 			}
 		}
@@ -1161,7 +1426,7 @@ void seesaw(int d, int n){
 				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB+b];
 			}
 			if (verbosity >= 2){
-				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b], d, d);
+				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b]);
 				std::cout << std::endl;
 			}
 		}
@@ -1206,6 +1471,7 @@ int main (int argc, char ** argv) {
 			std::cout << "-v               verbose output" << std::endl;
 			std::cout << "-c               use the CHSH method" << std::endl;
 			std::cout << "-e               use the extended method" << std::endl;
+			std::cout << "-j               use the JCB method" << std::endl;
 			std::cout << "-r               start completely random without G-S" << std::endl;
 			std::cout << "-s [str]         set the random seed" << std::endl;
 			std::cout << "-f [int*2] [dbl] set part of the initial array" << std::endl;
@@ -1284,6 +1550,10 @@ int main (int argc, char ** argv) {
 		} else if (arg == "-c") {
 			method = 1;
 
+		// Use the JCB method
+		} else if (arg == "-j") {
+			method = 3;
+
 		// Use the extended method
 		} else if (arg == "-e") {
 			method = 2;
@@ -1299,6 +1569,8 @@ int main (int argc, char ** argv) {
 	// Perform the seesaw
 	if (method == 2){
 		seesawExtended(d, n);
+	} else if (method == 3){
+		JCB(d, n);
 	} else {
 		seesaw(d, n);
 	}
