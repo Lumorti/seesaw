@@ -73,7 +73,7 @@ bool restrictRankB = false;
 // Turn an Eigen matix to a std::vector
 complex2 matToVec(Eigen::MatrixXcd mat){
 	complex2 data;
-	for (int i=0; i<mat.size(); i++){
+	for (int i=0; i<mat.rows(); i++){
 		Eigen::VectorXcd row = mat.row(i);
 		data.push_back(complex1(row.data(), row.data() + mat.size()));
 	}
@@ -82,7 +82,7 @@ complex2 matToVec(Eigen::MatrixXcd mat){
 
 // Turn a std::vector into an Eigen matrix
 Eigen::MatrixXcd vecToMat(complex2 data){
-	Eigen::MatrixXcd mat;
+	Eigen::MatrixXcd mat(data.size(), data[0].size());
 	for (int i=0; i<data.size(); i++){
 		mat.row(i) = Eigen::VectorXcd::Map(&data[i][0], data[i].size());
 	}
@@ -360,7 +360,158 @@ void prettyPrint(std::string pre, hyperRect arr){
 
 }
 
-// Use the jointly-constrained bilinear SDP method TODO
+// Get the initial hyperrectangle bounding the set TODO
+hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, complex2 &eta, complex2 &xi){
+
+	// Dimensions of X and Y for MOSEK
+	auto dimXRef = monty::new_array_ptr(std::vector<int>({p, p}));
+	auto dimYRef = monty::new_array_ptr(std::vector<int>({q, q}));
+
+	// Locations of the start/end of each section for MOSEK
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
+	for (int i=0; i<p; i+=d){
+		startX.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
+		endX.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
+	}
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startY;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endY;
+	for (int i=0; i<q; i+=d){
+		startY.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
+		endY.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
+	}
+
+	// Cached things for MOSEK
+	auto zero2DRefX = monty::new_array_ptr(real2(p, real1(p)));
+	auto zero2DRefY = monty::new_array_ptr(real2(q, real1(q)));
+
+	// Get the X sections
+	for (int j=0; j<p*p; j++){
+
+		// Generate C = sum_k S_{kj} eta_k^T
+		real2 Cr(p, real1(p));
+		real2 Ci(p, real1(p));
+		for (int k=0; k<p*p; k++){
+			for (int l=0; l<p; l++){
+				for (int m=0; m<p; m++){
+					Cr[l][m] = std::real(S[k][j] * eta[k][m][l]);
+					Ci[l][m] = std::imag(S[k][j] * eta[k][m][l]);
+				}
+			}
+		}
+		auto CrRef = monty::new_array_ptr(Cr);
+		auto CiRef = monty::new_array_ptr(Ci);
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
+
+		// The matrices to optimise
+		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Sections need to be semidefinite
+		for (int i=0; i<startX.size(); i++){
+			lModel->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										XrOpt->slice(startX[i], endX[i]), 
+										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
+									), 
+									mosek::fusion::Expr::hstack(
+										XiOpt->slice(startX[i], endX[i]),
+										XrOpt->slice(startX[i], endX[i]) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+		}
+
+		// The objective function should be real
+		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(XrOpt, CiRef), mosek::fusion::Expr::mul(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRefX));
+
+		// Setup the objective function
+		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, CrRef), mosek::fusion::Expr::dot(XiOpt, CiRef));
+
+		// Minimise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		lModel->solve();
+		D.l[j] = lModel->primalObjValue();
+
+		// Maximise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		lModel->solve();
+		D.L[j] = lModel->primalObjValue();
+
+	}
+
+	// Get the Y sections
+	for (int k=0; k<q*q; k++){
+
+		// Generate C = sum_j T_{jk} xi_j^T
+		real2 Cr(q, real1(q));
+		real2 Ci(q, real1(q));
+		for (int j=0; j<q*q; j++){
+			for (int l=0; l<q; l++){
+				for (int m=0; m<q; m++){
+					Cr[l][m] = std::real(T[j][k] * xi[j][m][l]);
+					Ci[l][m] = std::imag(T[j][k] * xi[j][m][l]);
+				}
+			}
+		}
+		auto CrRef = monty::new_array_ptr(Cr);
+		auto CiRef = monty::new_array_ptr(Ci);
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
+
+		// The matrices to optimise
+		mosek::fusion::Variable::t YrOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t YiOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Sections need to be semidefinite
+		for (int i=0; i<startY.size(); i++){
+			mModel->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										YrOpt->slice(startY[i], endY[i]), 
+										mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
+									), 
+									mosek::fusion::Expr::hstack(
+										YiOpt->slice(startY[i], endY[i]),
+										YrOpt->slice(startY[i], endY[i]) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+		}
+
+		// The objective function should be real
+		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(YrOpt, CiRef), mosek::fusion::Expr::mul(YiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRefY));
+
+		// Setup the objective function
+		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, CrRef), mosek::fusion::Expr::dot(YiOpt, CiRef));
+
+		// Minimise the object function
+		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		mModel->solve();
+		D.m[k] = mModel->primalObjValue();
+
+		// Maximise the object function
+		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		mModel->solve();
+		D.M[k] = mModel->primalObjValue();
+
+	}
+
+}
+
+// Compute the upper and lower bounds for a hyperrectangle TODO
+void computeBounds(){
+
+
+}
+
+// Branch a hyperrectangle at a certain point TODO
+void branchHyperrectangle(){
+
+
+}
+
+// Use the jointly-constrained bilinear SDP method
 // https://arxiv.org/pdf/1808.03182.pdf
 void JCB(int d, int n){
 
@@ -404,108 +555,87 @@ void JCB(int d, int n){
 	complex2 S = matToVec(svd.matrixU());
 	complex2 T = matToVec(svd.matrixV());
 
-	// Dimensions of X and Y for MOSEK
-	auto dimXRef = monty::new_array_ptr(std::vector<int>({p, p}));
-	auto dimYRef = monty::new_array_ptr(std::vector<int>({q, q}));
-
-	// Locations of the start/end of each section for MOSEK
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
-	for (int i=0; i<p; i+=d){
-		startX.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
-		endX.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
-	}
-
-	// Cached things for MOSEK
-	auto zero2DRef = monty::new_array_ptr(real2(p, real1(p)));
-
-	// The initial hyperrectangle
+	// The initial hyperrectangle TOOD
 	hyperRect D(p, q);
+	D = boundingRectangle(p, q, d, S, T, eta, xi);
 
-	// Get the X sections TODO
-	for (int j=0; j<p*p; j++){
-
-		// Generate C = sum_k S_{kj} eta_k^T
-		real2 Cr(p, real1(p));
-		real2 Ci(p, real1(p));
-		for (int k=0; k<p*p; k++){
-			for (int l=0; l<p; l++){
-				for (int m=0; m<p; m++){
-					Cr[l][m] = std::real(S[k][j] * eta[k][m][l]);
-					Ci[l][m] = std::imag(S[k][j] * eta[k][m][l]);
-				}
-			}
-		}
-		auto CrRef = monty::new_array_ptr(Cr);
-		auto CiRef = monty::new_array_ptr(Ci);
-
-		// Create the MOSEK model 
-		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
-
-		// The matrices to optimise
-		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-		// Sections need to be semidefinite
-		for (int i=0; i<startX.size(); i++){
-			lModel->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										XrOpt->slice(startX[i], endX[i]), 
-										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
-									), 
-									mosek::fusion::Expr::hstack(
-										XiOpt->slice(startX[i], endX[i]),
-										XrOpt->slice(startX[i], endX[i]) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-		}
-
-		// The objective function should be real
-		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(XrOpt, CiRef), mosek::fusion::Expr::mul(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRef));
-
-		// Setup the objective function
-		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, CrRef), mosek::fusion::Expr::dot(XiOpt, CiRef));
-
-		// Minimise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
-		lModel->solve();
-
-		// Maximise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
-		lModel->solve();
-
-	}
-
-	// Get the Y sections
-	for (int k=0; k<q*q; k++){
-
-	}
-
-	// Output the initial hyperrect
+	// Output various things
+	prettyPrint("Q = ", Q);
+	prettyPrint("U = ", U);
+	prettyPrint("Delta = ", Delta);
+	prettyPrint("S = ", S);
+	prettyPrint("T = ", T);
 	prettyPrint("initial hyperrect", D);
 	
-	// Get the initial upper/lower bounds
-	double upperBound = 0;
-	double lowerBound = 0;
-
 	// The tolerance until deemed to have converged
 	double epsilon = 1e-5;
+
+	// Init things here to prevent re-init each iterations
+	double lowerBound = 0;
+	double upperBound = 0;
+	hyperRect Omega;
+	std::vector<hyperRect> newRects;
+
+	// Get the initial value for the upper/lower bounds
+	computeBounds(lowerBound, upperBound, D);
 	
+	// Keep track of the remaining hyperrects and their bounds
+	std::vector<hyperRect> P = {D};
+	std::vector<double> lowerBounds = {lowerBound};
+	double bestLowerBound = lowerBound;
+	double bestUpperBound = upperBound;
+
 	// Keep looping until the bounds match
-	while (upperBound - lowerBound > epsilon){
+	while (bestUpperBound - bestLowerBound > epsilon){
+
+		// Choose the lower-bounding hyperrectangle
+		Omega = P[0];
+
+		// Get the splitting point for this hyperrect TODO
+
+		// Create the four new hyperrectangles
+		branchHyperrectangle(Omega, newRects);
+
+		// Remove the current rect
+		P.erase(P.begin(), P.begin()+1);
+		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
+
+		// For each of the new hyperrectangles
+		for (int j=0; j<4; j++){
+
+			// Get the bounds
+			computeBounds(lowerBound, upperBound, newRects[j]);
+
+			// Is it the new best?
+			if (lowerBound > bestLowerBound){
+				bestLowerBound = lowerBound;
+			}
+			if (upperBound < bestUpperBound){
+				bestUpperBound = upperBound;
+			}
+
+			// Place it into the queue
+			newLoc = lowerBounds.size()-1;
+			for (int i=0; i<lowerBounds.size(); i++){
+				if (lowerBound < lowerBounds[i]){
+					newLoc = i;
+					break;
+				}
+			}
+			P.insert(P.begin()+newLoc, newRects[j]);
+			lowerBounds.insert(lowerBounds.begin()+newLoc, lowerBound);
+
+		}
+
+		// Temporary TODO
 		break;
-
-		// Choose a lower-bounding hyperrectangle
-
-		// Branch at this point 
-
-		// Compute the bounds for each branched hyperrectangle
-
-		// Update the best upper/lower bounds
 
 	}
 
 	// Return the best
+	std::cout << "Final results:" << std::endl;
+	std::cout << "Best upper bound: " << bestUpperBound << std::endl;
+	std::cout << "Best lower bound: " << bestLowerBound << std::endl;
 
 }
 
