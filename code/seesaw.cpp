@@ -353,15 +353,18 @@ void prettyPrint(std::string pre, complex2 arr){
 void prettyPrint(std::string pre, hyperRect arr){
 
 	// Print each section
-	prettyPrint(pre, arr.l);
-	prettyPrint(pre, arr.L);
-	prettyPrint(pre, arr.m);
-	prettyPrint(pre, arr.M);
+	prettyPrint(pre + ", l ", arr.l);
+	prettyPrint(pre + ", L ", arr.L);
+	prettyPrint(pre + ", m ", arr.m);
+	prettyPrint(pre + ", M ", arr.M);
 
 }
 
-// Get the initial hyperrectangle bounding the set TODO
-hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, complex2 &eta, complex2 &xi){
+// Get the initial hyperrectangle bounding the set
+hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, complex3 &eta, complex3 &xi){
+
+	// Hyperrect to construct
+	hyperRect toReturn(p, q);
 
 	// Dimensions of X and Y for MOSEK
 	auto dimXRef = monty::new_array_ptr(std::vector<int>({p, p}));
@@ -432,12 +435,12 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 		// Minimise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
 		lModel->solve();
-		D.l[j] = lModel->primalObjValue();
+		toReturn.l[j] = lModel->primalObjValue();
 
 		// Maximise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
 		lModel->solve();
-		D.L[j] = lModel->primalObjValue();
+		toReturn.L[j] = lModel->primalObjValue();
 
 	}
 
@@ -488,26 +491,79 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 		// Minimise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
 		mModel->solve();
-		D.m[k] = mModel->primalObjValue();
+		toReturn.m[k] = mModel->primalObjValue();
 
 		// Maximise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
 		mModel->solve();
-		D.M[k] = mModel->primalObjValue();
+		toReturn.M[k] = mModel->primalObjValue();
 
 	}
+
+	// Return the final hyperrectangle
+	return toReturn;
 
 }
 
 // Compute the upper and lower bounds for a hyperrectangle TODO
-void computeBounds(){
+void computeBounds(int p, int q, int d, complex2 &S, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
 
 
 }
 
-// Branch a hyperrectangle at a certain point TODO
-void branchHyperrectangle(){
+// Branch a hyperrectangle at a certain point
+std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real1 &v, real1 &w){
 
+	// List of 4 hyperrectangles to return
+	std::vector<hyperRect> toReturn(4, hyperRect(p, q));
+
+	// Number of non-zero single values
+	int K = std::min(p*p, q*q);
+
+	// Determine the index which gives the biggest difference
+	int I = -1;
+	double bestVal = -1;
+	for (int i=0; i<K; i++){
+		double val = std::max(Omega.m[i]*v[i] + Omega.l[i]*w[i] - Omega.l[i]*Omega.m[i],
+			                           Omega.M[i]*v[i] + Omega.L[i]*w[i] - Omega.L[i]*Omega.M[i]) - v[i]*w[i];
+		if (std::abs(val) > std::abs(bestVal)){
+			bestVal = val;
+			I = i;
+		}
+	}
+
+	// Rectangles are the same apart from the special index I
+	toReturn[0] = Omega;
+	toReturn[1] = Omega;
+	toReturn[2] = Omega;
+	toReturn[3] = Omega;
+
+	// For the first hyperrectangle
+	toReturn[0].l[I] = Omega.l[I];
+	toReturn[0].L[I] = v[I];
+	toReturn[0].m[I] = Omega.m[I];
+	toReturn[0].M[I] = w[I];
+
+	// For the second hyperrectangle
+	toReturn[1].l[I] = v[I];
+	toReturn[1].L[I] = Omega.L[I];
+	toReturn[1].m[I] = Omega.m[I];
+	toReturn[1].M[I] = w[I];
+
+	// For the second hyperrectangle
+	toReturn[2].l[I] = v[I];
+	toReturn[2].L[I] = Omega.L[I];
+	toReturn[2].m[I] = w[I];
+	toReturn[2].M[I] = Omega.M[I];
+
+	// For the second hyperrectangle
+	toReturn[1].l[I] = Omega.l[I];
+	toReturn[1].L[I] = v[I];
+	toReturn[1].m[I] = w[I];
+	toReturn[1].M[I] = Omega.M[I];
+
+	// Return these 4 hyperrectangles
+	return toReturn;
 
 }
 
@@ -573,14 +629,19 @@ void JCB(int d, int n){
 	// Init things here to prevent re-init each iterations
 	double lowerBound = 0;
 	double upperBound = 0;
-	hyperRect Omega;
+	hyperRect Omega(p, q);
 	std::vector<hyperRect> newRects;
+	real1 x(p*p);
+	real1 y(q*q);
+	int newLoc = -1;
 
 	// Get the initial value for the upper/lower bounds
-	computeBounds(lowerBound, upperBound, D);
+	computeBounds(p, q, d, S, T, eta, xi, D, lowerBound, upperBound, x, y);
 	
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
+	real2 xCoords = {x};
+	real2 yCoords = {y};
 	std::vector<double> lowerBounds = {lowerBound};
 	double bestLowerBound = lowerBound;
 	double bestUpperBound = upperBound;
@@ -588,23 +649,28 @@ void JCB(int d, int n){
 	// Keep looping until the bounds match
 	while (bestUpperBound - bestLowerBound > epsilon){
 
+		// Temporary TODO
+		break;
+
 		// Choose the lower-bounding hyperrectangle
 		Omega = P[0];
-
-		// Get the splitting point for this hyperrect TODO
+		x = xCoords[0];
+		y = yCoords[0];
 
 		// Create the four new hyperrectangles
-		branchHyperrectangle(Omega, newRects);
+		newRects = branchHyperrectangle(p, q, Omega, x, y);
 
 		// Remove the current rect
 		P.erase(P.begin(), P.begin()+1);
+		xCoords.erase(xCoords.begin(), xCoords.begin()+1);
+		yCoords.erase(yCoords.begin(), yCoords.begin()+1);
 		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
 
 		// For each of the new hyperrectangles
 		for (int j=0; j<4; j++){
 
 			// Get the bounds
-			computeBounds(lowerBound, upperBound, newRects[j]);
+			computeBounds(p, q, d, S, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 
 			// Is it the new best?
 			if (lowerBound > bestLowerBound){
@@ -626,9 +692,6 @@ void JCB(int d, int n){
 			lowerBounds.insert(lowerBounds.begin()+newLoc, lowerBound);
 
 		}
-
-		// Temporary TODO
-		break;
 
 	}
 
