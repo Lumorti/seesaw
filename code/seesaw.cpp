@@ -44,8 +44,11 @@ class hyperRect {
 const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
+// How many decimals to output for the matrices
+int precision = 2;
+
 // Seesaw iterations
-const int numIters = 100000;
+int numIters = 100000;
 
 // Convergence criteria
 double tol = 1e-8;
@@ -256,7 +259,7 @@ void makeOrthonormal(complex2 v, complex2 &u){
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(3);
+	std::cout << std::fixed << std::setprecision(precision);
 
 	// For the first line, add the pre text
 	std::cout << pre << " | ";
@@ -275,7 +278,7 @@ template <typename type> void prettyPrint(std::string pre, std::vector<type> arr
 template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(3);
+	std::cout << std::fixed << std::setprecision(precision);
 
 	// Loop over the array
 	std::string rowText;
@@ -312,7 +315,7 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 void prettyPrint(std::string pre, complex2 arr){
 
 	// Used fixed precision
-	std::cout << std::fixed << std::setprecision(3);
+	std::cout << std::fixed << std::setprecision(precision);
 
 	// Loop over the array
 	std::string rowText;
@@ -508,6 +511,27 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 // Compute the upper and lower bounds for a hyperrectangle TODO
 void computeBounds(int p, int q, int d, complex2 &S, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
 
+	// Define some useful quantities
+	
+	// Create the model
+	
+	// Objective function
+	
+	// X and Y must be PSD
+
+	// X constraint
+	
+	// Y constraint
+
+	// Combined constraint
+
+	// Solve 
+
+	// Extract the data
+
+	// Calculate the upper bound from this too
+
+	// Return everything
 
 }
 
@@ -584,18 +608,48 @@ void JCB(int d, int n){
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	complex3 xi(q*q, complex2(q, complex1(q)));
 
+	// Assemble eta to be orthonormal and self-adjoint
+	int next = 0;
+	for (int i=0; i<p; i++){
+		for (int j=i; j<p; j++){
+
+			// Self-adjoint 1's
+			eta[next][i][j] = 1;
+			eta[next][j][i] = 1;
+			next += 1;
+
+			// Self-adjoint i's
+			if (i != j){
+				eta[next][i][j] = im;
+				eta[next][j][i] = -im;
+				next += 1;
+			}
+
+		}
+	}
+
+	// Assemble xi to be orthonormal and self-adjoint
+	next = 0;
+	for (int i=0; i<q; i++){
+		for (int j=i; j<q; j++){
+
+			// Self-adjoint 1's
+			xi[next][i][j] = 1;
+			xi[next][j][i] = 1;
+			next += 1;
+
+			// Self-adjoint i's
+			if (i != j){
+				xi[next][i][j] = im;
+				xi[next][j][i] = -im;
+				next += 1;
+			}
+
+		}
+	}
+
 	// The matrix defining the entire problem TODO
 	complex2 Q(p*p, complex1(q*q));
-
-	// Initially just use the standard computation basis TODO
-	std::complex<double> etaFactor = 1.0 / sqrt(eta.size());
-	for (int i=0; i<p; i++){
-		eta[i][i][i] = etaFactor;
-	}
-	std::complex<double> xiFactor = 1.0 / sqrt(xi.size());
-	for (int i=0; i<q; i++){
-		xi[i][i][i] = xiFactor;
-	}
 
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
 	complex2 U(p*p, complex1(q*q));
@@ -606,22 +660,30 @@ void JCB(int d, int n){
 	}
 	
 	// Pre-calculate the decomposition U = S Delta T
-	Eigen::JacobiSVD<Eigen::MatrixXcd> svd(vecToMat(U), Eigen::ComputeFullU | Eigen::ComputeFullV);
+	std::cout << "Pre-calculating decomposition..." << std::endl;
+	Eigen::BDCSVD<Eigen::MatrixXcd> svd(vecToMat(U), Eigen::ComputeFullU | Eigen::ComputeFullV);
 	complex2 Delta = matToVec(svd.singularValues());
 	complex2 S = matToVec(svd.matrixU());
 	complex2 T = matToVec(svd.matrixV());
 
-	// The initial hyperrectangle TOOD
+	// The initial hyperrectangle
+	std::cout << "Calculating initial hyperrrectangle..." << std::endl;
 	hyperRect D(p, q);
 	D = boundingRectangle(p, q, d, S, T, eta, xi);
 
 	// Output various things
 	prettyPrint("Q = ", Q);
+	std::cout << std::endl;
 	prettyPrint("U = ", U);
+	std::cout << std::endl;
 	prettyPrint("Delta = ", Delta);
+	std::cout << std::endl;
 	prettyPrint("S = ", S);
+	std::cout << std::endl;
 	prettyPrint("T = ", T);
+	std::cout << std::endl;
 	prettyPrint("initial hyperrect", D);
+	std::cout << std::endl;
 	
 	// The tolerance until deemed to have converged
 	double epsilon = 1e-5;
@@ -647,9 +709,10 @@ void JCB(int d, int n){
 	double bestUpperBound = upperBound;
 
 	// Keep looping until the bounds match
+	int iter = 0;
 	while (bestUpperBound - bestLowerBound > epsilon){
 
-		// Temporary TODO
+		// Temporary
 		break;
 
 		// Choose the lower-bounding hyperrectangle
@@ -666,11 +729,17 @@ void JCB(int d, int n){
 		yCoords.erase(yCoords.begin(), yCoords.begin()+1);
 		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
 
+		// Per-iteration output
+		std::cout << "-------------------------------------" << std::endl;
+		std::cout << "        Iteration: " << iter << std::endl;
+		std::cout << "-------------------------------------" << std::endl;
+
 		// For each of the new hyperrectangles
 		for (int j=0; j<4; j++){
 
 			// Get the bounds
 			computeBounds(p, q, d, S, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
+			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
 			// Is it the new best?
 			if (lowerBound > bestLowerBound){
@@ -693,12 +762,21 @@ void JCB(int d, int n){
 
 		}
 
+		// Output the best so far
+		std::cout << "Lower bound: " << bestLowerBound << std::endl;
+		std::cout << "Upper bound: " << bestUpperBound << std::endl;
+		std::cout << "-------------------------------------" << std::endl;
+
+		// Iteration finished
+		iter += 1;
+
 	}
 
 	// Return the best
-	std::cout << "Final results:" << std::endl;
-	std::cout << "Best upper bound: " << bestUpperBound << std::endl;
-	std::cout << "Best lower bound: " << bestLowerBound << std::endl;
+	std::cout << "    Final results" << std::endl;
+	std::cout << "-------------------------------------" << std::endl;
+	std::cout << "Lower bound: " << bestLowerBound << std::endl;
+	std::cout << "Upper bound: " << bestUpperBound << std::endl;
 
 }
 
