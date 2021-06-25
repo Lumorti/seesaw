@@ -508,30 +508,250 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 
 }
 
-// Compute the upper and lower bounds for a hyperrectangle TODO
-void computeBounds(int p, int q, int d, complex2 &S, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
+// Compute the upper and lower bounds for a hyperrectangle
+void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
 
 	// Define some useful quantities
-	
-	// Create the model
-	
-	// Objective function
-	
-	// X and Y must be PSD
+	int K = std::min(p*p, q*q);
 
-	// X constraint
+	// Assemble the combined S and Eta matrices
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
+	for (int j=0; j<p*p; j++){
+		real2 SEtar(p, real1(p));
+		real2 SEtai(p, real1(p));
+		for (int k=0; k<p*p; k++){
+			for (int i1=0; i1<p; i1++){
+				for (int i2=0; i2<p; i2++){
+					SEtar[i1][i2] += std::real(S[k][j]*eta[k][i2][i1]);
+					SEtai[i1][i2] += std::imag(S[k][j]*eta[k][i2][i1]);
+				}
+			}
+		}
+		SEtarRef.push_back(monty::new_array_ptr(SEtar));
+		SEtaiRef.push_back(monty::new_array_ptr(SEtai));
+	}
+
+	// Assemble the combined T and Xi matrices
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXirRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXiiRef;
+	for (int j=0; j<q*q; j++){
+		real2 TXir(q, real1(q));
+		real2 TXii(q, real1(q));
+		for (int k=0; k<q*q; k++){
+			for (int i1=0; i1<q; i1++){
+				for (int i2=0; i2<q; i2++){
+					TXir[i1][i2] += std::real(T[k][j]*xi[k][i2][i1]);
+					TXii[i1][i2] += std::imag(T[k][j]*xi[k][i2][i1]);
+				}
+			}
+		}
+		TXirRef.push_back(monty::new_array_ptr(TXir));
+		TXiiRef.push_back(monty::new_array_ptr(TXii));
+	}
+
+	// Assemble the G matrices
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> GlrRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> GliRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> GLrRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> GLiRef;
+	for (int j=0; j<K; j++){
+		real2 Glr(p, real1(p));
+		real2 Gli(p, real1(p));
+		real2 GLr(p, real1(p));
+		real2 GLi(p, real1(p));
+		for (int k=0; k<p*p; k++){
+			for (int i1=0; i1<p; i1++){
+				for (int i2=0; i2<p; i2++){
+					Glr[i1][i2] += std::real(Delta[j][j]*rect.m[j]*S[k][j]*eta[k][i2][i1]);
+					Gli[i1][i2] += std::imag(Delta[j][j]*rect.m[j]*S[k][j]*eta[k][i2][i1]);
+					GLr[i1][i2] += std::real(Delta[j][j]*rect.M[j]*S[k][j]*eta[k][i2][i1]);
+					GLi[i1][i2] += std::imag(Delta[j][j]*rect.M[j]*S[k][j]*eta[k][i2][i1]);
+				}
+			}
+		}
+		GlrRef.push_back(monty::new_array_ptr(Glr));
+		GliRef.push_back(monty::new_array_ptr(Gli));
+		GLrRef.push_back(monty::new_array_ptr(GLr));
+		GLiRef.push_back(monty::new_array_ptr(GLi));
+	}
+
+	// Assemble the H matrices
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> HmrRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> HmiRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> HMrRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> HMiRef;
+	for (int j=0; j<K; j++){
+		real2 Hmr(q, real1(q));
+		real2 Hmi(q, real1(q));
+		real2 HMr(q, real1(q));
+		real2 HMi(q, real1(q));
+		for (int l=0; l<q*q; l++){
+			for (int i1=0; i1<q; i1++){
+				for (int i2=0; i2<q; i2++){
+					Hmr[i1][i2] += std::real(Delta[j][j]*rect.m[j]*S[l][j]*eta[l][i2][i1]);
+					Hmi[i1][i2] += std::imag(Delta[j][j]*rect.m[j]*S[l][j]*eta[l][i2][i1]);
+					HMr[i1][i2] += std::real(Delta[j][j]*rect.M[j]*S[l][j]*eta[l][i2][i1]);
+					HMi[i1][i2] += std::imag(Delta[j][j]*rect.M[j]*S[l][j]*eta[l][i2][i1]);
+				}
+			}
+		}
+		HmrRef.push_back(monty::new_array_ptr(Hmr));
+		HmiRef.push_back(monty::new_array_ptr(Hmi));
+		HMrRef.push_back(monty::new_array_ptr(HMr));
+		HMiRef.push_back(monty::new_array_ptr(HMi));
+	}
+
+	// Assemble the s vectors
+	std::vector<double> slm;
+	std::vector<double> sLM;
+	for (int j=0; j<K; j++){
+		slm.push_back(std::real(Delta[j][j]*rect.l[j]*rect.m[j]));
+		sLM.push_back(std::real(Delta[j][j]*rect.L[j]*rect.M[j]));
+	}
+
+	// Dimensions of X and Y for MOSEK
+	auto dimXRef = monty::new_array_ptr(std::vector<int>({p, p}));
+	auto dimYRef = monty::new_array_ptr(std::vector<int>({q, q}));
+
+	// Locations of the start/end of each section for MOSEK
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
+	for (int i=0; i<p; i+=d){
+		startX.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
+		endX.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
+	}
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startY;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endY;
+	for (int i=0; i<q; i+=d){
+		startY.push_back(monty::new_array_ptr(std::vector<int>({i, i})));
+		endY.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
+	}
+
+	// Create the MOSEK model
+	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
 	
-	// Y constraint
+	// The matrices to optimise
+	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t XiOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t YrOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// Objective function
+	model->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sum(rOpt));
+	
+	// Sections of X need to be semidefinite
+	for (int i=0; i<startX.size(); i++){
+		model->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									XrOpt->slice(startX[i], endX[i]), 
+									mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									XiOpt->slice(startX[i], endX[i]),
+									XrOpt->slice(startX[i], endX[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+	}
+
+	// Sections of Y need to be semidefinite
+	for (int i=0; i<startY.size(); i++){
+		model->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									YrOpt->slice(startY[i], endY[i]), 
+									mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									YiOpt->slice(startY[i], endY[i]),
+									YrOpt->slice(startY[i], endY[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+	}
+
+	// X constraints
+	for (int j=0; j<p*p; j++){
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), mosek::fusion::Domain::inRange(rect.l[j], rect.L[j]));
+		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0));
+	}
+	
+	// Y constraints
+	for (int k=0; k<q*q; k++){
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k])), mosek::fusion::Domain::inRange(rect.m[k], rect.M[k]));
+		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[k]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[k])), mosek::fusion::Domain::equalsTo(0));
+	}
 
 	// Combined constraint
+	for (int j=0; j<K; j++){
+
+		// For l and m
+		model->constraint(mosek::fusion::Expr::add(
+					         mosek::fusion::Expr::add(
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GlrRef[j]), 
+														 mosek::fusion::Expr::dot(XiOpt, GliRef[j])), 
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HmrRef[j]), 
+														 mosek::fusion::Expr::dot(YiOpt, HmiRef[j]))), 
+						  rOpt->index(j)), mosek::fusion::Domain::lessThan(slm[j]));
+
+		// For L and M
+		model->constraint(mosek::fusion::Expr::add(
+					         mosek::fusion::Expr::add(
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GLrRef[j]), 
+														 mosek::fusion::Expr::dot(XiOpt, GLiRef[j])), 
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HMrRef[j]), 
+														 mosek::fusion::Expr::dot(YiOpt, HMiRef[j]))), 
+						  rOpt->index(j)), mosek::fusion::Domain::lessThan(sLM[j]));
+
+	}
 
 	// Solve 
+	model->solve();
 
 	// Extract the data
+	lowerBound = model->primalObjValue();
+	auto tempXr = *(XrOpt->level());
+	auto tempXi = *(XiOpt->level());
+	auto tempYr = *(XrOpt->level());
+	auto tempYi = *(XiOpt->level());
+	auto tempR = *(rOpt->level());
+	complex2 X(p, complex1(p));
+	complex2 Y(q, complex1(q));
+	for (int i=0; i<p*p; i++){
+		X[i/p][i%p] = tempXr[i] + im*tempXi[i];
+	}
+	for (int i=0; i<q*q; i++){
+		Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+	}
+
+	// Convert these to the vector rep
+	for (int i=0; i<p*p; i++){
+		complex2 SEta(p, complex1(p));
+		for (int k=0; k<p*p; k++){
+			for (int i1=0; i1<p; i1++){
+				for (int i2=0; i2<q; i2++){
+					SEta[i1][i2] += S[k][i]*eta[k][i2][i1];
+				}
+			}
+		}
+		x[i] = std::real(inner(X, SEta));
+	}
+	for (int i=0; i<q*q; i++){
+		complex2 TXi(q, complex1(q));
+		for (int k=0; k<q*q; k++){
+			for (int i1=0; i1<q; i1++){
+				for (int i2=0; i2<q; i2++){
+					TXi[i1][i2] += T[k][i]*xi[k][i2][i1];
+				}
+			}
+		}
+		y[i] = std::real(inner(Y, TXi));
+	}
 
 	// Calculate the upper bound from this too
-
-	// Return everything
+	upperBound = 0;
+	for (int j=0; j<K; j++){
+		upperBound += std::real(Delta[j][j]*x[j]*y[j]);
+	}
 
 }
 
@@ -698,7 +918,7 @@ void JCB(int d, int n){
 	int newLoc = -1;
 
 	// Get the initial value for the upper/lower bounds
-	computeBounds(p, q, d, S, T, eta, xi, D, lowerBound, upperBound, x, y);
+	computeBounds(p, q, d, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
 	
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
@@ -738,7 +958,7 @@ void JCB(int d, int n){
 		for (int j=0; j<4; j++){
 
 			// Get the bounds
-			computeBounds(p, q, d, S, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
+			computeBounds(p, q, d, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
 			// Is it the new best?
