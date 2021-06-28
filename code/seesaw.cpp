@@ -78,7 +78,7 @@ complex2 matToVec(Eigen::MatrixXcd mat){
 	complex2 data;
 	for (int i=0; i<mat.rows(); i++){
 		Eigen::VectorXcd row = mat.row(i);
-		data.push_back(complex1(row.data(), row.data() + mat.size()));
+		data.push_back(complex1(row.data(), row.data() + mat.cols()));
 	}
 	return data;
 }
@@ -121,6 +121,17 @@ std::complex<double> trace(complex2 mat){
 
 // Get the inner product of two matrices 
 std::complex<double> inner(complex2 mat1, complex2 mat2){
+	std::complex<double> sum = 0;
+	for (int i=0; i<mat1.size(); i++){
+		for (int j=0; j<mat1[0].size(); j++){
+			sum += mat1[i][j] * mat2[i][j];
+		}
+	}
+	return sum;
+}
+
+// Get the inner product of two matrices 
+std::complex<double> inner(real2 mat1, complex2 mat2){
 	std::complex<double> sum = 0;
 	for (int i=0; i<mat1.size(); i++){
 		for (int j=0; j<mat1[0].size(); j++){
@@ -366,7 +377,7 @@ void prettyPrint(std::string pre, hyperRect arr){
 // Get the initial hyperrectangle bounding the set
 hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, complex3 &eta, complex3 &xi){
 
-	// Hyperrect to construct
+	// Hyperrect to construct TODO check all of this
 	hyperRect toReturn(p, q);
 
 	// Dimensions of X and Y for MOSEK
@@ -430,7 +441,7 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 		}
 
 		// The objective function should be real
-		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(XrOpt, CiRef), mosek::fusion::Expr::mul(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRefX));
+		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, CiRef), mosek::fusion::Expr::dot(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0));
 
 		// Setup the objective function
 		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, CrRef), mosek::fusion::Expr::dot(XiOpt, CiRef));
@@ -486,7 +497,7 @@ hyperRect boundingRectangle(int p, int q, int d, complex2 &S, complex2 &T, compl
 		}
 
 		// The objective function should be real
-		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::mul(YrOpt, CiRef), mosek::fusion::Expr::mul(YiOpt, CrRef)), mosek::fusion::Domain::equalsTo(zero2DRefY));
+		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, CiRef), mosek::fusion::Expr::dot(YiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0));
 
 		// Setup the objective function
 		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, CrRef), mosek::fusion::Expr::dot(YiOpt, CiRef));
@@ -514,7 +525,7 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 	// Define some useful quantities
 	int K = std::min(p*p, q*q);
 
-	// Assemble the combined S and Eta matrices
+	// Assemble the combined S and Eta matrices 
 	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
 	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
 	for (int j=0; j<p*p; j++){
@@ -523,8 +534,8 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		for (int k=0; k<p*p; k++){
 			for (int i1=0; i1<p; i1++){
 				for (int i2=0; i2<p; i2++){
-					SEtar[i1][i2] += std::real(S[k][j]*eta[k][i2][i1]);
-					SEtai[i1][i2] += std::imag(S[k][j]*eta[k][i2][i1]);
+					SEtar[i1][i2] += std::real(S[k][j]*eta[k][i1][i2]);
+					SEtai[i1][i2] += std::imag(S[k][j]*eta[k][i1][i2]);
 				}
 			}
 		}
@@ -541,8 +552,8 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		for (int k=0; k<q*q; k++){
 			for (int i1=0; i1<q; i1++){
 				for (int i2=0; i2<q; i2++){
-					TXir[i1][i2] += std::real(T[k][j]*xi[k][i2][i1]);
-					TXii[i1][i2] += std::imag(T[k][j]*xi[k][i2][i1]);
+					TXir[i1][i2] += std::real(T[k][j]*xi[k][i1][i2]);
+					TXii[i1][i2] += std::imag(T[k][j]*xi[k][i1][i2]);
 				}
 			}
 		}
@@ -563,10 +574,10 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		for (int k=0; k<p*p; k++){
 			for (int i1=0; i1<p; i1++){
 				for (int i2=0; i2<p; i2++){
-					Glr[i1][i2] += std::real(Delta[j][j]*rect.m[j]*S[k][j]*eta[k][i2][i1]);
-					Gli[i1][i2] += std::imag(Delta[j][j]*rect.m[j]*S[k][j]*eta[k][i2][i1]);
-					GLr[i1][i2] += std::real(Delta[j][j]*rect.M[j]*S[k][j]*eta[k][i2][i1]);
-					GLi[i1][i2] += std::imag(Delta[j][j]*rect.M[j]*S[k][j]*eta[k][i2][i1]);
+					Glr[i1][i2] += std::real(Delta[j][0]*rect.m[j]*S[k][j]*eta[k][i1][i2]);
+					Gli[i1][i2] += std::imag(Delta[j][0]*rect.m[j]*S[k][j]*eta[k][i1][i2]);
+					GLr[i1][i2] += std::real(Delta[j][0]*rect.M[j]*S[k][j]*eta[k][i1][i2]);
+					GLi[i1][i2] += std::imag(Delta[j][0]*rect.M[j]*S[k][j]*eta[k][i1][i2]);
 				}
 			}
 		}
@@ -589,10 +600,10 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		for (int l=0; l<q*q; l++){
 			for (int i1=0; i1<q; i1++){
 				for (int i2=0; i2<q; i2++){
-					Hmr[i1][i2] += std::real(Delta[j][j]*rect.m[j]*S[l][j]*eta[l][i2][i1]);
-					Hmi[i1][i2] += std::imag(Delta[j][j]*rect.m[j]*S[l][j]*eta[l][i2][i1]);
-					HMr[i1][i2] += std::real(Delta[j][j]*rect.M[j]*S[l][j]*eta[l][i2][i1]);
-					HMi[i1][i2] += std::imag(Delta[j][j]*rect.M[j]*S[l][j]*eta[l][i2][i1]);
+					Hmr[i1][i2] += std::real(Delta[j][0]*rect.m[j]*S[l][j]*eta[l][i1][i2]);
+					Hmi[i1][i2] += std::imag(Delta[j][0]*rect.m[j]*S[l][j]*eta[l][i1][i2]);
+					HMr[i1][i2] += std::real(Delta[j][0]*rect.M[j]*S[l][j]*eta[l][i1][i2]);
+					HMi[i1][i2] += std::imag(Delta[j][0]*rect.M[j]*S[l][j]*eta[l][i1][i2]);
 				}
 			}
 		}
@@ -606,8 +617,8 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 	std::vector<double> slm;
 	std::vector<double> sLM;
 	for (int j=0; j<K; j++){
-		slm.push_back(std::real(Delta[j][j]*rect.l[j]*rect.m[j]));
-		sLM.push_back(std::real(Delta[j][j]*rect.L[j]*rect.M[j]));
+		slm.push_back(std::real(Delta[j][0]*rect.l[j]*rect.m[j]));
+		sLM.push_back(std::real(Delta[j][0]*rect.L[j]*rect.M[j]));
 	}
 
 	// Dimensions of X and Y for MOSEK
@@ -628,18 +639,23 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		endY.push_back(monty::new_array_ptr(std::vector<int>({i+d, i+d})));
 	}
 
+	// TODO
+	prettyPrint("slm = ", slm);
+	std::cout << std::endl;
+	prettyPrint("sLM = ", sLM);
+
 	// Create the MOSEK model
 	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
 	
 	// The matrices to optimise
-	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t XiOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t YrOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::symmetric(mosek::fusion::Domain::inRange(-5.0, 5.0)));
+	mosek::fusion::Variable::t XiOpt = model->variable(dimXRef, mosek::fusion::Domain::symmetric(mosek::fusion::Domain::inRange(-5.0, 5.0)));
+	mosek::fusion::Variable::t YrOpt = model->variable(dimYRef, mosek::fusion::Domain::symmetric(mosek::fusion::Domain::inRange(-5.0, 5.0)));
+	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::symmetric(mosek::fusion::Domain::inRange(-5.0, 5.0)));
+	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::inRange(-5.0, 5.0));
 
 	// Objective function
-	model->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sum(rOpt));
+	model->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::sum(rOpt));
 	
 	// Sections of X need to be semidefinite
 	for (int i=0; i<startX.size(); i++){
@@ -653,6 +669,11 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 									XrOpt->slice(startX[i], endX[i]) 
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// And have trace 1
+		//model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+		//model->constraint(mosek::fusion::Expr::sum(XiOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+
 	}
 
 	// Sections of Y need to be semidefinite
@@ -667,15 +688,44 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 									YrOpt->slice(startY[i], endY[i]) 
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// And have trace 1
+		//model->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+		//model->constraint(mosek::fusion::Expr::sum(YiOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+
 	}
 
-	// X constraints
+	// Specify the zero elements of X
+	for (int i=0; i<p; i++){
+		for (int j=0; j<p; j++){
+			if (j > i+d || j < i){
+				model->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(XrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(XiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
+			}
+		}
+	}
+
+	// Specify the zero elements of Y
+	for (int i=0; i<q; i++){
+		for (int j=0; j<q; j++){
+			if (j > i+d || j < i){
+				model->constraint(YrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(YiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(YrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
+				model->constraint(YiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
+			}
+		}
+	}
+
+	// Special X constraints
 	for (int j=0; j<p*p; j++){
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), mosek::fusion::Domain::inRange(rect.l[j], rect.L[j]));
 		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0));
 	}
 	
-	// Y constraints
+	// Special Y constraints
 	for (int k=0; k<q*q; k++){
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k])), mosek::fusion::Domain::inRange(rect.m[k], rect.M[k]));
 		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[k]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[k])), mosek::fusion::Domain::equalsTo(0));
@@ -686,7 +736,7 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 
 		// For l and m
 		model->constraint(mosek::fusion::Expr::add(
-					         mosek::fusion::Expr::add(
+							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GlrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GliRef[j])), 
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HmrRef[j]), 
@@ -695,7 +745,7 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 
 		// For L and M
 		model->constraint(mosek::fusion::Expr::add(
-					         mosek::fusion::Expr::add(
+							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GLrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GLiRef[j])), 
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HMrRef[j]), 
@@ -716,11 +766,15 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 	auto tempR = *(rOpt->level());
 	complex2 X(p, complex1(p));
 	complex2 Y(q, complex1(q));
+	real1 r(K);
 	for (int i=0; i<p*p; i++){
 		X[i/p][i%p] = tempXr[i] + im*tempXi[i];
 	}
 	for (int i=0; i<q*q; i++){
 		Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+	}
+	for (int i=0; i<K; i++){
+		r[i] = tempR[i];
 	}
 
 	// Convert these to the vector rep
@@ -747,10 +801,17 @@ void computeBounds(int p, int q, int d, complex2 &S, complex2 &Delta, complex2 &
 		y[i] = std::real(inner(Y, TXi));
 	}
 
+	std::cout << std::endl;
+	prettyPrint("X = ", X);
+	std::cout << std::endl;
+	prettyPrint("Y = ", Y);
+	std::cout << std::endl;
+	prettyPrint("r = ", r);
+
 	// Calculate the upper bound from this too
 	upperBound = 0;
 	for (int j=0; j<K; j++){
-		upperBound += std::real(Delta[j][j]*x[j]*y[j]);
+		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
 	}
 
 }
@@ -794,17 +855,17 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	toReturn[1].m[I] = Omega.m[I];
 	toReturn[1].M[I] = w[I];
 
-	// For the second hyperrectangle
+	// For the third hyperrectangle
 	toReturn[2].l[I] = v[I];
 	toReturn[2].L[I] = Omega.L[I];
 	toReturn[2].m[I] = w[I];
 	toReturn[2].M[I] = Omega.M[I];
 
-	// For the second hyperrectangle
-	toReturn[1].l[I] = Omega.l[I];
-	toReturn[1].L[I] = v[I];
-	toReturn[1].m[I] = w[I];
-	toReturn[1].M[I] = Omega.M[I];
+	// For the fourth hyperrectangle
+	toReturn[3].l[I] = Omega.l[I];
+	toReturn[3].L[I] = v[I];
+	toReturn[3].m[I] = w[I];
+	toReturn[3].M[I] = Omega.M[I];
 
 	// Return these 4 hyperrectangles
 	return toReturn;
@@ -818,17 +879,24 @@ void JCB(int d, int n){
 	// How many permutations required
 	int numPerm = n*(n-1)/2;
 
+	// How many measurements/outcomes for each party
+	int numMeasureA = d*d*numPerm;
+	int numOutcomeA = 3;
+	int numMeasureB = n;
+	int numOutcomeB = d;
+
 	// The width/height of the X matrix
-	int p = d * d * numPerm;
+	int p = d * numMeasureA * numOutcomeA;
 
 	// The width/height of the Y matrix
-	int q = d * d;
+	int q = d * numMeasureB * numOutcomeB;
 
 	// The bases of these matrices 
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	complex3 xi(q*q, complex2(q, complex1(q)));
 
 	// Assemble eta to be orthonormal and self-adjoint
+	std::cout << "Constructing eta..." << std::endl;
 	int next = 0;
 	for (int i=0; i<p; i++){
 		for (int j=i; j<p; j++){
@@ -849,6 +917,7 @@ void JCB(int d, int n){
 	}
 
 	// Assemble xi to be orthonormal and self-adjoint
+	std::cout << "Constructing xi..." << std::endl;
 	next = 0;
 	for (int i=0; i<q; i++){
 		for (int j=i; j<q; j++){
@@ -868,10 +937,45 @@ void JCB(int d, int n){
 		}
 	}
 
-	// The matrix defining the entire problem TODO
-	complex2 Q(p*p, complex1(q*q));
+	// The matrix defining the entire problem 
+	real2 Q(p*q, real1(p*q, 0.0));
+
+	// The coefficients for the block-diagonals of Q
+	std::cout << "Constructing Q..." << std::endl;
+	real1 blockQ(numMeasureA*numOutcomeA*numMeasureB*numOutcomeB);
+	int nextInd = 0;
+	int perB = numMeasureB*numOutcomeB;
+	for (int i=0; i<numMeasureB; i++){
+		for (int j=i+1; j<numMeasureB; j++){
+			for (int b1=0; b1<numOutcomeB; b1++){
+				for (int b2=0; b2<numOutcomeB; b2++){
+					blockQ[nextInd+i*numOutcomeB+b1] = 1;
+					blockQ[nextInd+j*numOutcomeB+b2] = -1;
+					blockQ[nextInd+perB+i*numOutcomeB+b1] = -1;
+					blockQ[nextInd+perB+j*numOutcomeB+b2] = 1;
+					nextInd += numOutcomeA*perB;
+				}
+			}
+		}
+	}
+
+	// Construct Q
+	for (int i=0; i<blockQ.size(); i++){
+		for (int j1=0; j1<d; j1++){
+			for (int j2=0; j2<d; j2++){
+				for (int k1=0; k1<d; k1++){
+					for (int k2=0; k2<d; k2++){
+						if (j1 == j2 && k1 == k2){
+							Q[i*d*d+j1*d+j2][i*d*d+k1*d+k2] = blockQ[i];
+						}
+					}
+				}
+			}
+		}
+	}
 
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
+	std::cout << "Calculating U from Q..." << std::endl;
 	complex2 U(p*p, complex1(q*q));
 	for (int j=0; j<p*p; j++){
 		for (int k=0; k<q*q; k++){
@@ -891,7 +995,19 @@ void JCB(int d, int n){
 	hyperRect D(p, q);
 	D = boundingRectangle(p, q, d, S, T, eta, xi);
 
-	// Output various things
+	// Output various things TODO
+	std::cout << "p = " << p << std::endl;
+	std::cout << "q = " << q << std::endl;
+	std::cout << "eta shape = " << eta.size() << " x " << eta[0].size() << " x " << eta[0][0].size() << std::endl;
+	std::cout << "xi shape = " << xi.size() << " x " << xi[0].size() << " x " << xi[0][0].size() << std::endl;
+	std::cout << "Q shape = " << Q.size() << " x " << Q[0].size() << std::endl;
+	std::cout << "U shape = " << U.size() << " x " << U[0].size() << std::endl;
+	std::cout << "Delta shape = " << Delta.size() << " x " << Delta[0].size() << std::endl;
+	std::cout << "S shape = " << S.size() << " x " << S[0].size() << std::endl;
+	std::cout << "T shape = " << T.size() << " x " << T[0].size() << std::endl;
+	std::cout << std::endl;
+	prettyPrint("blockQ = ", blockQ);
+	std::cout << std::endl;
 	prettyPrint("Q = ", Q);
 	std::cout << std::endl;
 	prettyPrint("U = ", U);
@@ -904,7 +1020,7 @@ void JCB(int d, int n){
 	std::cout << std::endl;
 	prettyPrint("initial hyperrect", D);
 	std::cout << std::endl;
-	
+
 	// The tolerance until deemed to have converged
 	double epsilon = 1e-5;
 
@@ -918,7 +1034,9 @@ void JCB(int d, int n){
 	int newLoc = -1;
 
 	// Get the initial value for the upper/lower bounds
+	std::cout << "Calculating initial bounds..." << std::endl;
 	computeBounds(p, q, d, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
+	std::cout << "For initial hyperrect: " << lowerBound << " " << upperBound << std::endl;
 	
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
@@ -931,9 +1049,6 @@ void JCB(int d, int n){
 	// Keep looping until the bounds match
 	int iter = 0;
 	while (bestUpperBound - bestLowerBound > epsilon){
-
-		// Temporary
-		break;
 
 		// Choose the lower-bounding hyperrectangle
 		Omega = P[0];
@@ -958,6 +1073,7 @@ void JCB(int d, int n){
 		for (int j=0; j<4; j++){
 
 			// Get the bounds
+			std::cout << "Computing bounds for hyperrect " << j << "..." << std::endl;
 			computeBounds(p, q, d, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
@@ -978,6 +1094,8 @@ void JCB(int d, int n){
 				}
 			}
 			P.insert(P.begin()+newLoc, newRects[j]);
+			xCoords.insert(xCoords.begin()+newLoc, x);
+			yCoords.insert(yCoords.begin()+newLoc, y);
 			lowerBounds.insert(lowerBounds.begin()+newLoc, lowerBound);
 
 		}
@@ -985,7 +1103,6 @@ void JCB(int d, int n){
 		// Output the best so far
 		std::cout << "Lower bound: " << bestLowerBound << std::endl;
 		std::cout << "Upper bound: " << bestUpperBound << std::endl;
-		std::cout << "-------------------------------------" << std::endl;
 
 		// Iteration finished
 		iter += 1;
@@ -993,6 +1110,7 @@ void JCB(int d, int n){
 	}
 
 	// Return the best
+	std::cout << "-------------------------------------" << std::endl;
 	std::cout << "    Final results" << std::endl;
 	std::cout << "-------------------------------------" << std::endl;
 	std::cout << "Lower bound: " << bestLowerBound << std::endl;
