@@ -757,7 +757,7 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
 	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::inRange(-1.0, 1.0));
 
-	// Objective function
+	// Objective function TODO max or min
 	model->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::sum(rOpt));
 	
 	// Sections of X need to be semidefinite
@@ -773,12 +773,12 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-		// And be anti-symmetric
-		model->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
 		// And have trace 1
 		//model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
 		//model->constraint(mosek::fusion::Expr::sum(XiOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+
+		// The imaginary part should be anti-symmetric
+		model->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
 	}
 
@@ -795,12 +795,12 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-		// And be anti-symmetric
-		model->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
 		// And have trace 1
 		//model->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
 		//model->constraint(mosek::fusion::Expr::sum(YiOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+		
+		// The imaginary part should be anti-symmetric
+		model->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
 	}
 
@@ -848,8 +848,6 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 			if (j > i+d || j < i){
 				model->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 				model->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
-				model->constraint(XrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
-				model->constraint(XiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
 			}
 		}
 	}
@@ -860,8 +858,6 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 			if (j > i+d || j < i){
 				model->constraint(YrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 				model->constraint(YiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
-				model->constraint(YrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
-				model->constraint(YiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
 			}
 		}
 	}
@@ -878,11 +874,11 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[k]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[k])), mosek::fusion::Domain::equalsTo(0));
 	}
 
-	// Combined constraint
+	// Combined constraint TODO plus or minus
 	for (int j=0; j<K; j++){
 
 		// For l and m
-		model->constraint(mosek::fusion::Expr::add(
+		model->constraint(mosek::fusion::Expr::sub(
 							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GlrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GliRef[j])), 
@@ -890,14 +886,30 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 														 mosek::fusion::Expr::dot(YiOpt, HmiRef[j]))), 
 						  rOpt->index(j)), mosek::fusion::Domain::lessThan(slm[j]));
 
-		// For L and M
+		// Imag of this should be zero
 		model->constraint(mosek::fusion::Expr::add(
+							mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, GliRef[j]), 
+													 mosek::fusion::Expr::dot(XiOpt, GlrRef[j])), 
+							mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, HmiRef[j]), 
+													 mosek::fusion::Expr::dot(YiOpt, HmrRef[j]))), 
+						  mosek::fusion::Domain::equalsTo(0));
+
+		// For L and M
+		model->constraint(mosek::fusion::Expr::sub(
 							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GLrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GLiRef[j])), 
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HMrRef[j]), 
 														 mosek::fusion::Expr::dot(YiOpt, HMiRef[j]))), 
 						  rOpt->index(j)), mosek::fusion::Domain::lessThan(sLM[j]));
+
+		// Imag of this should be zero
+		model->constraint(mosek::fusion::Expr::add(
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GLiRef[j]), 
+														 mosek::fusion::Expr::dot(XiOpt, GLrRef[j])), 
+								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HMiRef[j]), 
+														 mosek::fusion::Expr::dot(YiOpt, HMrRef[j]))), 
+						  mosek::fusion::Domain::equalsTo(0));
 
 	}
 
@@ -952,6 +964,10 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 	prettyPrint("X = ", X);
 	std::cout << std::endl;
 	prettyPrint("Y = ", Y);
+	std::cout << std::endl;
+	prettyPrint("x = ", x);
+	std::cout << std::endl;
+	prettyPrint("y = ", y);
 	std::cout << std::endl;
 	prettyPrint("r = ", r);
 
@@ -1246,8 +1262,6 @@ void JCB(int d, int n){
 			lowerBounds.insert(lowerBounds.begin()+newLoc, lowerBound);
 
 		}
-
-		// TODO make the bounds realistic 
 
 		// Output the best so far
 		std::cout << "Lower bound: " << bestLowerBound << std::endl;
