@@ -481,8 +481,6 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 				if (j > i+d || j < i){
 					lModel->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 					lModel->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
-					lModel->constraint(XrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
-					lModel->constraint(XiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
 				}
 			}
 		}
@@ -499,14 +497,14 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		toReturn.l[j] = lModel->primalObjValue();
 
 		// Extract the X values just to see TODO
-		auto tempXr = *(XrOpt->level());
-		auto tempXi = *(XiOpt->level());
-		complex2 X(p, complex1(p));
-		for (int i=0; i<p*p; i++){
-			X[i/p][i%p] = tempXr[i] + im*tempXi[i];
-		}
-		prettyPrint("X after rect = ", X);
-		std::cout << std::endl;
+		//auto tempXr = *(XrOpt->level());
+		//auto tempXi = *(XiOpt->level());
+		//complex2 X(p, complex1(p));
+		//for (int i=0; i<p*p; i++){
+			//X[i/p][i%p] = tempXr[i] + im*tempXi[i];
+		//}
+		//prettyPrint("X after rect = ", X);
+		//std::cout << std::endl;
 
 		// Maximise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
@@ -579,8 +577,6 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 				if (j > i+d || j < i){
 					mModel->constraint(YrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 					mModel->constraint(YiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
-					mModel->constraint(YrOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
-					mModel->constraint(YiOpt->index(j,i), mosek::fusion::Domain::equalsTo(0));
 				}
 			}
 		}
@@ -597,14 +593,14 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		toReturn.m[k] = mModel->primalObjValue();
 
 		// Extract the Y values just to see TODO
-		auto tempYr = *(YrOpt->level());
-		auto tempYi = *(YiOpt->level());
-		complex2 Y(q, complex1(q));
-		for (int i=0; i<q*q; i++){
-			Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
-		}
-		prettyPrint("Y after rect = ", Y);
-		std::cout << std::endl;
+		//auto tempYr = *(YrOpt->level());
+		//auto tempYi = *(YiOpt->level());
+		//complex2 Y(q, complex1(q));
+		//for (int i=0; i<q*q; i++){
+			//Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+		//}
+		//prettyPrint("Y after rect = ", Y);
+		//std::cout << std::endl;
 
 		// Maximise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
@@ -619,7 +615,25 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 }
 
 // Compute the upper and lower bounds for a hyperrectangle
-void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, complex2 &S, complex2 &Delta, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
+void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
+
+	// How many permutations required
+	int numPerm = n*(n-1)/2;
+
+	// How many measurements/outcomes for each party
+	int numMeasureA = d*d*numPerm;
+	int numOutcomeA = 3;
+	int numMeasureB = n;
+	int numOutcomeB = d;
+
+	// The width/height of the X matrix
+	int p = d * numMeasureA * numOutcomeA;
+
+	// The width/height of the Y matrix
+	int q = d * numMeasureB * numOutcomeB;
+
+	// Amount to remove from each
+	double sub = sqrt(d*(d-1))*numPerm;
 
 	// Define some useful quantities
 	int K = std::min(p*p, q*q);
@@ -758,7 +772,7 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::inRange(-1.0, 1.0));
 
 	// Objective function TODO max or min
-	model->objective(mosek::fusion::ObjectiveSense::Maximize, mosek::fusion::Expr::sum(rOpt));
+	model->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::neg(mosek::fusion::Expr::sum(rOpt)));
 	
 	// Sections of X need to be semidefinite
 	for (int i=0; i<startX.size(); i++){
@@ -878,13 +892,13 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 	for (int j=0; j<K; j++){
 
 		// For l and m
-		model->constraint(mosek::fusion::Expr::sub(
+		model->constraint(mosek::fusion::Expr::sub(rOpt->index(j),
 							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GlrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GliRef[j])), 
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HmrRef[j]), 
-														 mosek::fusion::Expr::dot(YiOpt, HmiRef[j]))), 
-						  rOpt->index(j)), mosek::fusion::Domain::lessThan(slm[j]));
+														 mosek::fusion::Expr::dot(YiOpt, HmiRef[j])))
+						  ), mosek::fusion::Domain::greaterThan(-slm[j]));
 
 		// Imag of this should be zero
 		model->constraint(mosek::fusion::Expr::add(
@@ -895,13 +909,13 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 						  mosek::fusion::Domain::equalsTo(0));
 
 		// For L and M
-		model->constraint(mosek::fusion::Expr::sub(
+		model->constraint(mosek::fusion::Expr::sub(rOpt->index(j),
 							 mosek::fusion::Expr::add(
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, GLrRef[j]), 
 														 mosek::fusion::Expr::dot(XiOpt, GLiRef[j])), 
 								mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, HMrRef[j]), 
-														 mosek::fusion::Expr::dot(YiOpt, HMiRef[j]))), 
-						  rOpt->index(j)), mosek::fusion::Domain::lessThan(sLM[j]));
+														 mosek::fusion::Expr::dot(YiOpt, HMiRef[j])))
+						  ), mosek::fusion::Domain::greaterThan(-sLM[j]));
 
 		// Imag of this should be zero
 		model->constraint(mosek::fusion::Expr::add(
@@ -976,6 +990,10 @@ void computeBounds(int p, int q, int d, int numOutcomeA, int numOutcomeB, comple
 	for (int j=0; j<K; j++){
 		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
 	}
+
+	// Scale the bounds to match the normal function
+	lowerBound = -(-lowerBound / d - sub);
+	upperBound = -(-upperBound / d - sub);
 
 }
 
@@ -1103,7 +1121,7 @@ void JCB(int d, int n){
 	// The matrix defining the entire problem 
 	real2 Q(p*q, real1(p*q, 0.0));
 
-	// The coefficients for the block-diagonals of Q
+	// The coefficients for the block-diagonals of Q TODO made negative
 	std::cout << "Constructing Q..." << std::endl;
 	real1 blockQ(numMeasureA*numOutcomeA*numMeasureB*numOutcomeB);
 	int nextInd = 0;
@@ -1198,7 +1216,7 @@ void JCB(int d, int n){
 
 	// Get the initial value for the upper/lower bounds
 	std::cout << "Calculating initial bounds..." << std::endl;
-	computeBounds(p, q, d, numOutcomeA, numOutcomeB, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
+	computeBounds(d, n, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
 	std::cout << "For initial hyperrect: " << lowerBound << " " << upperBound << std::endl;
 	
 	// Keep track of the remaining hyperrects and their bounds
@@ -1237,7 +1255,7 @@ void JCB(int d, int n){
 
 			// Get the bounds
 			std::cout << "Computing bounds for hyperrect " << j << "..." << std::endl;
-			computeBounds(p, q, d, numOutcomeA, numOutcomeB, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
+			computeBounds(d, n, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
 			// Is it the new best?
