@@ -51,7 +51,7 @@ const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
 // How many decimals to output for the matrices
-int precision = 2;
+int precision = 3;
 
 // Seesaw iterations
 int numIters = 100000;
@@ -454,7 +454,7 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 									)
 							   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-			// And be anti-symmetric
+			// And be anti-symmetric TODO why nothing on diags?
 			lModel->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
 			// And have trace 1
@@ -478,9 +478,9 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		// Specify the zero elements of X
 		for (int i=0; i<p; i++){
 			for (int j=0; j<p; j++){
-				if (j > i+d || j < i){
-					lModel->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
-					lModel->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
+				if (j >= std::floor(i/d)*d+d || j < std::floor(i/d)*d){
+					lModel->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0.0));
+					lModel->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0.0));
 				}
 			}
 		}
@@ -489,14 +489,14 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, CrRef), mosek::fusion::Expr::dot(XiOpt, CiRef));
 
 		// The objective function should be real
-		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, CiRef), mosek::fusion::Expr::dot(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0));
+		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, CiRef), mosek::fusion::Expr::dot(XiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0.0));
 
 		// Minimise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
 		lModel->solve();
 		toReturn.l[j] = lModel->primalObjValue();
 
-		// Extract the X values just to see TODO
+		// Extract the X values just to see
 		if (verbosity >= 2){
 			auto tempXr = *(XrOpt->level());
 			auto tempXi = *(XiOpt->level());
@@ -504,7 +504,7 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 			for (int i=0; i<p*p; i++){
 				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
 			}
-			prettyPrint("X after rect = ", X);
+			prettyPrint("X after rect l = ", X);
 			std::cout << std::endl;
 		}
 
@@ -512,6 +512,18 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
 		lModel->solve();
 		toReturn.L[j] = lModel->primalObjValue();
+
+		// Extract the X values just to see
+		if (verbosity >= 2){
+			auto tempXr = *(XrOpt->level());
+			auto tempXi = *(XiOpt->level());
+			complex2 X(p, complex1(p));
+			for (int i=0; i<p*p; i++){
+				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
+			}
+			prettyPrint("X after rect L = ", X);
+			std::cout << std::endl;
+		}
 
 	}
 
@@ -576,18 +588,18 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		// Specify the zero elements of Y
 		for (int i=0; i<q; i++){
 			for (int j=0; j<q; j++){
-				if (j > i+d || j < i){
+				if (j >= std::floor(i/d)*d+d || j < std::floor(i/d)*d){
 					mModel->constraint(YrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 					mModel->constraint(YiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 				}
 			}
 		}
 
-		// The objective function should be real
-		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, CiRef), mosek::fusion::Expr::dot(YiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0));
-
 		// Setup the objective function
 		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, CrRef), mosek::fusion::Expr::dot(YiOpt, CiRef));
+
+		// The objective function should be real
+		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, CiRef), mosek::fusion::Expr::dot(YiOpt, CrRef)), mosek::fusion::Domain::equalsTo(0));
 
 		// Minimise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
@@ -602,7 +614,7 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 			for (int i=0; i<q*q; i++){
 				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
 			}
-			prettyPrint("Y after rect = ", Y);
+			prettyPrint("Y after rect m = ", Y);
 			std::cout << std::endl;
 		}
 
@@ -610,6 +622,18 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
 		mModel->solve();
 		toReturn.M[k] = mModel->primalObjValue();
+
+		// Extract the Y values just to see
+		if (verbosity >= 2){
+			auto tempYr = *(YrOpt->level());
+			auto tempYi = *(YiOpt->level());
+			complex2 Y(q, complex1(q));
+			for (int i=0; i<q*q; i++){
+				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+			}
+			prettyPrint("Y after rect M = ", Y);
+			std::cout << std::endl;
+		}
 
 	}
 
@@ -863,7 +887,7 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 	// Specify the zero elements of X
 	for (int i=0; i<p; i++){
 		for (int j=0; j<p; j++){
-			if (j > i+d || j < i){
+			if (j >= std::floor(i/d)*d+d || j < std::floor(i/d)*d){
 				model->constraint(XrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 				model->constraint(XiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 			}
@@ -873,7 +897,7 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 	// Specify the zero elements of Y
 	for (int i=0; i<q; i++){
 		for (int j=0; j<q; j++){
-			if (j > i+d || j < i){
+			if (j >= std::floor(i/d)*d+d || j < std::floor(i/d)*d){
 				model->constraint(YrOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 				model->constraint(YiOpt->index(i,j), mosek::fusion::Domain::equalsTo(0));
 			}
@@ -1079,7 +1103,7 @@ void JCB(int d, int n){
 	// The width/height of the Y matrix
 	int q = d * numMeasureB * numOutcomeB;
 
-	// The bases of these matrices 
+	// The bases of these matrices TODO check
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	complex3 xi(q*q, complex2(q, complex1(q)));
 
@@ -1267,7 +1291,7 @@ void JCB(int d, int n){
 			computeBounds(d, n, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
-			// Ensure it's a least somewhat valid TODO
+			// Ensure it's a least somewhat valid
 			if (lowerBound > upperBound){
 				continue;
 			}
@@ -1277,7 +1301,7 @@ void JCB(int d, int n){
 				bestUpperBound = upperBound;
 			}
 
-			// Figure out where in the queue it should go TODO
+			// Figure out where in the queue it should go
 			newLoc = lowerBounds.size();
 			for (int i=0; i<lowerBounds.size(); i++){
 				if (lowerBound < lowerBounds[i]){

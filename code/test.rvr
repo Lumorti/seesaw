@@ -1,0 +1,13 @@
+import console
+import math
+
+integer[6][6] x
+
+integer d = 2
+
+loop integer i from 0 to x.length-1
+	loop integer j from 0 to x[0].length-1
+		if j >= (math.floor(i / d) * d + d) or j < math.floor(i / d) * d
+			x[i][j] = 2
+
+console.write(x)
