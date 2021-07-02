@@ -130,7 +130,7 @@ std::complex<double> inner(complex2 mat1, complex2 mat2){
 	std::complex<double> sum = 0;
 	for (int i=0; i<mat1.size(); i++){
 		for (int j=0; j<mat1[0].size(); j++){
-			sum += mat1[i][j] * mat2[i][j];
+			sum += mat1[i][j] * std::conj(mat2[i][j]);
 		}
 	}
 	return sum;
@@ -141,7 +141,18 @@ std::complex<double> inner(real2 mat1, complex2 mat2){
 	std::complex<double> sum = 0;
 	for (int i=0; i<mat1.size(); i++){
 		for (int j=0; j<mat1[0].size(); j++){
-			sum += mat1[i][j] * mat2[i][j];
+			sum += mat1[i][j] * std::conj(mat2[i][j]);
+		}
+	}
+	return sum;
+}
+
+// Get the inner product of two matrices 
+std::complex<double> inner(complex2 mat1, real2 mat2){
+	std::complex<double> sum = 0;
+	for (int i=0; i<mat1.size(); i++){
+		for (int j=0; j<mat1[0].size(); j++){
+			sum += mat1[i][j] * std::conj(mat2[i][j]);
 		}
 	}
 	return sum;
@@ -152,7 +163,7 @@ complex2 transpose(complex2 mat){
 	complex2 matTran(mat[0].size(), complex1(mat.size()));
 	for (int i=0; i<mat.size(); i++){
 		for (int j=0; j<mat[0].size(); j++){
-			matTran[j][i] = mat[i][j];
+			matTran[j][i] = std::conj(mat[i][j]);
 		}
 	}
 	return matTran;
@@ -160,6 +171,28 @@ complex2 transpose(complex2 mat){
 
 // Multiply two matrices
 complex2 multiply(complex2 mat1, complex2 mat2){
+
+	// Set the dimensions: n x m (x) m x q = n x q
+	complex2 mult(mat1.size(), std::vector<std::complex<double>>(mat2[0].size()));
+
+	// For each element in the new matrix
+	for (int i=0; i<mult.size(); i++){
+		for (int j=0; j<mult[0].size(); j++){
+
+			// Add the row from mat1 times the column from mat2
+			for (int k=0; k<mat2.size(); k++){
+				mult[i][j] += mat1[i][k] * mat2[k][j];
+			}
+
+		}
+	}
+
+	return mult;
+
+}
+
+// Multiply two matrices
+complex2 multiply(complex2 mat1, real2 mat2){
 
 	// Set the dimensions: n x m (x) m x q = n x q
 	complex2 mult(mat1.size(), std::vector<std::complex<double>>(mat2[0].size()));
@@ -192,8 +225,8 @@ complex2 outer(complex1 mat1, complex1 mat2){
 		// And also the second
 		for (int j=0; j<mat2.size(); j++){
 
-				// The components of the outer product
-				product[i][j] = mat1[i] * mat2[j];
+			// The components of the outer product
+			product[i][j] = mat1[i] * mat2[j];
 
 		}
 
@@ -454,12 +487,13 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 									)
 							   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-			// And be anti-symmetric TODO why nothing on diags?
+			// And be anti-symmetric
 			lModel->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
-			// And have trace 1
-			//lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-			//lModel->constraint(mosek::fusion::Expr::sum(XiOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+			// And have trace 1 (apart from the third measure)
+			if ((i+1) % 3 != 0){
+				lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+			}
 
 		}
 
@@ -568,8 +602,7 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 			mModel->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
 			// And have trace 1
-			//lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-			//lModel->constraint(mosek::fusion::Expr::sum(XiOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+			//mModel->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
 
 		}
 
@@ -594,6 +627,24 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 				}
 			}
 		}
+
+		// Exact y solution for d2n2 TODO
+		mModel->constraint(YrOpt->index(0, 0), mosek::fusion::Domain::equalsTo(1.0));
+		mModel->constraint(YrOpt->index(0, 1), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(1, 0), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(1, 1), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(2, 2), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(2, 3), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(3, 2), mosek::fusion::Domain::equalsTo(0.0));
+		mModel->constraint(YrOpt->index(3, 3), mosek::fusion::Domain::equalsTo(1.0));
+		mModel->constraint(YrOpt->index(4, 4), mosek::fusion::Domain::equalsTo(0.5));
+		mModel->constraint(YrOpt->index(4, 5), mosek::fusion::Domain::equalsTo(0.5));
+		mModel->constraint(YrOpt->index(5, 4), mosek::fusion::Domain::equalsTo(0.5));
+		mModel->constraint(YrOpt->index(5, 5), mosek::fusion::Domain::equalsTo(0.5));
+		mModel->constraint(YrOpt->index(6, 6), mosek::fusion::Domain::equalsTo(0.5));
+		mModel->constraint(YrOpt->index(6, 7), mosek::fusion::Domain::equalsTo(-0.5));
+		mModel->constraint(YrOpt->index(7, 6), mosek::fusion::Domain::equalsTo(-0.5));
+		mModel->constraint(YrOpt->index(7, 7), mosek::fusion::Domain::equalsTo(0.5));
 
 		// Setup the objective function
 		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, CrRef), mosek::fusion::Expr::dot(YiOpt, CiRef));
@@ -643,7 +694,7 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 }
 
 // Compute the upper and lower bounds for a hyperrectangle
-void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
+void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex2 &T, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
 
 	// How many permutations required
 	int numPerm = n*(n-1)/2;
@@ -815,9 +866,10 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-		// And have trace 1
-		//model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-		//model->constraint(mosek::fusion::Expr::sum(XiOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(0));
+		// And have trace 1 (apart from the third measure)
+		if ((i+1) % 3 != 0){
+			model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+		}
 
 		// The imaginary part should be anti-symmetric
 		model->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
@@ -839,7 +891,6 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 
 		// And have trace 1
 		//model->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-		//model->constraint(mosek::fusion::Expr::sum(YiOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(0));
 		
 		// The imaginary part should be anti-symmetric
 		model->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
@@ -883,6 +934,27 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
 
 	}
+
+	// Exact y solution for d2n2 TODO
+	model->constraint(YrOpt->index(0, 0), mosek::fusion::Domain::equalsTo(1.0));
+	model->constraint(YrOpt->index(0, 1), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(YrOpt->index(1, 0), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(YrOpt->index(1, 1), mosek::fusion::Domain::equalsTo(0.0));
+
+	model->constraint(YrOpt->index(2, 2), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(YrOpt->index(2, 3), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(YrOpt->index(3, 2), mosek::fusion::Domain::equalsTo(0.0));
+	model->constraint(YrOpt->index(3, 3), mosek::fusion::Domain::equalsTo(1.0));
+
+	model->constraint(YrOpt->index(4, 4), mosek::fusion::Domain::equalsTo(0.5));
+	model->constraint(YrOpt->index(4, 5), mosek::fusion::Domain::equalsTo(0.5));
+	model->constraint(YrOpt->index(5, 4), mosek::fusion::Domain::equalsTo(0.5));
+	model->constraint(YrOpt->index(5, 5), mosek::fusion::Domain::equalsTo(0.5));
+
+	model->constraint(YrOpt->index(6, 6), mosek::fusion::Domain::equalsTo(0.5));
+	model->constraint(YrOpt->index(6, 7), mosek::fusion::Domain::equalsTo(-0.5));
+	model->constraint(YrOpt->index(7, 6), mosek::fusion::Domain::equalsTo(-0.5));
+	model->constraint(YrOpt->index(7, 7), mosek::fusion::Domain::equalsTo(0.5));
 
 	// Specify the zero elements of X
 	for (int i=0; i<p; i++){
@@ -1022,9 +1094,19 @@ void computeBounds(int d, int n, complex2 &S, complex2 &Delta, complex2 &T, comp
 		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
 	}
 
+	// TODO the raw function value
+	std::complex<double> test1 = trace(multiply(outer(X, Y), Q));
+	std::complex<double> test2 = inner(outer(X, Y), Q);
+	std::complex<double> test3 = inner(Q, outer(X, Y));
+	std::cout << "test1 = " << test1 << std::endl;
+	std::cout << "test2 = " << test2 << std::endl;
+	std::cout << "test3 = " << test3 << std::endl;
+
 	// Scale the bounds to match the normal function
-	lowerBound = -(-lowerBound / d - sub);
-	upperBound = -(-upperBound / d - sub);
+	std::cout << "raw lower = " << lowerBound << std::endl;
+	std::cout << "raw upper = " << upperBound << std::endl;
+	lowerBound = -lowerBound / d - sub;
+	upperBound = -upperBound / d - sub;
 
 }
 
@@ -1103,7 +1185,11 @@ void JCB(int d, int n){
 	// The width/height of the Y matrix
 	int q = d * numMeasureB * numOutcomeB;
 
-	// The bases of these matrices TODO check
+	// Useful constants for constructing the bases
+	double oneOverSqrt2 = 1.0 / sqrt(2.0);
+	std::complex<double> imagOverSqrt2 = im / sqrt(2.0);
+
+	// The bases of these matrices
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	complex3 xi(q*q, complex2(q, complex1(q)));
 
@@ -1113,16 +1199,24 @@ void JCB(int d, int n){
 	for (int i=0; i<p; i++){
 		for (int j=i; j<p; j++){
 
-			// Self-adjoint 1's
-			eta[next][i][j] = 1;
-			eta[next][j][i] = 1;
-			next += 1;
-
-			// Self-adjoint i's
+			// For the off-diags
 			if (i != j){
-				eta[next][i][j] = im;
-				eta[next][j][i] = -im;
+
+				// Self-adjoint 1's
+				eta[next][i][j] = oneOverSqrt2;
+				eta[next][j][i] = oneOverSqrt2;
 				next += 1;
+
+				// Self-adjoint i's
+				eta[next][i][j] = imagOverSqrt2;
+				eta[next][j][i] = -imagOverSqrt2;
+				next += 1;
+
+			// For the diags
+			} else {
+				eta[next][i][i] = 1.0;
+				next += 1;
+
 			}
 
 		}
@@ -1134,16 +1228,24 @@ void JCB(int d, int n){
 	for (int i=0; i<q; i++){
 		for (int j=i; j<q; j++){
 
-			// Self-adjoint 1's
-			xi[next][i][j] = 1;
-			xi[next][j][i] = 1;
-			next += 1;
-
-			// Self-adjoint i's
+			// For the off-diags
 			if (i != j){
-				xi[next][i][j] = im;
-				xi[next][j][i] = -im;
+
+				// Self-adjoint 1's
+				xi[next][i][j] = oneOverSqrt2;
+				xi[next][j][i] = oneOverSqrt2;
 				next += 1;
+
+				// Self-adjoint i's
+				xi[next][i][j] = imagOverSqrt2;
+				xi[next][j][i] = -imagOverSqrt2;
+				next += 1;
+
+			// For the diags
+			} else {
+				xi[next][i][i] = 1.0;
+				next += 1;
+
 			}
 
 		}
@@ -1249,7 +1351,7 @@ void JCB(int d, int n){
 
 	// Get the initial value for the upper/lower bounds
 	std::cout << "Calculating initial bounds..." << std::endl;
-	computeBounds(d, n, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
+	computeBounds(Q, d, n, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
 	std::cout << "For initial hyperrect: " << lowerBound << " " << upperBound << std::endl;
 	
 	// Keep track of the remaining hyperrects and their bounds
@@ -1288,7 +1390,7 @@ void JCB(int d, int n){
 
 			// Get the bounds
 			std::cout << "Computing bounds for hyperrect " << j << "..." << std::endl;
-			computeBounds(d, n, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
+			computeBounds(Q, d, n, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
 			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
 
 			// Ensure it's a least somewhat valid
@@ -1328,6 +1430,8 @@ void JCB(int d, int n){
 
 		// Iteration finished
 		iter += 1;
+
+		break; // TODO
 
 	}
 
@@ -1833,7 +1937,7 @@ void seesawExtended(int d, int n){
 	delta = exact-finalResult;
 	if (outputMethod == 2){
 		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;
-	} else if (outputMethod == 7){ // TODO
+	} else if (outputMethod == 7){
 		std::cout << std::fixed << std::setprecision(9) << (delta < 1e-5) << std::endl;
 	} else if (outputMethod == 4){
 		std::cout << std::fixed << iter << std::endl;
