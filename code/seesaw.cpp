@@ -1832,9 +1832,11 @@ void seesawExtended(int d, int n){
 	exact = numPerm*sqrt(d*(d-1));
 	delta = exact-finalResult;
 	if (outputMethod == 2){
-		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;;
+		std::cout << std::fixed << std::setprecision(9) << delta << std::endl;
+	} else if (outputMethod == 7){ // TODO
+		std::cout << std::fixed << std::setprecision(9) << (delta < 1e-5) << std::endl;
 	} else if (outputMethod == 4){
-		std::cout << std::fixed << iter << std::endl;;
+		std::cout << std::fixed << iter << std::endl;
 	} else if (outputMethod == 5){
 		std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count() << std::endl;
 	} else if (outputMethod == 1){
@@ -2306,6 +2308,7 @@ int main (int argc, char ** argv) {
 			std::cout << "-r               start completely random without G-S" << std::endl;
 			std::cout << "-s [str]         set the random seed" << std::endl;
 			std::cout << "-f [int*2] [dbl] set part of the initial array" << std::endl;
+			std::cout << "-Z               only output if it reached zero within the tolerance" << std::endl;
 			std::cout << "-D               only output the difference to the ideal" << std::endl;
 			std::cout << "-I               output for graphing the difference vs iteration" << std::endl;
 			std::cout << "-N               only output the number of iterations" << std::endl;
@@ -2346,6 +2349,11 @@ int main (int argc, char ** argv) {
 		// Only output the delta
 		} else if (arg == "-D") {
 			outputMethod = 2;
+			verbosity = 0;
+
+		// Only output whether it reached zero within the tolerance
+		} else if (arg == "-Z") {
+			outputMethod = 7;
 			verbosity = 0;
 
 		// Set the seed
