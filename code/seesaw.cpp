@@ -611,6 +611,9 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 			std::cout << std::endl;
 		}
 
+		// Prevent memory leaks
+		lModel->dispose();
+
 	}
 
 	// Get the Y sections
@@ -742,6 +745,9 @@ hyperRect boundingRectangle(int p, int q, int d, int numOutcomeA, int numOutcome
 			std::cout << std::endl;
 		}
 
+		// Prevent memory leaks
+		mModel->dispose();
+
 	}
 
 	// Return the final hyperrectangle
@@ -767,11 +773,11 @@ void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex
 	// The width/height of the Y matrix
 	int q = d * numMeasureB * numOutcomeB;
 
-	// Amount to remove from each
-	double sub = sqrt(d*(d-1))*numPerm;
-
 	// Define some useful quantities
 	int K = std::min(p*p, q*q);
+
+	// Amount to remove from each to make consistent with the paper
+	double sub = sqrt(d*(d-1))*numPerm;
 
 	// Reference to the zero/identity matrix for MOSEK
 	real2 zero(d, real1(d, 0.0));
@@ -1116,7 +1122,14 @@ void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex
 	model->solve();
 
 	// Extract the data
-	lowerBound = model->primalObjValue();
+	try {
+		lowerBound = model->primalObjValue();
+	} catch (mosek::fusion::SolutionError e){
+		lowerBound = 10000;
+		upperBound = 10000;
+		model->dispose();
+		return;
+	}
 	auto tempXr = *(XrOpt->level());
 	auto tempXi = *(XiOpt->level());
 	auto tempYr = *(YrOpt->level());
@@ -1139,6 +1152,9 @@ void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex
 		r[i] = tempR[i];
 	}
 
+	// Prevent memory leaks
+	model->dispose();
+
 	// Convert these to the vector rep
 	for (int i=0; i<p*p; i++){
 		x[i] = inner(Xr, SEtarSaved[i]) - inner(Xi, SEtaiSaved[i]);
@@ -1147,22 +1163,30 @@ void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex
 		y[i] = inner(Yr, TXirSaved[i]) - inner(Yi, TXiiSaved[i]);
 	}
 
-	// Also get the complex X and Y
-	complex2 X(p, complex1(p));
-	for (int i=0; i<p; i++){
-		for (int j=0; j<p; j++){
-			X[i][j] = Xr[i][j] + im*Xi[i][j];
-		}
-	}
-	complex2 Y(q, complex1(q));
-	for (int i=0; i<q; i++){
-		for (int j=0; j<q; j++){
-			Y[i][j] = Yr[i][j] + im*Yi[i][j];
-		}
+	// Calculate the upper bound from this too
+	upperBound = 0;
+	for (int j=0; j<K; j++){
+		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
 	}
 
 	// Verbose output
 	if (verbosity >= 2){
+
+		// Also get the complex X and Y
+		complex2 X(p, complex1(p));
+		for (int i=0; i<p; i++){
+			for (int j=0; j<p; j++){
+				X[i][j] = Xr[i][j] + im*Xi[i][j];
+			}
+		}
+		complex2 Y(q, complex1(q));
+		for (int i=0; i<q; i++){
+			for (int j=0; j<q; j++){
+				Y[i][j] = Yr[i][j] + im*Yi[i][j];
+			}
+		}
+
+		// Matrix outputs
 		std::cout << std::endl;
 		prettyPrint("X = ", X);
 		std::cout << std::endl;
@@ -1173,29 +1197,14 @@ void computeBounds(real2 &Q, int d, int n, complex2 &S, complex2 &Delta, complex
 		prettyPrint("y = ", y);
 		std::cout << std::endl;
 		prettyPrint("r = ", r);
+		std::cout << std::endl;
+
+		// Calculate the raw function value
+		double direct = std::real(inner(outer(X, Y), Q));
+		std::cout << "raw direct = " << direct << std::endl;
+		std::cout << "fixed direct = " << -direct/d - sub << std::endl;
+
 	}
-
-	// Calculate the upper bound from this too
-	upperBound = 0;
-	for (int j=0; j<K; j++){
-		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
-	}
-
-	// TODO the raw function value
-	std::complex<double> direct = inner(outer(X, Y), Q);
-	std::cout << "raw direct = " << direct << std::endl;
-	std::cout << "fixed direct = " << (-direct/2.0) - sub << std::endl;
-
-	// Scale the bounds to match the normal function
-	std::cout << "raw lower = " << lowerBound << std::endl;
-	std::cout << "raw upper = " << upperBound << std::endl;
-	lowerBound = -lowerBound / d - sub;
-	upperBound = -upperBound / d - sub;
-
-	// Swap since we're inverting everything
-	double temp = upperBound;
-	upperBound = lowerBound;
-	lowerBound = temp;
 
 }
 
@@ -1212,9 +1221,9 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	int I = 0;
 	double bestVal = -10000000;
 	for (int i=0; i<K; i++){
-		double val = std::max(Omega.m[i]*v[i] + Omega.l[i]*w[i] - Omega.l[i]*Omega.m[i],
-			                           Omega.M[i]*v[i] + Omega.L[i]*w[i] - Omega.L[i]*Omega.M[i]) - v[i]*w[i];
-		if (std::abs(val) > std::abs(bestVal)){
+		double val = v[i]*w[i] - std::max(Omega.m[i]*v[i] + Omega.l[i]*w[i] - Omega.l[i]*Omega.m[i],
+			                              Omega.M[i]*v[i] + Omega.L[i]*w[i] - Omega.L[i]*Omega.M[i]);
+		if (val > bestVal){
 			bestVal = val;
 			I = i;
 		}
@@ -1274,6 +1283,13 @@ void JCB(int d, int n){
 	// The width/height of the Y matrix
 	int q = d * numMeasureB * numOutcomeB;
 
+	// Amount to remove from each to make consistent with the paper
+	double sub = sqrt(d*(d-1))*numPerm;
+
+	// The known ideal if there exists MUBs for this problem
+	double idealScaled = numPerm*sqrt(d*(d-1));
+	double idealRaw = -(idealScaled + sub) * d;
+
 	// Useful constants for constructing the bases
 	double oneOverSqrt2 = 1.0 / sqrt(2.0);
 	std::complex<double> imagOverSqrt2 = im / sqrt(2.0);
@@ -1281,6 +1297,9 @@ void JCB(int d, int n){
 	// The bases of these matrices
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	complex3 xi(q*q, complex2(q, complex1(q)));
+
+	// Start the timer 
+	auto t1 = std::chrono::high_resolution_clock::now();
 
 	// Assemble eta to be orthonormal and self-adjoint
 	std::cout << "Constructing eta..." << std::endl;
@@ -1366,7 +1385,6 @@ void JCB(int d, int n){
 	int numB = numMeasureB + numOutcomeB;
 	for (int i=0; i<blockQ.size(); i++){
 		int topLeftLoc = std::floor(i/numB)*numB*d*d + (i%numB)*d;
-		std::cout << i << " " << topLeftLoc << std::endl;
 		for (int j=0; j<d; j++){
 			for (int k=0; k<d; k++){
 				Q[topLeftLoc+j*numB*d+j][topLeftLoc+k*numB*d+k] = -blockQ[i];
@@ -1377,6 +1395,7 @@ void JCB(int d, int n){
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
 	std::cout << "Calculating U from Q..." << std::endl;
 	complex2 U(p*p, complex1(q*q));
+    #pragma omp parallel for
 	for (int j=0; j<p*p; j++){
 		for (int k=0; k<q*q; k++){
 			U[j][k] = inner(Q, outer(eta[j], xi[k]));
@@ -1395,7 +1414,11 @@ void JCB(int d, int n){
 	hyperRect D(p, q);
 	D = boundingRectangle(p, q, d, numOutcomeA, numOutcomeB, S, T, eta, xi);
 
-	// Output various things 
+	// Output various things
+	std::cout << "d = " << d << std::endl;
+	std::cout << "n = " << n << std::endl;
+	std::cout << "idealRaw = " << idealRaw << std::endl;
+	std::cout << "idealScaled = " << idealScaled << std::endl;
 	std::cout << "p = " << p << std::endl;
 	std::cout << "q = " << q << std::endl;
 	std::cout << "eta shape = " << eta.size() << " x " << eta[0].size() << " x " << eta[0][0].size() << std::endl;
@@ -1405,6 +1428,7 @@ void JCB(int d, int n){
 	std::cout << "Delta shape = " << Delta.size() << " x " << Delta[0].size() << std::endl;
 	std::cout << "S shape = " << S.size() << " x " << S[0].size() << std::endl;
 	std::cout << "T shape = " << T.size() << " x " << T[0].size() << std::endl;
+	std::cout << "hyperrect size = " << 2*p*p + 2*q*q << std::endl;
 	if (verbosity >= 2){
 		std::cout << std::endl;
 		prettyPrint("blockQ = ", blockQ);
@@ -1424,41 +1448,37 @@ void JCB(int d, int n){
 	}
 
 	// The tolerance until deemed to have converged
-	double epsilon = 1e-5;
+	double epsilon = 1e-1;
 
 	// Init things here to prevent re-init each iterations
-	double lowerBound = 0;
-	double upperBound = 0;
 	hyperRect Omega(p, q);
 	std::vector<hyperRect> newRects;
-	real1 x(p*p);
-	real1 y(q*q);
+	real1 lowers(4, 0.0);
+	real1 uppers(4, 0.0);
+	real2 xs(4, real1(p*p));
+	real2 ys(4, real1(q*q));
 	int newLoc = -1;
 
 	// Get the initial value for the upper/lower bounds
 	std::cout << "Calculating initial bounds..." << std::endl;
-	computeBounds(Q, d, n, S, Delta, T, eta, xi, D, lowerBound, upperBound, x, y);
-	std::cout << "For initial hyperrect: " << lowerBound << " " << upperBound << std::endl;
+	computeBounds(Q, d, n, S, Delta, T, eta, xi, D, lowers[0], uppers[0], xs[0], ys[0]);
+	std::cout << "Raw bounds: " << lowers[0] << " < raw < " << uppers[0] << std::endl;
+	std::cout << "Scaled bounds: " << -uppers[0]/d-sub  << " < scaled < " << -lowers[0]/d-sub << std::endl;
 	
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
-	real2 xCoords = {x};
-	real2 yCoords = {y};
-	std::vector<double> lowerBounds = {lowerBound};
-	double bestLowerBound = lowerBound;
-	double bestUpperBound = upperBound;
+	real2 xCoords = {xs[0]};
+	real2 yCoords = {ys[0]};
+	std::vector<double> lowerBounds = {lowers[0]};
+	double bestLowerBound = lowers[0];
+	double bestUpperBound = uppers[0];
 
 	// Keep looping until the bounds match
 	int iter = 0;
-	while (bestUpperBound - bestLowerBound > epsilon){
-
-		// Choose the lower-bounding hyperrectangle
-		Omega = P[0];
-		x = xCoords[0];
-		y = yCoords[0];
+	while (bestUpperBound - bestLowerBound > epsilon && P.size() > 0){
 
 		// Create the four new hyperrectangles
-		newRects = branchHyperrectangle(p, q, Omega, x, y);
+		newRects = branchHyperrectangle(p, q, P[0], xCoords[0], yCoords[0]);
 
 		// Remove the current rect
 		P.erase(P.begin(), P.begin()+1);
@@ -1471,38 +1491,45 @@ void JCB(int d, int n){
 		std::cout << "        Iteration: " << iter << std::endl;
 		std::cout << "-------------------------------------" << std::endl;
 
-		// For each of the new hyperrectangles
+		// For each of the new hyperrectangles in parallel
+        #pragma omp parallel for
 		for (int j=0; j<4; j++){
 
 			// Get the bounds
-			std::cout << "Computing bounds for hyperrect " << j << "..." << std::endl;
-			computeBounds(Q, d, n, S, Delta, T, eta, xi, newRects[j], lowerBound, upperBound, x, y);
-			std::cout << "For hyperrect " << j << ": " << lowerBound << " " << upperBound << std::endl;
+			computeBounds(Q, d, n, S, Delta, T, eta, xi, newRects[j], lowers[j], uppers[j], xs[j], ys[j]);
 
-			// Ensure it's a least somewhat valid
-			if (lowerBound > upperBound){
-				continue;
-			}
+		}
+
+		// For each of the results
+		for (int j=0; j<4; j++){
+
+			// Get the corresponding bounds
+			std::cout << "For hyperrect " << j << ": " << lowers[j] << " " << uppers[j] << std::endl;
 
 			// Is it the new best upper?
-			if (upperBound < bestUpperBound){
-				bestUpperBound = upperBound;
+			if (uppers[j] < bestUpperBound){
+				bestUpperBound = uppers[j];
 			}
 
-			// Figure out where in the queue it should go
-			newLoc = lowerBounds.size();
-			for (int i=0; i<lowerBounds.size(); i++){
-				if (lowerBound < lowerBounds[i]){
-					newLoc = i;
-					break;
+			// If the lower bound is a valid overall lower bound TODO
+			if (lowers[j] < idealRaw && lowers[j] < bestUpperBound){
+
+				// Figure out where in the queue it should go
+				newLoc = lowerBounds.size();
+				for (int i=0; i<lowerBounds.size(); i++){
+					if (lowers[j] < lowerBounds[i]){
+						newLoc = i;
+						break;
+					}
 				}
-			}
 
-			// Place it into the queue
-			P.insert(P.begin()+newLoc, newRects[j]);
-			xCoords.insert(xCoords.begin()+newLoc, x);
-			yCoords.insert(yCoords.begin()+newLoc, y);
-			lowerBounds.insert(lowerBounds.begin()+newLoc, lowerBound);
+				// Place it into the queue
+				P.insert(P.begin()+newLoc, newRects[j]);
+				xCoords.insert(xCoords.begin()+newLoc, xs[j]);
+				yCoords.insert(yCoords.begin()+newLoc, ys[j]);
+				lowerBounds.insert(lowerBounds.begin()+newLoc, lowers[j]);
+
+			}
 
 		}
 
@@ -1510,8 +1537,8 @@ void JCB(int d, int n){
 		bestLowerBound = lowerBounds[0];
 
 		// Output the best so far
-		std::cout << "Lower bound: " << bestLowerBound << std::endl;
-		std::cout << "Upper bound: " << bestUpperBound << std::endl;
+		std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
+		std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
 		std::cout << "Size of space: " << P.size() << std::endl;
 
 		// Iteration finished
@@ -1519,12 +1546,17 @@ void JCB(int d, int n){
 
 	}
 
+	// Stop the timer 
+	auto t2 = std::chrono::high_resolution_clock::now();
+
 	// Return the best
 	std::cout << "-------------------------------------" << std::endl;
 	std::cout << "    Final results" << std::endl;
 	std::cout << "-------------------------------------" << std::endl;
-	std::cout << "Lower bound: " << bestLowerBound << std::endl;
-	std::cout << "Upper bound: " << bestUpperBound << std::endl;
+	std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
+	std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
+	std::cout << "Iterations required: " << iter << std::endl;
+	std::cout << "Time required: " << std::chrono::duration_cast<std::chrono::seconds>(t2-t1).count() << " s" << std::endl;
 
 }
 
