@@ -429,579 +429,6 @@ void prettyPrint(std::string pre, hyperRect arr){
 
 }
 
-// Get the initial hyperrectangle bounding the set
-hyperRect boundingRectangle(int d, int n, real3 &SEtar, real3 &SEtai, real3 &TXir, real3 &TXii){
-
-	// How many permutations required
-	int numPerm = n*(n-1)/2;
-
-	// How many measurements/outcomes for each party
-	int numMeasureA = d*d*numPerm;
-	int numOutcomeA = 3;
-	int numMeasureB = n;
-	int numOutcomeB = d;
-
-	// The width/height of the X matrix
-	int p = d * numMeasureA * numOutcomeA;
-
-	// The width/height of the Y matrix
-	int q = d * numMeasureB * numOutcomeB;
-
-	// Hyperrect to construct 
-	hyperRect toReturn(p, q);
-
-	// Dimensions of X and Y for MOSEK
-	auto dimXRef = monty::new_array_ptr(std::vector<int>({d, p}));
-	auto dimYRef = monty::new_array_ptr(std::vector<int>({d, q}));
-
-	// Locations of the start/end of each section for MOSEK
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
-	for (int i=0; i<p; i+=d){
-		startX.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
-		endX.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
-	}
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startY;
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endY;
-	for (int i=0; i<q; i+=d){
-		startY.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
-		endY.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
-	}
-
-	// Convert the SEta matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
-	for (int j=0; j<p*p; j++){
-		SEtarRef.push_back(monty::new_array_ptr(SEtar[j]));
-		SEtaiRef.push_back(monty::new_array_ptr(SEtai[j]));
-	}
-
-	// Convert the TXi matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXirRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXiiRef;
-	for (int j=0; j<q*q; j++){
-		TXirRef.push_back(monty::new_array_ptr(TXir[j]));
-		TXiiRef.push_back(monty::new_array_ptr(TXii[j]));
-	}
-
-	// Reference to the zero/identity matrix for MOSEK
-	real2 zero(d, real1(d, 0.0));
-	real2 identity(d, real1(d, 0.0));
-	for (int i=0; i<d; i++){
-		identity[i][i] = 1.0;
-	}
-	auto identityRef = monty::new_array_ptr(identity);
-	auto zeroRef = monty::new_array_ptr(zero);
-
-	// Get the X sections
-	int cuart = p*p/4;
-	std::cout << "Bounding hyperrect for X... 0%" << std::flush;
-	#pragma omp parallel for num_threads(4)
-	for (int j=0; j<p*p; j++){
-
-		// Progress indicator
-		if (j < cuart){
-			std::cout << "\rBounding hyperrect for X... " << (100*j) / cuart << "%" << std::flush;
-		}
-
-		// Create the MOSEK model 
-		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
-
-		// The matrices to optimise
-		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-		// Sections need to be semidefinite
-		for (int i=0; i<startX.size(); i++){
-			lModel->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										XrOpt->slice(startX[i], endX[i]), 
-										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
-									), 
-									mosek::fusion::Expr::hstack(
-										XiOpt->slice(startX[i], endX[i]),
-										XrOpt->slice(startX[i], endX[i]) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-			// Real is symetric, imag is anti-symmetric
-			lModel->constraint(mosek::fusion::Expr::sub(XrOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-			lModel->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-			// And have trace 1 (apart from the third measure)
-			if ((i+1) % 3 != 0){
-				lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-			}
-
-		}
-
-		// Need to sum to the identity
-		for (int i=0; i<startX.size(); i+=numOutcomeA){
-			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-			for(int j=0; j<numOutcomeA; j++){
-				(*prods)[j] = XrOpt->slice(startX[i+j], endX[i+j]);
-				(*prods2)[j] = XiOpt->slice(startX[i+j], endX[i+j]);
-			}
-			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-		}
-
-		// Setup the objective function
-		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]));
-
-		// The objective function should be real
-		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtarRef[j])), mosek::fusion::Domain::equalsTo(0.0));
-
-		// Minimise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
-		lModel->solve();
-		toReturn.l[j] = lModel->primalObjValue();
-
-		// Extract the X values just to see
-		if (verbosity >= 2){
-			auto tempXr = *(XrOpt->level());
-			auto tempXi = *(XiOpt->level());
-			complex2 X(p, complex1(p));
-			for (int i=0; i<p*d; i++){
-				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
-			}
-			prettyPrint("X after rect l = ", X);
-			std::cout << std::endl;
-		}
-
-		// Maximise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
-		lModel->solve();
-		toReturn.L[j] = lModel->primalObjValue();
-
-		// Extract the X values just to see
-		if (verbosity >= 2){
-			auto tempXr = *(XrOpt->level());
-			auto tempXi = *(XiOpt->level());
-			complex2 X(p, complex1(p));
-			for (int i=0; i<p*d; i++){
-				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
-			}
-			prettyPrint("X after rect L = ", X);
-			std::cout << std::endl;
-		}
-
-		// Prevent memory leaks
-		lModel->dispose();
-
-	}
-	std::cout << std::endl;
-
-	// Get the Y sections
-	cuart = q*q/4;
-	std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
-	#pragma omp parallel for num_threads(4)
-	for (int k=0; k<q*q; k++){
-
-		// Progress indicator
-		if (k < cuart){
-			std::cout << "\rBounding hyperrect for Y... " << (100*k) / cuart << "%" << std::flush;
-		}
-
-		// Create the MOSEK model 
-		mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
-
-		// The matrices to optimise
-		mosek::fusion::Variable::t YrOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t YiOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-		// Sections need to be semidefinite
-		for (int i=0; i<startY.size(); i++){
-			mModel->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										YrOpt->slice(startY[i], endY[i]), 
-										mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
-									), 
-									mosek::fusion::Expr::hstack(
-										YiOpt->slice(startY[i], endY[i]),
-										YrOpt->slice(startY[i], endY[i]) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-			// Real is symetric, imag is anti-symmetric
-			mModel->constraint(mosek::fusion::Expr::sub(YrOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-			mModel->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-			// And have trace 1
-			mModel->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-
-		}
-
-		// Need to sum to the identity
-		for (int i=0; i<startY.size(); i+=numOutcomeB){
-			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-			for(int j=0; j<numOutcomeB; j++){
-				(*prods)[j] = YrOpt->slice(startY[i+j], endY[i+j]);
-				(*prods2)[j] = YiOpt->slice(startY[i+j], endY[i+j]);
-			}
-			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-		}
-
-		// Setup the objective function
-		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k]));
-
-		// The objective function should be real
-		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, TXiiRef[k]), mosek::fusion::Expr::dot(YiOpt, TXirRef[k])), mosek::fusion::Domain::equalsTo(0));
-
-		// Minimise the object function
-		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
-		mModel->solve();
-		toReturn.m[k] = mModel->primalObjValue();
-
-		// Extract the Y values just to see
-		if (verbosity >= 2){
-			auto tempYr = *(YrOpt->level());
-			auto tempYi = *(YiOpt->level());
-			complex2 Y(d, complex1(q));
-			for (int i=0; i<q*d; i++){
-				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
-			}
-			prettyPrint("Y after rect m = ", Y);
-			std::cout << std::endl;
-		}
-
-		// Maximise the object function
-		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
-		mModel->solve();
-		toReturn.M[k] = mModel->primalObjValue();
-
-		// Extract the Y values just to see
-		if (verbosity >= 2){
-			auto tempYr = *(YrOpt->level());
-			auto tempYi = *(YiOpt->level());
-			complex2 Y(d, complex1(q));
-			for (int i=0; i<q*d; i++){
-				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
-			}
-			prettyPrint("Y after rect M = ", Y);
-			std::cout << std::endl;
-		}
-
-		// Prevent memory leaks
-		mModel->dispose();
-
-	}
-	std::cout << std::endl;
-
-	// Return the final hyperrectangle
-	return toReturn;
-
-}
-
-// Compute the upper and lower bounds for a hyperrectangle
-void computeBounds(real2 &Q, int d, int n, real3 &SEtar, real3 &SEtai, complex2 &Delta, real3 &TXir, real3 &TXii, complex3 &eta, complex3 &xi, hyperRect &rect, double &lowerBound, double &upperBound, real1 &x, real1 &y){
-
-	// How many permutations required
-	int numPerm = n*(n-1)/2;
-
-	// How many measurements/outcomes for each party
-	int numMeasureA = d*d*numPerm;
-	int numOutcomeA = 3;
-	int numMeasureB = n;
-	int numOutcomeB = d;
-
-	// The width/height of the X matrix
-	int p = d * numMeasureA * numOutcomeA;
-
-	// The width/height of the Y matrix
-	int q = d * numMeasureB * numOutcomeB;
-
-	// Define some useful quantities
-	int K = std::min(p*p, q*q);
-
-	// Amount to remove from each to make consistent with the paper
-	double sub = sqrt(d*(d-1))*numPerm;
-
-	// Reference to the zero/identity matrix for MOSEK
-	real2 zero(d, real1(d, 0.0));
-	real2 identity(d, real1(d, 0.0));
-	for (int i=0; i<d; i++){
-		identity[i][i] = 1.0;
-	}
-	auto identityRef = monty::new_array_ptr(identity);
-	auto zeroRef = monty::new_array_ptr(zero);
-
-	// Convert the SEta matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
-	for (int j=0; j<p*p; j++){
-		SEtarRef.push_back(monty::new_array_ptr(SEtar[j]));
-		SEtaiRef.push_back(monty::new_array_ptr(SEtai[j]));
-	}
-
-	// Convert the TXi matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXirRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXiiRef;
-	for (int j=0; j<q*q; j++){
-		TXirRef.push_back(monty::new_array_ptr(TXir[j]));
-		TXiiRef.push_back(monty::new_array_ptr(TXii[j]));
-	}
-
-	// The s values and factors which create the G/H matrices
-	std::vector<double> slm;
-	std::vector<double> sLM;
-	std::vector<double> GmFactors;
-	std::vector<double> GMFactors;
-	std::vector<double> HlFactors;
-	std::vector<double> HLFactors;
-
-	// Assemble all of the above
-	for (int j=0; j<K; j++){
-		GmFactors.push_back(std::real(Delta[j][0]*rect.m[j]));
-		GMFactors.push_back(std::real(Delta[j][0]*rect.M[j]));
-		HlFactors.push_back(std::real(Delta[j][0]*rect.l[j]));
-		HLFactors.push_back(std::real(Delta[j][0]*rect.L[j]));
-		slm.push_back(std::real(Delta[j][0]*rect.l[j]*rect.m[j]));
-		sLM.push_back(std::real(Delta[j][0]*rect.L[j]*rect.M[j]));
-	}
-
-	// Dimensions of X and Y for MOSEK
-	auto dimXRef = monty::new_array_ptr(std::vector<int>({d, p}));
-	auto dimYRef = monty::new_array_ptr(std::vector<int>({d, q}));
-
-	// Locations of the start/end of each section for MOSEK
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
-	for (int i=0; i<p; i+=d){
-		startX.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
-		endX.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
-	}
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startY;
-	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endY;
-	for (int i=0; i<q; i+=d){
-		startY.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
-		endY.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
-	}
-
-	// Create the MOSEK model TODO don't do every time
-	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
-	
-	// The matrices to optimise
-	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t XiOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t YrOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::unbounded());
-
-	// Objective function 
-	model->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sum(rOpt));
-	
-	// Sections of X need to be semidefinite
-	for (int i=0; i<startX.size(); i++){
-		model->constraint(mosek::fusion::Expr::vstack(
-								mosek::fusion::Expr::hstack(
-									XrOpt->slice(startX[i], endX[i]), 
-									mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
-								), 
-								mosek::fusion::Expr::hstack(
-									XiOpt->slice(startX[i], endX[i]),
-									XrOpt->slice(startX[i], endX[i]) 
-								)
-						   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-		// And have trace 1 (apart from the third measure)
-		if ((i+1) % 3 != 0){
-			model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-		}
-
-		// Real is symmetric, imag is anti-symmetric
-		model->constraint(mosek::fusion::Expr::sub(XrOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-		model->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-	}
-
-	// Sections of Y need to be semidefinite
-	for (int i=0; i<startY.size(); i++){
-		model->constraint(mosek::fusion::Expr::vstack(
-								mosek::fusion::Expr::hstack(
-									YrOpt->slice(startY[i], endY[i]), 
-									mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
-								), 
-								mosek::fusion::Expr::hstack(
-									YiOpt->slice(startY[i], endY[i]),
-									YrOpt->slice(startY[i], endY[i]) 
-								)
-						   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-		// And have trace 1
-		model->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-		
-		// Real is symmetric, imag is anti-symmetric
-		model->constraint(mosek::fusion::Expr::sub(YrOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-		model->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-	}
-
-	// X needs to sum to the identity
-	for (int i=0; i<startX.size(); i+=numOutcomeA){
-		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-		for(int j=0; j<numOutcomeA; j++){
-			(*prods)[j] = XrOpt->slice(startX[i+j], endX[i+j]);
-			(*prods2)[j] = XiOpt->slice(startX[i+j], endX[i+j]);
-		}
-		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-	}
-
-	// Y needs to sum to the identity
-	for (int i=0; i<startY.size(); i+=numOutcomeB){
-		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-		for(int j=0; j<numOutcomeB; j++){
-			(*prods)[j] = YrOpt->slice(startY[i+j], endY[i+j]);
-			(*prods2)[j] = YiOpt->slice(startY[i+j], endY[i+j]);
-		}
-		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-	}
-
-	// Bound x by the hyperrectangle
-	for (int j=0; j<p*p; j++){
-		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), mosek::fusion::Domain::inRange(rect.l[j], rect.L[j]));
-		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
-	}
-	
-	// Bound y by the hyperrectangle
-	for (int k=0; k<q*q; k++){
-		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k])), mosek::fusion::Domain::inRange(rect.m[k], rect.M[k]));
-		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[k]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[k])), mosek::fusion::Domain::equalsTo(0.0));
-	}
-
-	// Combined constraint with r
-	for (int j=0; j<K; j++){
-
-		// For l and m
-		model->constraint(mosek::fusion::Expr::sub(
-							 mosek::fusion::Expr::add(
-								mosek::fusion::Expr::mul(GmFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
-														                                        mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]))), 
-								mosek::fusion::Expr::mul(HlFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
-														                                        mosek::fusion::Expr::dot(YiOpt, TXirRef[j])))),
-						  rOpt->index(j)), mosek::fusion::Domain::lessThan(slm[j]));
-
-		// Imag of this should be zero
-		model->constraint(mosek::fusion::Expr::add(
-								mosek::fusion::Expr::mul(GmFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
-														                                        mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]))), 
-								mosek::fusion::Expr::mul(HlFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
-														                                        mosek::fusion::Expr::dot(YiOpt, TXirRef[j])))),
-						  mosek::fusion::Domain::equalsTo(0.0));
-
-		// For L and M
-		model->constraint(mosek::fusion::Expr::sub(
-							 mosek::fusion::Expr::add(
-								mosek::fusion::Expr::mul(GMFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
-														                                        mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]))), 
-								mosek::fusion::Expr::mul(HLFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
-														                                        mosek::fusion::Expr::dot(YiOpt, TXirRef[j])))),
-						  rOpt->index(j)), mosek::fusion::Domain::lessThan(sLM[j]));
-
-		// Imag of this should be zero
-		model->constraint(mosek::fusion::Expr::add(
-								mosek::fusion::Expr::mul(GMFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
-														                                        mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]))), 
-								mosek::fusion::Expr::mul(HLFactors[j], mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
-														                                        mosek::fusion::Expr::dot(YiOpt, TXirRef[j])))),
-						  mosek::fusion::Domain::equalsTo(0.0));
-
-	}
-
-	// Solve 
-	model->solve();
-
-	// Extract the data
-	try {
-		lowerBound = model->primalObjValue();
-	} catch (mosek::fusion::SolutionError e){
-		lowerBound = 10000;
-		upperBound = 10000;
-		model->dispose();
-		return;
-	}
-	auto tempXr = *(XrOpt->level());
-	auto tempXi = *(XiOpt->level());
-	auto tempYr = *(YrOpt->level());
-	auto tempYi = *(YiOpt->level());
-	auto tempR = *(rOpt->level());
-	real2 Xr(d, real1(p));
-	real2 Xi(d, real1(p));
-	real2 Yr(d, real1(q));
-	real2 Yi(d, real1(q));
-	real1 r(K);
-	for (int i=0; i<p*d; i++){
-		Xr[i/p][i%p] = tempXr[i];
-		Xi[i/p][i%p] = tempXi[i];
-	}
-	for (int i=0; i<q*d; i++){
-		Yr[i/q][i%q] = tempYr[i];
-		Yi[i/q][i%q] = tempYi[i];
-	}
-	for (int i=0; i<K; i++){
-		r[i] = tempR[i];
-	}
-
-	// Prevent memory leaks
-	model->dispose();
-
-	// Convert X to x
-	for (int i=0; i<p*p; i++){
-		x[i] = inner(Xr, SEtar[i]) - inner(Xi, SEtai[i]);
-	}
-
-	// Convert Y to y
-	for (int i=0; i<q*q; i++){
-		y[i] = inner(Yr, TXir[i]) - inner(Yi, TXii[i]);
-	}
-
-	// Calculate the upper bound from this too TODO not working as expected
-	upperBound = 0;
-	for (int j=0; j<K; j++){
-		upperBound += std::real(Delta[j][0]*x[j]*y[j]);
-	}
-
-	// Verbose output
-	if (verbosity >= 2){
-
-		// Also get the complex X and Y
-		complex2 X(d, complex1(p));
-		for (int i=0; i<d; i++){
-			for (int j=0; j<p; j++){
-				X[i][j] = Xr[i][j] + im*Xi[i][j];
-			}
-		}
-		complex2 Y(d, complex1(q));
-		for (int i=0; i<d; i++){
-			for (int j=0; j<q; j++){
-				Y[i][j] = Yr[i][j] + im*Yi[i][j];
-			}
-		}
-
-		// Matrix outputs
-		std::cout << std::endl;
-		prettyPrint("X = ", X);
-		std::cout << std::endl;
-		prettyPrint("Y = ", Y);
-		std::cout << std::endl;
-		prettyPrint("x = ", x);
-		std::cout << std::endl;
-		prettyPrint("y = ", y);
-		std::cout << std::endl;
-		prettyPrint("r = ", r);
-		std::cout << std::endl;
-
-	}
-
-}
-
 // Branch a hyperrectangle at a certain point
 std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real1 &v, real1 &w){
 
@@ -1076,6 +503,9 @@ void JCB(int d, int n){
 
 	// The width/height of the Y matrix
 	int q = d * numMeasureB * numOutcomeB;
+
+	// Define some useful quantities
+	int K = std::min(p*p, q*q);
 
 	// Amount to remove from each to make consistent with the paper
 	double sub = sqrt(d*(d-1))*numPerm;
@@ -1240,9 +670,9 @@ void JCB(int d, int n){
 	complex2 S = matToVec(svd.matrixU());
 	complex2 T = matToVec(svd.matrixV());
 
-	// Assemble the combined S and Eta matrices
-	real3 SEtar(p*p);
-	real3 SEtai(p*p);
+	// Assemble the combined S and Eta matrices TODO past q*q these are all zero
+	real3 SEtar(p*p, real2(d, real1(p)));
+	real3 SEtai(p*p, real2(d, real1(p)));
 	std::cout << "Precalculating S*eta... 0%" << std::flush;
 	cuart = p*p/4;
     #pragma omp parallel for num_threads(4)
@@ -1250,53 +680,285 @@ void JCB(int d, int n){
 		if (j < cuart){
 			std::cout << "\rPrecalculating S*eta... " << (100*j) / cuart << "%" << std::flush;
 		}
-		real2 SEtarTemp(d, real1(p));
-		real2 SEtaiTemp(d, real1(p));
 		for (int block=0; block<numMeasureA*numOutcomeA; block++){
 			for (int k=0; k<p*p; k++){
 				for (int i1=0; i1<d; i1++){
 					for (int i2=0; i2<d; i2++){
-						SEtarTemp[i1][block*d+i2] += std::real(S[k][j]*eta[k][block*d+i1][block*d+i2]);
-						SEtaiTemp[i1][block*d+i2] += std::imag(S[k][j]*eta[k][block*d+i1][block*d+i2]);
+						SEtar[j][i1][block*d+i2] += std::real(S[k][j]*eta[k][block*d+i1][block*d+i2]);
+						SEtai[j][i1][block*d+i2] += std::imag(S[k][j]*eta[k][block*d+i1][block*d+i2]);
 					}
 				}
 			}
 		}
-		SEtar[j] = SEtarTemp;
-		SEtai[j] = SEtaiTemp;
 	}
 	std::cout << std::endl;
 
 	// Assemble the combined T and Xi matrices
 	std::cout << "Precalculating T*Xi: 0%" << std::flush;
 	cuart = q*q/4;
-	real3 TXir(q*q);
-	real3 TXii(q*q);
+	real3 TXir(q*q, real2(d, real1(q)));
+	real3 TXii(q*q, real2(d, real1(q)));
     #pragma omp parallel for num_threads(4)
 	for (int j=0; j<q*q; j++){
 		if (j < cuart){
 			std::cout << "\rPrecalculating T*Xi: " << (100*j) / cuart << "%" << std::flush;
 		}
-		real2 TXirTemp(d, real1(q));
-		real2 TXiiTemp(d, real1(q));
 		for (int block=0; block<numMeasureB*numOutcomeB; block++){
 			for (int k=0; k<q*q; k++){
 				for (int i1=0; i1<d; i1++){
 					for (int i2=0; i2<d; i2++){
-						TXirTemp[i1][block*d+i2] += std::real(T[k][j]*xi[k][block*d+i1][block*d+i2]);
-						TXiiTemp[i1][block*d+i2] += std::imag(T[k][j]*xi[k][block*d+i1][block*d+i2]);
+						TXir[j][i1][block*d+i2] += std::real(T[k][j]*xi[k][block*d+i1][block*d+i2]);
+						TXii[j][i1][block*d+i2] += std::imag(T[k][j]*xi[k][block*d+i1][block*d+i2]);
 					}
 				}
 			}
 		}
-		TXir[j] = TXirTemp;
-		TXii[j] = TXiiTemp;
 	}
 	std::cout << std::endl;
 
+	// Reference to the zero/identity matrix for MOSEK
+	real2 zero(d, real1(d, 0.0));
+	real2 identity(d, real1(d, 0.0));
+	for (int i=0; i<d; i++){
+		identity[i][i] = 1.0;
+	}
+	auto identityRef = monty::new_array_ptr(identity);
+	auto zeroRef = monty::new_array_ptr(zero);
+
+	// Convert the SEta matrices to MOSEK form
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
+	for (int j=0; j<p*p; j++){
+		SEtarRef.push_back(monty::new_array_ptr(SEtar[j]));
+		SEtaiRef.push_back(monty::new_array_ptr(SEtai[j]));
+	}
+
+	// Convert the TXi matrices to MOSEK form
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXirRef;
+	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXiiRef;
+	for (int j=0; j<q*q; j++){
+		TXirRef.push_back(monty::new_array_ptr(TXir[j]));
+		TXiiRef.push_back(monty::new_array_ptr(TXii[j]));
+	}
+
+	// Dimensions of X and Y for MOSEK
+	auto dimXRef = monty::new_array_ptr(std::vector<int>({d, p}));
+	auto dimYRef = monty::new_array_ptr(std::vector<int>({d, q}));
+
+	// Locations of the start/end of each section for MOSEK
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startX;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endX;
+	for (int i=0; i<p; i+=d){
+		startX.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
+		endX.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
+	}
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> startY;
+	std::vector<std::shared_ptr<monty::ndarray<int,1>>> endY;
+	for (int i=0; i<q; i+=d){
+		startY.push_back(monty::new_array_ptr(std::vector<int>({0, i})));
+		endY.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
+	}
+
 	// The initial hyperrectangle
 	hyperRect D(p, q);
-	D = boundingRectangle(d, n, SEtar, SEtai, TXir, TXii);
+
+	// Get the X sections
+	cuart = p*p/4;
+	std::cout << "Bounding hyperrect for X... 0%" << std::flush;
+	#pragma omp parallel for num_threads(4)
+	for (int j=0; j<p*p; j++){
+
+		// Progress indicator
+		if (j < cuart){
+			std::cout << "\rBounding hyperrect for X... " << (100*j) / cuart << "%" << std::flush;
+		}
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
+
+		// The matrices to optimise
+		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Sections need to be semidefinite
+		for (int i=0; i<startX.size(); i++){
+			lModel->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										XrOpt->slice(startX[i], endX[i]), 
+										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
+									), 
+									mosek::fusion::Expr::hstack(
+										XiOpt->slice(startX[i], endX[i]),
+										XrOpt->slice(startX[i], endX[i]) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+			// Real is symetric, imag is anti-symmetric
+			lModel->constraint(mosek::fusion::Expr::sub(XrOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+			lModel->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+			// And have trace 1 (apart from the third measure)
+			if ((i+1) % 3 != 0){
+				lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+			}
+
+		}
+
+		// Need to sum to the identity
+		for (int i=0; i<startX.size(); i+=numOutcomeA){
+			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+			for(int j=0; j<numOutcomeA; j++){
+				(*prods)[j] = XrOpt->slice(startX[i+j], endX[i+j]);
+				(*prods2)[j] = XiOpt->slice(startX[i+j], endX[i+j]);
+			}
+			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+		}
+
+		// Setup the objective function
+		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]));
+
+		// The objective function should be real
+		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtarRef[j])), mosek::fusion::Domain::equalsTo(0.0));
+
+		// Minimise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		lModel->solve();
+		D.l[j] = lModel->primalObjValue();
+
+		// Extract the X values just to see
+		if (verbosity >= 2){
+			auto tempXr = *(XrOpt->level());
+			auto tempXi = *(XiOpt->level());
+			complex2 X(p, complex1(p));
+			for (int i=0; i<p*d; i++){
+				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
+			}
+			prettyPrint("X after rect l = ", X);
+			std::cout << std::endl;
+		}
+
+		// Maximise the object function
+		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		lModel->solve();
+		D.L[j] = lModel->primalObjValue();
+
+		// Extract the X values just to see
+		if (verbosity >= 2){
+			auto tempXr = *(XrOpt->level());
+			auto tempXi = *(XiOpt->level());
+			complex2 X(p, complex1(p));
+			for (int i=0; i<p*d; i++){
+				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
+			}
+			prettyPrint("X after rect L = ", X);
+			std::cout << std::endl;
+		}
+
+		// Prevent memory leaks
+		lModel->dispose();
+
+	}
+	std::cout << std::endl;
+
+	// Get the Y sections
+	cuart = q*q/4;
+	std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
+	#pragma omp parallel for num_threads(4)
+	for (int k=0; k<q*q; k++){
+
+		// Progress indicator
+		if (k < cuart){
+			std::cout << "\rBounding hyperrect for Y... " << (100*k) / cuart << "%" << std::flush;
+		}
+
+		// Create the MOSEK model 
+		mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
+
+		// The matrices to optimise
+		mosek::fusion::Variable::t YrOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+		mosek::fusion::Variable::t YiOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+		// Sections need to be semidefinite
+		for (int i=0; i<startY.size(); i++){
+			mModel->constraint(mosek::fusion::Expr::vstack(
+									mosek::fusion::Expr::hstack(
+										YrOpt->slice(startY[i], endY[i]), 
+										mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
+									), 
+									mosek::fusion::Expr::hstack(
+										YiOpt->slice(startY[i], endY[i]),
+										YrOpt->slice(startY[i], endY[i]) 
+									)
+							   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+			// Real is symetric, imag is anti-symmetric
+			mModel->constraint(mosek::fusion::Expr::sub(YrOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+			mModel->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+			// And have trace 1
+			mModel->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+
+		}
+
+		// Need to sum to the identity
+		for (int i=0; i<startY.size(); i+=numOutcomeB){
+			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+			for(int j=0; j<numOutcomeB; j++){
+				(*prods)[j] = YrOpt->slice(startY[i+j], endY[i+j]);
+				(*prods2)[j] = YiOpt->slice(startY[i+j], endY[i+j]);
+			}
+			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+		}
+
+		// Setup the objective function
+		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k]));
+
+		// The objective function should be real
+		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, TXiiRef[k]), mosek::fusion::Expr::dot(YiOpt, TXirRef[k])), mosek::fusion::Domain::equalsTo(0));
+
+		// Minimise the object function
+		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		mModel->solve();
+		D.m[k] = mModel->primalObjValue();
+
+		// Extract the Y values just to see
+		if (verbosity >= 2){
+			auto tempYr = *(YrOpt->level());
+			auto tempYi = *(YiOpt->level());
+			complex2 Y(d, complex1(q));
+			for (int i=0; i<q*d; i++){
+				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+			}
+			prettyPrint("Y after rect m = ", Y);
+			std::cout << std::endl;
+		}
+
+		// Maximise the object function
+		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		mModel->solve();
+		D.M[k] = mModel->primalObjValue();
+
+		// Extract the Y values just to see
+		if (verbosity >= 2){
+			auto tempYr = *(YrOpt->level());
+			auto tempYi = *(YiOpt->level());
+			complex2 Y(d, complex1(q));
+			for (int i=0; i<q*d; i++){
+				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
+			}
+			prettyPrint("Y after rect M = ", Y);
+			std::cout << std::endl;
+		}
+
+		// Prevent memory leaks
+		mModel->dispose();
+
+	}
+	std::cout << std::endl;
 
 	// Output various things
 	if (verbosity >= 2){
@@ -1311,6 +973,22 @@ void JCB(int d, int n){
 		std::cout << std::endl;
 		prettyPrint("T = ", T);
 		std::cout << std::endl;
+		for (int j=0; j<p*p; j++){
+			prettyPrint("eta = ", eta[j]);
+			std::cout << std::endl;
+			prettyPrint("SEtar", SEtar[j]);
+			std::cout << std::endl;
+			prettyPrint("SEtai", SEtai[j]);
+			std::cout << std::endl;
+		}
+		for (int j=0; j<q*q; j++){
+			prettyPrint("xi = ", xi[j]);
+			std::cout << std::endl;
+			prettyPrint("TXir", TXir[j]);
+			std::cout << std::endl;
+			prettyPrint("TXii", TXii[j]);
+			std::cout << std::endl;
+		}
 		prettyPrint("initial hyperrect", D);
 		std::cout << std::endl;
 	}
@@ -1327,9 +1005,250 @@ void JCB(int d, int n){
 	real2 ys(4, real1(q*q));
 	int newLoc = -1;
 
+	// Setup the MOSEK model TODO
+	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
+
+	// The matrices to optimise
+	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t XiOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t YrOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t YiOpt = model->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t rOpt = model->variable(K, mosek::fusion::Domain::unbounded());
+
+	// The parameter values TODO
+	std::vector<mosek::fusion::Parameter::t> lParams(p*p);
+	std::vector<mosek::fusion::Parameter::t> LParams(p*p);
+	for (int i=0; i<p*p; i++){
+		lParams[i] = model->parameter();
+		LParams[i] = model->parameter();
+	}
+	std::vector<mosek::fusion::Parameter::t> mParams(q*q);
+	std::vector<mosek::fusion::Parameter::t> MParams(q*q);
+	for (int i=0; i<q*q; i++){
+		mParams[i] = model->parameter();
+		MParams[i] = model->parameter();
+	}
+	std::vector<mosek::fusion::Parameter::t> GmParams(K);
+	std::vector<mosek::fusion::Parameter::t> GMParams(K);
+	std::vector<mosek::fusion::Parameter::t> HlParams(K);
+	std::vector<mosek::fusion::Parameter::t> HLParams(K);
+	std::vector<mosek::fusion::Parameter::t> slmParams(K);
+	std::vector<mosek::fusion::Parameter::t> sLMParams(K);
+	for (int i=0; i<K; i++){
+		HlParams[i] = model->parameter();
+		HLParams[i] = model->parameter();
+		GmParams[i] = model->parameter();
+		GMParams[i] = model->parameter();
+		slmParams[i] = model->parameter();
+		sLMParams[i] = model->parameter();
+	}
+	
+	// Objective function 
+	model->objective(mosek::fusion::ObjectiveSense::Minimize, mosek::fusion::Expr::sum(rOpt));
+	
+	// Sections of X need to be semidefinite
+	for (int i=0; i<startX.size(); i++){
+		model->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									XrOpt->slice(startX[i], endX[i]), 
+									mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									XiOpt->slice(startX[i], endX[i]),
+									XrOpt->slice(startX[i], endX[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// And have trace 1 (apart from the third measure)
+		if ((i+1) % 3 != 0){
+			model->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+		}
+
+		// Real is symmetric, imag is anti-symmetric
+		model->constraint(mosek::fusion::Expr::sub(XrOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+		model->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+	}
+
+	// Sections of Y need to be semidefinite
+	for (int i=0; i<startY.size(); i++){
+		model->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									YrOpt->slice(startY[i], endY[i]), 
+									mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									YiOpt->slice(startY[i], endY[i]),
+									YrOpt->slice(startY[i], endY[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// And have trace 1
+		model->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+		
+		// Real is symmetric, imag is anti-symmetric
+		model->constraint(mosek::fusion::Expr::sub(YrOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+		model->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+	}
+
+	// X needs to sum to the identity
+	for (int i=0; i<startX.size(); i+=numOutcomeA){
+		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+		for(int j=0; j<numOutcomeA; j++){
+			(*prods)[j] = XrOpt->slice(startX[i+j], endX[i+j]);
+			(*prods2)[j] = XiOpt->slice(startX[i+j], endX[i+j]);
+		}
+		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+	}
+
+	// Y needs to sum to the identity
+	for (int i=0; i<startY.size(); i+=numOutcomeB){
+		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+		for(int j=0; j<numOutcomeB; j++){
+			(*prods)[j] = YrOpt->slice(startY[i+j], endY[i+j]);
+			(*prods2)[j] = YiOpt->slice(startY[i+j], endY[i+j]);
+		}
+		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+		model->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+	}
+
+	// Bound x by the hyperrectangle
+	for (int j=0; j<p*p; j++){
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), lParams[j]), mosek::fusion::Domain::greaterThan(0.0));
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), LParams[j]), mosek::fusion::Domain::lessThan(0.0));
+		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
+	}
+	
+	// Bound y by the hyperrectangle
+	for (int j=0; j<q*q; j++){
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[j])), mParams[j]), mosek::fusion::Domain::greaterThan(0.0));
+		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[j])), MParams[j]), mosek::fusion::Domain::lessThan(0.0));
+		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
+	}
+
+	// Combined constraint with r
+	for (int j=0; j<K; j++){
+
+		// For l and m
+		model->constraint(
+							mosek::fusion::Expr::sub(
+								mosek::fusion::Expr::sub(
+									mosek::fusion::Expr::add(
+										mosek::fusion::Expr::mul(
+											GMParams[j], 
+											mosek::fusion::Expr::sub(
+												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
+												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
+											)
+										),
+										mosek::fusion::Expr::mul(
+											HLParams[j], 
+											mosek::fusion::Expr::sub(
+												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
+												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
+											)
+										)
+									),
+									rOpt->index(j)
+								),
+								slmParams[j]
+							), 
+							mosek::fusion::Domain::lessThan(0.0)
+						);
+		
+		// For L and M
+		model->constraint(
+							mosek::fusion::Expr::sub(
+								mosek::fusion::Expr::sub(
+									mosek::fusion::Expr::add(
+										mosek::fusion::Expr::mul(
+											GMParams[j], 
+											mosek::fusion::Expr::sub(
+												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
+												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
+											)
+										),
+										mosek::fusion::Expr::mul(
+											HLParams[j], 
+											mosek::fusion::Expr::sub(
+												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
+												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
+											)
+										)
+									),
+									rOpt->index(j)
+								),
+								sLMParams[j]
+							), 
+							mosek::fusion::Domain::lessThan(0.0)
+						);
+
+	}
+
 	// Get the initial value for the upper/lower bounds
 	std::cout << "Calculating initial bounds..." << std::endl;
-	computeBounds(Q, d, n, SEtar, SEtai, Delta, TXir, TXii, eta, xi, D, lowers[0], uppers[0], xs[0], ys[0]);
+
+	// Set the parameters TODO
+	for (int i=0; i<p*p; i++){
+		lParams[i]->setValue(D.l[i]);
+		LParams[i]->setValue(D.L[i]);
+	}
+	for (int i=0; i<q*q; i++){
+		mParams[i]->setValue(D.m[i]);
+		MParams[i]->setValue(D.M[i]);
+	}
+	for (int i=0; i<K; i++){
+		HlParams[i]->setValue(std::real(Delta[i][0]*D.l[i]));
+		HLParams[i]->setValue(std::real(Delta[i][0]*D.L[i]));
+		GmParams[i]->setValue(std::real(Delta[i][0]*D.m[i]));
+		GMParams[i]->setValue(std::real(Delta[i][0]*D.M[i]));
+		slmParams[i]->setValue(std::real(Delta[i][0]*D.l[i]*D.m[i]));
+		sLMParams[i]->setValue(std::real(Delta[i][0]*D.L[i]*D.M[i]));
+	}
+
+	// Solve 
+	model->solve();
+
+	// Extract the data
+	lowers[0] = model->primalObjValue();
+	auto tempXr = *(XrOpt->level());
+	auto tempXi = *(XiOpt->level());
+	auto tempYr = *(YrOpt->level());
+	auto tempYi = *(YiOpt->level());
+	real2 Xr(d, real1(p));
+	real2 Xi(d, real1(p));
+	real2 Yr(d, real1(q));
+	real2 Yi(d, real1(q));
+	for (int i=0; i<p*d; i++){
+		Xr[i/p][i%p] = tempXr[i];
+		Xi[i/p][i%p] = tempXi[i];
+	}
+	for (int i=0; i<q*d; i++){
+		Yr[i/q][i%q] = tempYr[i];
+		Yi[i/q][i%q] = tempYi[i];
+	}
+
+	// Convert X to x
+	for (int i=0; i<p*p; i++){
+		xs[0][i] = inner(Xr, SEtar[i]) - inner(Xi, SEtai[i]);
+	}
+
+	// Convert Y to y
+	for (int i=0; i<q*q; i++){
+		ys[0][i] = inner(Yr, TXir[i]) - inner(Yi, TXii[i]);
+	}
+
+	// Calculate the upper bound from these
+	uppers[0] = 0;
+	for (int j=0; j<K; j++){
+		uppers[0] += std::real(Delta[j][0]*xs[0][j]*ys[0][j]);
+	}
+
+	// Output initial bounds
 	std::cout << "Raw bounds: " << lowers[0] << " < raw < " << uppers[0] << std::endl;
 	std::cout << "Scaled bounds: " << -uppers[0]/d-sub  << " < scaled < " << -lowers[0]/d-sub << std::endl;
 	
@@ -1360,11 +1279,96 @@ void JCB(int d, int n){
 		std::cout << "-------------------------------------" << std::endl;
 
 		// For each of the new hyperrectangles in parallel
-        #pragma omp parallel for num_threads(4)
+		//#pragma omp parallel for num_threads(4) default(shared) private(Xr,Xi,Yr,Yi,XrOpt,XiOpt,YrOpt,YiOpt,rOpt,model,lParams,LParams,mParams,MParams,HlParams,HLParams,GmParams,GMParams,slmParams,sLMParams)
 		for (int j=0; j<4; j++){
 
-			// Get the bounds
-			computeBounds(Q, d, n, SEtar, SEtai, Delta, TXir, TXii, eta, xi, newRects[j], lowers[j], uppers[j], xs[j], ys[j]);
+			// Set the parameters TODO
+			for (int i=0; i<p*p; i++){
+				lParams[i]->setValue(newRects[j].l[i]);
+				LParams[i]->setValue(newRects[j].L[i]);
+			}
+			for (int i=0; i<q*q; i++){
+				mParams[i]->setValue(newRects[j].m[i]);
+				MParams[i]->setValue(newRects[j].M[i]);
+			}
+			for (int i=0; i<K; i++){
+				HlParams[i]->setValue(std::real(Delta[i][0]*newRects[j].l[i]));
+				HLParams[i]->setValue(std::real(Delta[i][0]*newRects[j].L[i]));
+				GmParams[i]->setValue(std::real(Delta[i][0]*newRects[j].m[i]));
+				GMParams[i]->setValue(std::real(Delta[i][0]*newRects[j].M[i]));
+				slmParams[i]->setValue(std::real(Delta[i][0]*newRects[j].l[i]*newRects[j].m[i]));
+				sLMParams[i]->setValue(std::real(Delta[i][0]*newRects[j].L[i]*newRects[j].M[i]));
+			}
+
+			// Solve 
+			model->solve();
+
+			// Extract the data
+			try {
+				lowers[j] = model->primalObjValue();
+			} catch (mosek::fusion::SolutionError e){
+				lowers[j] = 10000;
+				uppers[j] = 10000;
+				continue;
+			}
+			auto tempXr = *(XrOpt->level());
+			auto tempXi = *(XiOpt->level());
+			auto tempYr = *(YrOpt->level());
+			auto tempYi = *(YiOpt->level());
+			for (int i=0; i<p*d; i++){
+				Xr[i/p][i%p] = tempXr[i];
+				Xi[i/p][i%p] = tempXi[i];
+			}
+			for (int i=0; i<q*d; i++){
+				Yr[i/q][i%q] = tempYr[i];
+				Yi[i/q][i%q] = tempYi[i];
+			}
+
+			// Convert X to x
+			for (int i=0; i<p*p; i++){
+				xs[j][i] = inner(Xr, SEtar[i]) - inner(Xi, SEtai[i]);
+			}
+
+			// Convert Y to y
+			for (int i=0; i<q*q; i++){
+				ys[j][i] = inner(Yr, TXir[i]) - inner(Yi, TXii[i]);
+			}
+
+			// Calculate the upper bound from these
+			uppers[j] = 0;
+			for (int i=0; i<K; i++){
+				uppers[j] += std::real(Delta[i][0]*xs[0][i]*ys[0][i]);
+			}
+
+			// Verbose output
+			if (verbosity >= 2){
+
+				// Also get the complex X and Y
+				complex2 X(d, complex1(p));
+				for (int i=0; i<d; i++){
+					for (int j=0; j<p; j++){
+						X[i][j] = Xr[i][j] + im*Xi[i][j];
+					}
+				}
+				complex2 Y(d, complex1(q));
+				for (int i=0; i<d; i++){
+					for (int j=0; j<q; j++){
+						Y[i][j] = Yr[i][j] + im*Yi[i][j];
+					}
+				}
+
+				// Matrix outputs
+				std::cout << std::endl;
+				prettyPrint("X = ", X);
+				std::cout << std::endl;
+				prettyPrint("Y = ", Y);
+				std::cout << std::endl;
+				prettyPrint("x = ", xs[j]);
+				std::cout << std::endl;
+				prettyPrint("y = ", ys[j]);
+				std::cout << std::endl;
+
+			}
 
 		}
 
