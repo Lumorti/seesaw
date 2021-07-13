@@ -55,13 +55,17 @@ class hyperRect {
 const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
+// The tolerance for JCB
+double epsilon = 1e-5;
+int numRects = 2;
+
 // How many decimals to output for the matrices
-int precision = 3;
+int precision = 9;
 
 // Seesaw iterations
 int numIters = 100000;
 
-// Convergence criteria
+// Convergence criteria for seesaw
 double tol = 1e-8;
 int numInRowRequired = 10;
 
@@ -457,7 +461,7 @@ void prettyPrint(std::string pre, hyperRect arr){
 std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real1 &v, real1 &w){
 
 	// List of 4 hyperrectangles to return
-	std::vector<hyperRect> toReturn(4, hyperRect(p, q));
+	std::vector<hyperRect> toReturn(numRects, hyperRect(p, q));
 
 	// Number of non-zero single values
 	int K = std::min(p*p, q*q);
@@ -465,46 +469,63 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	// Determine the index which gives the biggest difference TODO
 	int I = 0;
 	double bestVal = -10000000;
+	double val = 0;
+	double vTemp = 0;
+	double wTemp = 0;
+	double vBest = 0;
+	double wBest = 0;
 	for (int i=0; i<K; i++){
-		double val = v[i]*w[i] - std::max(Omega.m[i]*v[i] + Omega.l[i]*w[i] - Omega.l[i]*Omega.m[i],
-			                              Omega.M[i]*v[i] + Omega.L[i]*w[i] - Omega.L[i]*Omega.M[i]);
+		vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
+		wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
+		val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
+		                             Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
 		if (val > bestVal){
 			bestVal = val;
 			I = i;
+			vBest = vTemp;
+			wBest = wTemp;
 		}
 	}
 
 	// Rectangles are the same apart from the special index I
+	//toReturn[0] = Omega;
+	//toReturn[1] = Omega;
+	//toReturn[2] = Omega;
+	//toReturn[3] = Omega;
+
+	//// For the first hyperrectangle
+	//toReturn[0].l[I] = Omega.l[I];
+	//toReturn[0].L[I] = vBest;
+	//toReturn[0].m[I] = Omega.m[I];
+	//toReturn[0].M[I] = wBest;
+
+	//// For the second hyperrectangle
+	//toReturn[1].l[I] = vBest;
+	//toReturn[1].L[I] = Omega.L[I];
+	//toReturn[1].m[I] = Omega.m[I];
+	//toReturn[1].M[I] = wBest;
+
+	//// For the third hyperrectangle
+	//toReturn[2].l[I] = vBest;
+	//toReturn[2].L[I] = Omega.L[I];
+	//toReturn[2].m[I] = wBest;
+	//toReturn[2].M[I] = Omega.M[I];
+
+	//// For the fourth hyperrectangle
+	//toReturn[3].l[I] = Omega.l[I];
+	//toReturn[3].L[I] = vBest;
+	//toReturn[3].m[I] = wBest;
+	//toReturn[3].M[I] = Omega.M[I];
+	
+	// Just try splitting for y
 	toReturn[0] = Omega;
-	toReturn[1] = Omega;
-	toReturn[2] = Omega;
-	toReturn[3] = Omega;
-
-	// For the first hyperrectangle
-	toReturn[0].l[I] = Omega.l[I];
-	toReturn[0].L[I] = v[I];
 	toReturn[0].m[I] = Omega.m[I];
-	toReturn[0].M[I] = w[I];
+	toReturn[0].M[I] = wBest;
+	toReturn[1] = Omega;
+	toReturn[1].m[I] = wBest;
+	toReturn[1].M[I] = Omega.M[I];
 
-	// For the second hyperrectangle
-	toReturn[1].l[I] = v[I];
-	toReturn[1].L[I] = Omega.L[I];
-	toReturn[1].m[I] = Omega.m[I];
-	toReturn[1].M[I] = w[I];
-
-	// For the third hyperrectangle
-	toReturn[2].l[I] = v[I];
-	toReturn[2].L[I] = Omega.L[I];
-	toReturn[2].m[I] = w[I];
-	toReturn[2].M[I] = Omega.M[I];
-
-	// For the fourth hyperrectangle
-	toReturn[3].l[I] = Omega.l[I];
-	toReturn[3].L[I] = v[I];
-	toReturn[3].m[I] = w[I];
-	toReturn[3].M[I] = Omega.M[I];
-
-	// Return these 4 hyperrectangles
+	// Return these hyperrectangles
 	return toReturn;
 
 }
@@ -785,24 +806,24 @@ void JCB(int d, int n){
 
 	// Exact x solution for d2n2 TODO
 	complex3 XTest;
-	XTest.push_back({ { +0.052836114238185+0.000000000000000i , +0.219222663560252+0.044563248399554i },
-		{ +0.219222663560252-0.044563248399554i , +0.947163885761815+0.000000000000000i } });
-	XTest.push_back({ { +0.947163885639723+0.000000000000000i , -0.219222663560252-0.044563248399554i },
-		{ -0.219222663560252+0.044563248399554i , +0.052836114360277+0.000000000000000i } });
-	XTest.push_back({ { +0.000000000122091+0.000000000000000i , -0.000000000000000-0.000000000000000i },
-		{ -0.000000000000000+0.000000000000000i , -0.000000000122091+0.000000000000000i } });
-	XTest.push_back({ { +0.540036237537646+0.000000000000000i , -0.019577020193051+0.498009879301547i },
-		{ -0.019577020193051-0.498009879301547i , +0.459963762462354+0.000000000000000i } });
-	XTest.push_back({ { +0.459963762340263+0.000000000000000i , +0.019577020193051-0.498009879301547i },
-		{ +0.019577020193051+0.498009879301547i , +0.540036237659737+0.000000000000000i } });
-	XTest.push_back({ { +0.000000000122091+0.000000000000000i , +0.000000000000000+0.000000000000000i },
-		{ +0.000000000000000-0.000000000000000i , -0.000000000122091+0.000000000000000i } });
-	XTest.push_back({ { +0.459963762340177+0.000000000000000i , +0.019577020193042-0.498009879301540i },
-		{ +0.019577020193042+0.498009879301540i , +0.540036237659823+0.000000000000000i } });
-	XTest.push_back({ { +0.540036237537731+0.000000000000000i , -0.019577020193042+0.498009879301540i },
-		{ -0.019577020193042-0.498009879301540i , +0.459963762462269+0.000000000000000i } });
-	XTest.push_back({ { +0.000000000122092+0.000000000000000i , +0.000000000000000+0.000000000000000i },
-		{ +0.000000000000000-0.000000000000000i , -0.000000000122092+0.000000000000000i } });
+	//XTest.push_back({ { +0.052836114238185+0.000000000000000i , +0.219222663560252+0.044563248399554i },
+		//{ +0.219222663560252-0.044563248399554i , +0.947163885761815+0.000000000000000i } });
+	//XTest.push_back({ { +0.947163885639723+0.000000000000000i , -0.219222663560252-0.044563248399554i },
+		//{ -0.219222663560252+0.044563248399554i , +0.052836114360277+0.000000000000000i } });
+	//XTest.push_back({ { +0.000000000122091+0.000000000000000i , -0.000000000000000-0.000000000000000i },
+		//{ -0.000000000000000+0.000000000000000i , -0.000000000122091+0.000000000000000i } });
+	//XTest.push_back({ { +0.540036237537646+0.000000000000000i , -0.019577020193051+0.498009879301547i },
+		//{ -0.019577020193051-0.498009879301547i , +0.459963762462354+0.000000000000000i } });
+	//XTest.push_back({ { +0.459963762340263+0.000000000000000i , +0.019577020193051-0.498009879301547i },
+		//{ +0.019577020193051+0.498009879301547i , +0.540036237659737+0.000000000000000i } });
+	//XTest.push_back({ { +0.000000000122091+0.000000000000000i , +0.000000000000000+0.000000000000000i },
+		//{ +0.000000000000000-0.000000000000000i , -0.000000000122091+0.000000000000000i } });
+	//XTest.push_back({ { +0.459963762340177+0.000000000000000i , +0.019577020193042-0.498009879301540i },
+		//{ +0.019577020193042+0.498009879301540i , +0.540036237659823+0.000000000000000i } });
+	//XTest.push_back({ { +0.540036237537731+0.000000000000000i , -0.019577020193042+0.498009879301540i },
+		//{ -0.019577020193042-0.498009879301540i , +0.459963762462269+0.000000000000000i } });
+	//XTest.push_back({ { +0.000000000122092+0.000000000000000i , +0.000000000000000+0.000000000000000i },
+		//{ +0.000000000000000-0.000000000000000i , -0.000000000122092+0.000000000000000i } });
 	//XTest.push_back({ { +0.947163885639720+0.000000000000000i , -0.219222663560255-0.044563248399572i },
 		//{ -0.219222663560255+0.044563248399572i , +0.052836114360280+0.000000000000000i } });
 	//XTest.push_back({ { +0.052836114238189+0.000000000000000i , +0.219222663560255+0.044563248399572i },
@@ -824,6 +845,136 @@ void JCB(int d, int n){
 	// The initial hyperrectangle
 	hyperRect D(p, q);
 
+	// Create the MOSEK model for x
+	mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
+
+	// The matrices to optimise
+	mosek::fusion::Variable::t XrOptL = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t XiOptL = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// The parameters which are the only thing changing
+	mosek::fusion::Parameter::t lParamr = lModel->parameter(dimXRef);
+	mosek::fusion::Parameter::t lParami = lModel->parameter(dimXRef);
+
+	// Sections need to be semidefinite
+	for (int i=0; i<startX.size(); i++){
+		lModel->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									XrOptL->slice(startX[i], endX[i]), 
+									mosek::fusion::Expr::neg(XiOptL->slice(startX[i], endX[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									XiOptL->slice(startX[i], endX[i]),
+									XrOptL->slice(startX[i], endX[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// Real is symetric, imag is anti-symmetric
+		lModel->constraint(mosek::fusion::Expr::sub(XrOptL->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOptL->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+		lModel->constraint(mosek::fusion::Expr::add(XiOptL->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOptL->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+		// And have trace 1 (apart from the third measure)
+		if ((i+1) % 3 != 0){
+			lModel->constraint(mosek::fusion::Expr::sum(XrOptL->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1.0));
+		}
+
+	}
+
+	// Need to sum to the identity
+	for (int i=0; i<startX.size(); i+=numOutcomeA){
+		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
+		for(int j=0; j<numOutcomeA; j++){
+			(*prods)[j] = XrOptL->slice(startX[i+j], endX[i+j]);
+			(*prods2)[j] = XiOptL->slice(startX[i+j], endX[i+j]);
+		}
+		lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+		lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+	}
+
+	// Setup the objective function
+	mosek::fusion::Expression::t objectiveExprL = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOptL, lParamr), mosek::fusion::Expr::dot(XiOptL, lParami));
+
+	// The objective function should be real
+	lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOptL, lParami), mosek::fusion::Expr::dot(XiOptL, lParamr)), mosek::fusion::Domain::equalsTo(0.0));
+
+	// Exact x solution for d2n2
+	for (int i=0; i<XTest.size(); i++){
+		int ind = i*d;
+		for (int j=0; j<d; j++){
+			for (int k=0; k<d; k++){
+				if (j != d && k != d){
+					lModel->constraint(XrOptL->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::real(XTest[i][j][k])));
+					lModel->constraint(XiOptL->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::imag(XTest[i][j][k])));
+				}
+			}
+		}
+	}
+
+	// Create the MOSEK model for y
+	mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
+
+	// The matrices to optimise
+	mosek::fusion::Variable::t YrOptM = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+	mosek::fusion::Variable::t YiOptM = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
+
+	// The parameters which are the only thing changing
+	mosek::fusion::Parameter::t mParamr = mModel->parameter(dimYRef);
+	mosek::fusion::Parameter::t mParami = mModel->parameter(dimYRef);
+
+	// Sections need to be semidefinite
+	for (int i=0; i<startY.size(); i++){
+		mModel->constraint(mosek::fusion::Expr::vstack(
+								mosek::fusion::Expr::hstack(
+									YrOptM->slice(startY[i], endY[i]), 
+									mosek::fusion::Expr::neg(YiOptM->slice(startY[i], endY[i]))
+								), 
+								mosek::fusion::Expr::hstack(
+									YiOptM->slice(startY[i], endY[i]),
+									YrOptM->slice(startY[i], endY[i]) 
+								)
+						   ), mosek::fusion::Domain::inPSDCone(2*d));
+
+		// Real is symetric, imag is anti-symmetric
+		mModel->constraint(mosek::fusion::Expr::sub(YrOptM->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOptM->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+		mModel->constraint(mosek::fusion::Expr::add(YiOptM->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOptM->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
+
+		// And have trace 1
+		mModel->constraint(mosek::fusion::Expr::sum(YrOptM->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
+
+	}
+
+	// Need to sum to the identity
+	for (int i=0; i<startY.size(); i+=numOutcomeB){
+		auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+		auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
+		for(int j=0; j<numOutcomeB; j++){
+			(*prods)[j] = YrOptM->slice(startY[i+j], endY[i+j]);
+			(*prods2)[j] = YiOptM->slice(startY[i+j], endY[i+j]);
+		}
+		mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
+		mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
+	}
+	
+	// Exact y solution for d2n2
+	for (int i=0; i<YTest.size(); i++){
+		int ind = i*d;
+		for (int j=0; j<d; j++){
+			for (int k=0; k<d; k++){
+				if (j != d && k != d){
+					mModel->constraint(YrOptM->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::real(YTest[i][j][k])));
+					mModel->constraint(YiOptM->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::imag(YTest[i][j][k])));
+				}
+			}
+		}
+	}
+
+	// Setup the objective function
+	mosek::fusion::Expression::t objectiveExprM = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOptM, mParamr), mosek::fusion::Expr::dot(YiOptM, mParami));
+
+	// The objective function should be real
+	mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
+
 	// Get the X sections
 	cuart = p*p/4;
 	std::cout << "Bounding hyperrect for X... 0%" << std::flush;
@@ -834,77 +985,19 @@ void JCB(int d, int n){
 			std::cout << "\rBounding hyperrect for X... " << (100*j) / cuart << "%" << std::flush;
 		}
 
-		// Create the MOSEK model 
-		mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
-
-		// The matrices to optimise
-		mosek::fusion::Variable::t XrOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t XiOpt = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-		// Sections need to be semidefinite
-		for (int i=0; i<startX.size(); i++){
-			lModel->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										XrOpt->slice(startX[i], endX[i]), 
-										mosek::fusion::Expr::neg(XiOpt->slice(startX[i], endX[i]))
-									), 
-									mosek::fusion::Expr::hstack(
-										XiOpt->slice(startX[i], endX[i]),
-										XrOpt->slice(startX[i], endX[i]) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-			// Real is symetric, imag is anti-symmetric
-			lModel->constraint(mosek::fusion::Expr::sub(XrOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-			lModel->constraint(mosek::fusion::Expr::add(XiOpt->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOpt->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-			// And have trace 1 (apart from the third measure)
-			if ((i+1) % 3 != 0){
-				lModel->constraint(mosek::fusion::Expr::sum(XrOpt->slice(startX[i], endX[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-			}
-
-		}
-
-		// Need to sum to the identity
-		for (int i=0; i<startX.size(); i+=numOutcomeA){
-			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeA));
-			for(int j=0; j<numOutcomeA; j++){
-				(*prods)[j] = XrOpt->slice(startX[i+j], endX[i+j]);
-				(*prods2)[j] = XiOpt->slice(startX[i+j], endX[i+j]);
-			}
-			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-			lModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-		}
-
-		// Setup the objective function
-		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j]));
-
-		// The objective function should be real
-		lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtarRef[j])), mosek::fusion::Domain::equalsTo(0.0));
-
-		// Exact x solution for d2n2 TODO
-		for (int i=0; i<XTest.size(); i++){
-			int ind = i*d;
-			for (int j=0; j<d; j++){
-				for (int k=0; k<d; k++){
-					if (j != d && k != d){
-						lModel->constraint(XrOpt->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::real(XTest[i][j][k])));
-						lModel->constraint(XiOpt->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::imag(XTest[i][j][k])));
-					}
-				}
-			}
-		}
+		// Set the param for this j
+		lParamr->setValue(SEtarRef[j]);
+		lParami->setValue(SEtaiRef[j]);
 
 		// Minimise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExprL);
 		lModel->solve();
 		D.l[j] = lModel->primalObjValue();
 
 		// Extract the X values just to see
 		if (verbosity >= 2){
-			auto tempXr = *(XrOpt->level());
-			auto tempXi = *(XiOpt->level());
+			auto tempXr = *(XrOptL->level());
+			auto tempXi = *(XiOptL->level());
 			complex2 X(d, complex1(p));
 			for (int i=0; i<p*d; i++){
 				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
@@ -914,14 +1007,14 @@ void JCB(int d, int n){
 		}
 
 		// Maximise the object function
-		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExprL);
 		lModel->solve();
 		D.L[j] = lModel->primalObjValue();
 
 		// Extract the X values just to see
 		if (verbosity >= 2){
-			auto tempXr = *(XrOpt->level());
-			auto tempXi = *(XiOpt->level());
+			auto tempXr = *(XrOptL->level());
+			auto tempXi = *(XiOptL->level());
 			complex2 X(d, complex1(p));
 			for (int i=0; i<p*d; i++){
 				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
@@ -930,16 +1023,13 @@ void JCB(int d, int n){
 			std::cout << std::endl;
 		}
 
-		// Prevent memory leaks
-		lModel->dispose();
-
 	}
 	std::cout << std::endl;
 
 	// Get the Y sections
 	cuart = q*q/4;
 	std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
-	#pragma omp parallel for num_threads(4)
+	//#pragma omp parallel for num_threads(4)
 	for (int k=0; k<q*q; k++){
 
 		// Progress indicator
@@ -947,75 +1037,19 @@ void JCB(int d, int n){
 			std::cout << "\rBounding hyperrect for Y... " << (100*k) / cuart << "%" << std::flush;
 		}
 
-		// Create the MOSEK model 
-		mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
-
-		// The matrices to optimise
-		mosek::fusion::Variable::t YrOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-		mosek::fusion::Variable::t YiOpt = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
-
-		// Sections need to be semidefinite
-		for (int i=0; i<startY.size(); i++){
-			mModel->constraint(mosek::fusion::Expr::vstack(
-									mosek::fusion::Expr::hstack(
-										YrOpt->slice(startY[i], endY[i]), 
-										mosek::fusion::Expr::neg(YiOpt->slice(startY[i], endY[i]))
-									), 
-									mosek::fusion::Expr::hstack(
-										YiOpt->slice(startY[i], endY[i]),
-										YrOpt->slice(startY[i], endY[i]) 
-									)
-							   ), mosek::fusion::Domain::inPSDCone(2*d));
-
-			// Real is symetric, imag is anti-symmetric
-			mModel->constraint(mosek::fusion::Expr::sub(YrOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-			mModel->constraint(mosek::fusion::Expr::add(YiOpt->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOpt->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
-
-			// And have trace 1
-			mModel->constraint(mosek::fusion::Expr::sum(YrOpt->slice(startY[i], endY[i])->diag()), mosek::fusion::Domain::equalsTo(1));
-
-		}
-
-		// Need to sum to the identity
-		for (int i=0; i<startY.size(); i+=numOutcomeB){
-			auto prods = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-			auto prods2 = new monty::ndarray<mosek::fusion::Expression::t,1>(monty::shape(numOutcomeB));
-			for(int j=0; j<numOutcomeB; j++){
-				(*prods)[j] = YrOpt->slice(startY[i+j], endY[i+j]);
-				(*prods2)[j] = YiOpt->slice(startY[i+j], endY[i+j]);
-			}
-			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods)), mosek::fusion::Domain::equalsTo(identityRef));
-			mModel->constraint(mosek::fusion::Expr::add(std::shared_ptr<monty::ndarray<mosek::fusion::Expression::t,1>>(prods2)), mosek::fusion::Domain::equalsTo(zeroRef));
-		}
-		
-		// Exact y solution for d2n2 TODO
-		for (int i=0; i<YTest.size(); i++){
-			int ind = i*d;
-			for (int j=0; j<d; j++){
-				for (int k=0; k<d; k++){
-					if (j != d && k != d){
-						mModel->constraint(YrOpt->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::real(YTest[i][j][k])));
-						mModel->constraint(YiOpt->index(j, ind+k), mosek::fusion::Domain::equalsTo(std::imag(YTest[i][j][k])));
-					}
-				}
-			}
-		}
-
-		// Setup the objective function
-		mosek::fusion::Expression::t objectiveExpr = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[k]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[k]));
-
-		// The objective function should be real
-		mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOpt, TXiiRef[k]), mosek::fusion::Expr::dot(YiOpt, TXirRef[k])), mosek::fusion::Domain::equalsTo(0));
+		// Set the param for this k
+		mParamr->setValue(TXirRef[k]);
+		mParami->setValue(TXiiRef[k]);
 
 		// Minimise the object function
-		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExpr);
+		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExprM);
 		mModel->solve();
 		D.m[k] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
 		if (verbosity >= 2){
-			auto tempYr = *(YrOpt->level());
-			auto tempYi = *(YiOpt->level());
+			auto tempYr = *(YrOptM->level());
+			auto tempYi = *(YiOptM->level());
 			complex2 Y(d, complex1(q));
 			for (int i=0; i<q*d; i++){
 				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
@@ -1025,14 +1059,14 @@ void JCB(int d, int n){
 		}
 
 		// Maximise the object function
-		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExpr);
+		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExprM);
 		mModel->solve();
 		D.M[k] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
 		if (verbosity >= 2){
-			auto tempYr = *(YrOpt->level());
-			auto tempYi = *(YiOpt->level());
+			auto tempYr = *(YrOptM->level());
+			auto tempYi = *(YiOptM->level());
 			complex2 Y(d, complex1(q));
 			for (int i=0; i<q*d; i++){
 				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
@@ -1041,29 +1075,25 @@ void JCB(int d, int n){
 			std::cout << std::endl;
 		}
 
-		// Prevent memory leaks
-		mModel->dispose();
-
 	}
 	std::cout << std::endl;
 
-	// Manually set the initial hyperrect TODO
-	//D.l = { -0.000000000000011, +0.000000000000063, +0.000000000000063, -0.000000000000012, +0.481287341521381, -0.689005021959999, -0.575765441562956, -0.681775865054295, +0.028053538304166, -1.527625333657312, -0.227770793744370, +0.333173685339488, -0.001408998999797, -0.060548337691329, +0.079161625862865, +0.007158310336429, -0.049194139470653, -0.096496746273839, +0.152291689962203, +0.126471155775468, -0.045986630954748, -0.004772658702406, +0.037805221946258, -0.130098299374387, -0.038509344666819, -0.064160135795617, +0.021941730399023, -0.034482713236092, -0.114878056907146, +0.041751461648716, -0.053538794108192, -0.211002189406724, -0.087425008073084, -0.046061329481824, +0.158148519538633, -0.382467455381725, +0.052482024028914, +0.058100577376807, -0.008100383141408, -0.183685589480119, -0.231893303654483, -0.105852942954961, -0.034296978476323, -0.034349985028794, -0.050234441303822, +0.087752337622322, +0.092879935101448, +0.104496090145704, +0.080568173212747, +0.000000000000003, +0.049347349487665, -0.151412707393087, -0.059782829275617, +0.017926915567268, +0.019138627392372, +0.091139606698435, -0.040236122258248, -0.027165809442821, -0.080761447693341, +0.029784356119631, -0.030473103797361, -0.088671254112037, +0.090488795938866, +0.014969265775265, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.332217378475515, -0.062306172901887, -0.295409038619574, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.376409808085391, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.570742108309328, -0.036783554215914, +0.005413607698977, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.494929554206660, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.429257891568581, +0.036783554215914, -0.005413607698977, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.505070445915431, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.523785264861789, -0.011098924798051, -0.149749258546321, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.443637496921862, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.476214735016119, +0.011098924798051, +0.149749258546321, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.556362503200230, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122092, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122092, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.436624593721601, +0.046522653705583, -0.125112090362473, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.439833767744743, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.563375406156308, -0.046522653705583, +0.125112090362473, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.560166232377348, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, -0.000000000122091};
-	//D.L = { -0.000000000000011, +0.000000000000063, +0.000000000000063, -0.000000000000012, +0.481287341521381, -0.689005021959999, -0.575765441562956, -0.681775865054295, +0.028053538304166, -1.527625333657312, -0.227770793744370, +0.333173685339488, -0.001408998999797, -0.060548337691329, +0.079161625862865, +0.007158310336429, -0.049194139470653, -0.096496746273839, +0.152291689962203, +0.126471155775468, -0.045986630954748, -0.004772658702406, +0.037805221946258, -0.130098299374387, -0.038509344666819, -0.064160135795617, +0.021941730399023, -0.034482713236092, -0.114878056907146, +0.041751461648716, -0.053538794108192, -0.211002189406724, -0.087425008073084, -0.046061329481824, +0.158148519538633, -0.382467455381725, +0.052482024028914, +0.058100577376807, -0.008100383141408, -0.183685589480119, -0.231893303654483, -0.105852942954961, -0.034296978476323, -0.034349985028794, -0.050234441303822, +0.087752337622322, +0.092879935101448, +0.104496090145704, +0.080568173212747, +0.000000000000003, +0.049347349487665, -0.151412707393087, -0.059782829275617, +0.017926915567268, +0.019138627392372, +0.091139606698435, -0.040236122258248, -0.027165809442821, -0.080761447693341, +0.029784356119631, -0.030473103797361, -0.088671254112037, +0.090488795938866, +0.014969265775265, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.332217378475515, -0.062306172901887, -0.295409038619574, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.376409808085391, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.570742108309328, -0.036783554215914, +0.005413607698977, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.494929554206660, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.429257891568581, +0.036783554215914, -0.005413607698977, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.505070445915431, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122091, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.523785264861789, -0.011098924798051, -0.149749258546321, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.443637496921862, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.476214735016119, +0.011098924798051, +0.149749258546321, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.556362503200230, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122092, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000122092, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.436624593721601, +0.046522653705583, -0.125112090362473, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.439833767744743, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.563375406156308, -0.046522653705583, +0.125112090362473, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.560166232377348, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000122091, +0.000000000000000, +0.000000000000000, -0.000000000122091};
-	//D.m = { -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.340314027499432, +0.487191691568826, +0.407115388443058, +0.482085396546662, -0.019828988359041, +1.080208719034629, +0.161062468741507, -0.235576228012649, +0.331417667113540, -0.096334022930646, -0.127777080895345, -0.059947024692818, -0.030195490262218, +0.136292860198501, +0.098592080315266, +0.129967179967458, +0.369696095768899, +0.115706686557282, +0.005175690459492, +0.002552791649875, -0.004406751162441, -0.000929188295431, -0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, +0.917538643582326, +0.177072530507654, +0.068467153408928, -0.081147103207932, +0.000000000000000, +0.000000000000000, +0.139529221498446, -0.225643429704534, +0.012695448158456, +0.435831582286290, +0.062832523870052, +0.035688102828687, +0.154133769847408, -0.226724914731791, -0.263746579031601, -0.212315334528366, +0.072287814661762, -0.088742715375369, +0.036099025538616, +0.170290467573737, -0.530397293734749};
-	//D.M = { -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.340314027499432, +0.487191691568826, +0.407115388443058, +0.482085396546662, -0.019828988359041, +1.080208719034629, +0.161062468741507, -0.235576228012649, +0.331417667113540, -0.096334022930646, -0.127777080895345, -0.059947024692818, -0.030195490262218, +0.136292860198501, +0.098592080315266, +0.129967179967458, +0.369696095768899, +0.115706686557282, +0.005175690459492, +0.002552791649875, -0.004406751162441, -0.000929188295431, -0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, +0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, +0.000000000000000, +0.000000000000000, -0.000000000000000, -0.000000000000000, -0.000000000000000, +0.917538643582326, +0.177072530507654, +0.068467153408928, -0.081147103207932, +0.000000000000000, +0.000000000000000, +0.139529221498446, -0.225643429704534, +0.012695448158456, +0.435831582286290, +0.062832523870052, +0.035688102828687, +0.154133769847408, -0.226724914731791, -0.263746579031601, -0.212315334528366, +0.072287814661762, -0.088742715375369, +0.036099025538616, +0.170290467573737, -0.530397293734749};
-	//double del = 0.1;
-	//for (int i=0; i<p*p; i++){
-		//if (std::abs(D.l[i]) > 0.0000001){
-			//D.l[i] -= del;
-			//D.L[i] += del;
+	// Prevent memory leaks
+	lModel->dispose();
+	mModel->dispose();
+
+	// Extra hyperrect contraints TODO
+	//for (int i=0; i<K; i++){
+		//if (std::abs(D.m[i] - D.M[i]) < 1e-5){
+			//double mid = (D.l[i] + D.L[i]) / 2.0;
+			//D.l[i] = mid;
+			//D.L[i] = mid;
 		//}
 	//}
-	//for (int i=0; i<q*q; i++){
-		//if (std::abs(D.m[i]) > 0.0000001){
-			//D.m[i] -= del;
-			//D.M[i] += del;
-		//}
+	//for (int i=K; i<p*p; i++){
+		//double mid = (D.l[i] + D.L[i]) / 2.0;
+		//D.l[i] = mid;
+		//D.L[i] = mid;
 	//}
 
 	// Output various things
@@ -1099,16 +1129,13 @@ void JCB(int d, int n){
 		std::cout << std::endl;
 	}
 
-	// The tolerance until deemed to have converged
-	double epsilon = 1e-1;
-
 	// Init things here to prevent re-init each iterations
 	hyperRect Omega(p, q);
 	std::vector<hyperRect> newRects;
-	real1 lowers(4, 0.0);
-	real1 uppers(4, 0.0);
-	real2 xs(4, real1(p*p));
-	real2 ys(4, real1(q*q));
+	real1 lowers(numRects, 0.0);
+	real1 uppers(numRects, 0.0);
+	real2 xs(numRects, real1(p*p));
+	real2 ys(numRects, real1(q*q));
 	int newLoc = -1;
 
 	// Setup the MOSEK model
@@ -1149,7 +1176,7 @@ void JCB(int d, int n){
 		sLMParams[i] = model->parameter();
 	}
 	
-	// Exact x solution for d2n2 TODO
+	// Exact x solution for d2n2
 	for (int i=0; i<XTest.size(); i++){
 		int ind = i*d;
 		for (int j=0; j<d; j++){
@@ -1162,7 +1189,7 @@ void JCB(int d, int n){
 		}
 	}
 
-	// Exact y solution for d2n2 TODO
+	// Exact y solution for d2n2
 	for (int i=0; i<YTest.size(); i++){
 		int ind = i*d;
 		for (int j=0; j<d; j++){
@@ -1426,6 +1453,11 @@ void JCB(int d, int n){
 	int iter = 0;
 	while (bestUpperBound - bestLowerBound > epsilon && P.size() > 0){
 
+		// Per-iteration output
+		std::cout << "-------------------------------------" << std::endl;
+		std::cout << "        Iteration: " << iter << std::endl;
+		std::cout << "-------------------------------------" << std::endl;
+
 		// Create the four new hyperrectangles
 		newRects = branchHyperrectangle(p, q, P[0], xCoords[0], yCoords[0]);
 
@@ -1435,14 +1467,8 @@ void JCB(int d, int n){
 		yCoords.erase(yCoords.begin(), yCoords.begin()+1);
 		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
 
-		// Per-iteration output
-		std::cout << "-------------------------------------" << std::endl;
-		std::cout << "        Iteration: " << iter << std::endl;
-		std::cout << "-------------------------------------" << std::endl;
-
-		// For each of the new hyperrectangles in parallel
-		//#pragma omp parallel for num_threads(4) default(shared) private(Xr,Xi,Yr,Yi,XrOpt,XiOpt,YrOpt,YiOpt,rOpt,model,lParams,LParams,mParams,MParams,HlParams,HLParams,GmParams,GMParams,slmParams,sLMParams)
-		for (int j=0; j<4; j++){
+		// For each of the new hyperrectangles 
+		for (int j=0; j<numRects; j++){
 
 			// Set the parameters
 			for (int i=0; i<p*p; i++){
@@ -1499,11 +1525,14 @@ void JCB(int d, int n){
 			// Calculate the upper bound from these
 			uppers[j] = 0;
 			for (int i=0; i<K; i++){
-				uppers[j] += std::real(Delta[i][0]*xs[0][i]*ys[0][i]);
+				uppers[j] += std::real(Delta[i][0]*xs[j][i]*ys[j][i]);
 			}
 
 			// Verbose output
 			if (verbosity >= 2){
+
+				// Output the hyperrect
+				prettyPrint("hyperrect " + std::to_string(j), newRects[j]);
 
 				// Also get the complex X and Y
 				complex2 X(d, complex1(p));
@@ -1535,7 +1564,7 @@ void JCB(int d, int n){
 		}
 
 		// For each of the results
-		for (int j=0; j<4; j++){
+		for (int j=0; j<numRects; j++){
 
 			// Get the corresponding bounds
 			std::cout << "For hyperrect " << j << ": " << lowers[j] << " " << uppers[j] << std::endl;
@@ -1545,11 +1574,10 @@ void JCB(int d, int n){
 				bestUpperBound = uppers[j];
 			}
 
-			// If the lower bound is a valid overall lower bound TODO
-			if (lowers[j] < (idealRaw*0.0) && lowers[j] < bestUpperBound){
+			// If the lower bound is a valid overall lower bound
+			if (lowers[j] < bestUpperBound){
 
 				// Figure out where in the queue it should go
-				//newLoc = lowerBounds.size();
 				newLoc = lowerBounds.size();
 				for (int i=0; i<lowerBounds.size(); i++){
 					if (lowers[j] < lowerBounds[i]){
@@ -1579,6 +1607,12 @@ void JCB(int d, int n){
 		// Iteration finished
 		iter += 1;
 
+	}
+
+	// Output the ideal matrices
+	if (verbosity >= 2){
+		prettyPrint("x = ", xCoords[0]);
+		prettyPrint("y = ", yCoords[0]);
 	}
 
 	// Stop the timer 

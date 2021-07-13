@@ -2,3 +2,6 @@ vectors.dat
 seesaw
 __pycache__
 .*.swp
+temp.log
+ideal.log
+prev.log
