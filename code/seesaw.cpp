@@ -20,6 +20,9 @@ using namespace std::complex_literals;
 // MOSEK
 #include "fusion.h"
 
+// MPI parallelisation
+#include "mpi.h"
+
 // Because otherwise things start looking messy
 using complex1 = std::vector<std::complex<double>>;
 using complex2 = std::vector<complex1>;
@@ -55,8 +58,8 @@ class hyperRect {
 const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
-// How many hyperrects to split into each iteration TODO
-int numRects = 4;
+// How many hyperrects to split into each iteration
+int numRects = 2;
 
 // How many decimals to output for the matrices
 int precision = 9;
@@ -87,6 +90,10 @@ int outputMethod = 1;
 // Whether to force the rank of each matrix
 bool restrictRankA = false;
 bool restrictRankB = false;
+
+// Keeping track of MPI things
+int procID = 0;
+int numProcs = 1;
 
 // Turn an Eigen matix to a std::vector
 complex2 matToVec(Eigen::MatrixXcd mat){
@@ -475,8 +482,10 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	//double vBest = 0;
 	//double wBest = 0;
 	//for (int i=0; i<K; i++){
-		//vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
-		//wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
+		//vTemp = v[i];
+		//wTemp = w[i];
+		////vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
+		////wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
 		//val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
 									 //Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
 		//if (val > bestVal){
@@ -725,8 +734,7 @@ void JCB(int d, int n){
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
 	std::cout << "Calculating U from Q... 0%" << std::flush;
 	Eigen::MatrixXcd UEigen(p*p, q*q);
-	int cuart = p*p/4;
-    #pragma omp parallel for num_threads(4)
+	int cuart = p*p;
 	for (int j=0; j<p*p; j++){
 		if (j < cuart){
 			std::cout << "\rCalculating U from Q... " << (100*j) / cuart << "%" << std::flush;
@@ -751,8 +759,7 @@ void JCB(int d, int n){
 	real3 SEtar(p*p, real2(d, real1(p)));
 	real3 SEtai(p*p, real2(d, real1(p)));
 	std::cout << "Precalculating S*eta... 0%" << std::flush;
-	cuart = p*p/4;
-    #pragma omp parallel for num_threads(4)
+	cuart = p*p;
 	for (int j=0; j<p*p; j++){
 		if (j < cuart){
 			std::cout << "\rPrecalculating S*eta... " << (100*j) / cuart << "%" << std::flush;
@@ -772,10 +779,9 @@ void JCB(int d, int n){
 
 	// Assemble the combined T and Xi matrices
 	std::cout << "Precalculating T*Xi: 0%" << std::flush;
-	cuart = q*q/4;
+	cuart = q*q;
 	real3 TXir(q*q, real2(d, real1(q)));
 	real3 TXii(q*q, real2(d, real1(q)));
-    #pragma omp parallel for num_threads(4)
 	for (int j=0; j<q*q; j++){
 		if (j < cuart){
 			std::cout << "\rPrecalculating T*Xi: " << (100*j) / cuart << "%" << std::flush;
@@ -865,10 +871,10 @@ void JCB(int d, int n){
 
 	// Exact y solution for d2n2 TODO
 	complex3 YTest;
-	YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-		              { +0.0+0.0i , +0.0+0.0i } });
-	YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-		              { +0.0+0.0i , +1.0+0.0i } });
+	//YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +0.0+0.0i } });
+	//YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +1.0+0.0i } });
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
 	//YTest.push_back({ { +0.787874051893482+0.000000000000000i , -0.141173539811072+0.383664648148024i },
@@ -1012,7 +1018,7 @@ void JCB(int d, int n){
 	mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
 
 	// Get the X sections
-	cuart = p*p/4;
+	cuart = p*p;
 	std::cout << "Bounding hyperrect for X... 0%" << std::flush;
 	for (int j=0; j<p*p; j++){
 
@@ -1063,9 +1069,8 @@ void JCB(int d, int n){
 	std::cout << std::endl;
 
 	// Get the Y sections
-	cuart = q*q/4;
+	cuart = q*q;
 	std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
-	//#pragma omp parallel for num_threads(4)
 	for (int k=0; k<q*q; k++){
 
 		// Progress indicator
@@ -1301,17 +1306,17 @@ void JCB(int d, int n){
 	for (int j=0; j<p*p; j++){
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), lParams[j]), mosek::fusion::Domain::greaterThan(0.0));
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])), LParams[j]), mosek::fusion::Domain::lessThan(0.0));
-		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
+		//model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XiOpt, SEtarRef[j]), mosek::fusion::Expr::dot(XrOpt, SEtaiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 	
 	// Bound y by the hyperrectangle
 	for (int j=0; j<q*q; j++){
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[j])), mParams[j]), mosek::fusion::Domain::greaterThan(0.0));
 		model->constraint(mosek::fusion::Expr::sub(mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), mosek::fusion::Expr::dot(YiOpt, TXiiRef[j])), MParams[j]), mosek::fusion::Domain::lessThan(0.0));
-		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
+		//model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 
-	// Combined constraint with r TODO
+	// Combined constraint with r
 	for (int j=0; j<K; j++){
 
 		// For l and m
@@ -1348,14 +1353,14 @@ void JCB(int d, int n){
 									mosek::fusion::Expr::add(
 										mosek::fusion::Expr::mul(
 											GMParams[j], 
-											mosek::fusion::Expr::add(
+											mosek::fusion::Expr::sub(
 												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
 												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
 											)
 										),
 										mosek::fusion::Expr::mul(
 											HLParams[j], 
-											mosek::fusion::Expr::add(
+											mosek::fusion::Expr::sub(
 												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
 												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
 											)
@@ -1400,6 +1405,7 @@ void JCB(int d, int n){
 	auto tempXi = *(XiOpt->level());
 	auto tempYr = *(YrOpt->level());
 	auto tempYi = *(YiOpt->level());
+	auto tempR = *(rOpt->level());
 	real2 Xr(d, real1(p));
 	real2 Xi(d, real1(p));
 	real2 Yr(d, real1(q));
@@ -1462,7 +1468,7 @@ void JCB(int d, int n){
 	// Output initial bounds
 	std::cout << "Raw bounds: " << lowers[0] << " < raw < " << uppers[0] << std::endl;
 	std::cout << "Scaled bounds: " << -uppers[0]/d-sub  << " < scaled < " << -lowers[0]/d-sub << std::endl;
-	
+
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
 	real2 xCoords = {xs[0]};
@@ -1471,47 +1477,33 @@ void JCB(int d, int n){
 	double bestLowerBound = lowers[0];
 	double bestUpperBound = uppers[0];
 
-	// Try just branching a bunch first TODO
-	//while (P.size() < 1000){
-
-		//newRects = branchHyperrectangle(p, q, P[0], xCoords[0], yCoords[0]);
-
-		//// Remove the current rect
-		//P.erase(P.begin(), P.begin()+1);
-		//xCoords.erase(xCoords.begin(), xCoords.begin()+1);
-		//yCoords.erase(yCoords.begin(), yCoords.begin()+1);
-		//lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
-
-		//// Add all the new rects to the end
-		//for (int j=0; j<numRects; j++){
-			//newLoc = P.size();
-			//P.insert(P.begin()+newLoc, newRects[j]);
-			//xCoords.insert(xCoords.begin()+newLoc, xs[0]);
-			//yCoords.insert(yCoords.begin()+newLoc, ys[0]);
-			//lowerBounds.insert(lowerBounds.begin()+newLoc, lowers[0]);
-		//}
-
-	//}
-
-	// Keep looping until the bounds match
+	// Keep looping until the bounds match TODO parallelise
 	int iter = 0;
-	while (std::abs(bestUpperBound - bestLowerBound) > epsilon && P.size() > 0 && iter < numIters){
+	bool shouldStop = false;
+	while (!shouldStop){
 
 		// Per-iteration output
 		std::cout << "-------------------------------------" << std::endl;
 		std::cout << "        Iteration: " << iter << std::endl;
 		std::cout << "-------------------------------------" << std::endl;
 
-		// Create the four new hyperrectangles
-		newRects = branchHyperrectangle(p, q, P[0], xCoords[0], yCoords[0]);
+		// Create the new hyperrectangles
+		for (int i=0; i<numProcs; i++){
+			localRects = branchHyperrectangle(p, q, P[i], xCoords[i], yCoords[i]);
+			for (int j=0; j<numRects; j++){
+				globalRects[i*numRects+j] = localRects[j];
+			}
+		}
 
-		// Remove the current rect
-		P.erase(P.begin(), P.begin()+1);
-		xCoords.erase(xCoords.begin(), xCoords.begin()+1);
-		yCoords.erase(yCoords.begin(), yCoords.begin()+1);
-		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
+		// Remove the rects used to create them
+		P.erase(P.begin(), P.begin()+numProcs);
+		xCoords.erase(xCoords.begin(), xCoords.begin()+numProcs);
+		yCoords.erase(yCoords.begin(), yCoords.begin()+numProcs);
+		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+numProcs);
 
-		// For each of the new hyperrectangles 
+		// Transfer these to the other cores TODO
+
+		// For each of this core's hyperrects
 		for (int j=0; j<numRects; j++){
 
 			// Set the parameters
@@ -1607,6 +1599,8 @@ void JCB(int d, int n){
 
 		}
 
+		// Collect all the results onto the root node TODO
+
 		// For each of the results
 		for (int j=0; j<numRects; j++){
 
@@ -1647,6 +1641,9 @@ void JCB(int d, int n){
 		std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
 		std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
 		std::cout << "Size of space: " << P.size() << std::endl;
+
+		// Sync all cores should now stop TODO
+		shouldStop = bestUpperBound - bestLowerBound > epsilon && P.size() > 0 && iter < numIters;
 
 		// Iteration finished
 		iter += 1;
@@ -2600,6 +2597,11 @@ void seesaw(int d, int n){
 // Standard cpp entry point
 int main (int argc, char ** argv) {
 
+	// Start MPI and get info
+	MPI_Init(&argc, &argv);
+	MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
+	MPI_Comm_rank(MPI_COMM_WORLD, &procID);
+
 	// Whether to use the extension for d > 2
 	int method = 2;
 
@@ -2762,6 +2764,9 @@ int main (int argc, char ** argv) {
 	} else {
 		seesaw(d, n);
 	}
+
+	// Finish with MPI
+	MPI_Finalize();
 
 }
 
