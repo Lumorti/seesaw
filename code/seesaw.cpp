@@ -55,9 +55,8 @@ class hyperRect {
 const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
-// The tolerance for JCB
-double epsilon = 1e-5;
-int numRects = 2;
+// How many hyperrects to split into each iteration
+int numRects = 4;
 
 // How many decimals to output for the matrices
 int precision = 9;
@@ -65,8 +64,9 @@ int precision = 9;
 // Seesaw iterations
 int numIters = 100000;
 
-// Convergence criteria for seesaw
+// Convergence criteria
 double tol = 1e-8;
+double epsilon = 1e-5;
 int numInRowRequired = 10;
 
 // How much to output (0 == none, 1 == normal, 2 == extra)
@@ -466,7 +466,6 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	// Number of non-zero single values
 	int K = std::min(p*p, q*q);
 
-	// Determine the index which gives the biggest difference TODO
 	int I = 0;
 	double bestVal = -10000000;
 	double val = 0;
@@ -488,42 +487,59 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	}
 
 	// Rectangles are the same apart from the special index I
-	//toReturn[0] = Omega;
-	//toReturn[1] = Omega;
-	//toReturn[2] = Omega;
-	//toReturn[3] = Omega;
-
-	//// For the first hyperrectangle
-	//toReturn[0].l[I] = Omega.l[I];
-	//toReturn[0].L[I] = vBest;
-	//toReturn[0].m[I] = Omega.m[I];
-	//toReturn[0].M[I] = wBest;
-
-	//// For the second hyperrectangle
-	//toReturn[1].l[I] = vBest;
-	//toReturn[1].L[I] = Omega.L[I];
-	//toReturn[1].m[I] = Omega.m[I];
-	//toReturn[1].M[I] = wBest;
-
-	//// For the third hyperrectangle
-	//toReturn[2].l[I] = vBest;
-	//toReturn[2].L[I] = Omega.L[I];
-	//toReturn[2].m[I] = wBest;
-	//toReturn[2].M[I] = Omega.M[I];
-
-	//// For the fourth hyperrectangle
-	//toReturn[3].l[I] = Omega.l[I];
-	//toReturn[3].L[I] = vBest;
-	//toReturn[3].m[I] = wBest;
-	//toReturn[3].M[I] = Omega.M[I];
-	
-	// Just try splitting for y
 	toReturn[0] = Omega;
+	toReturn[1] = Omega;
+	toReturn[2] = Omega;
+	toReturn[3] = Omega;
+
+	// For the first hyperrectangle
+	toReturn[0].l[I] = Omega.l[I];
+	toReturn[0].L[I] = vBest;
 	toReturn[0].m[I] = Omega.m[I];
 	toReturn[0].M[I] = wBest;
-	toReturn[1] = Omega;
-	toReturn[1].m[I] = wBest;
-	toReturn[1].M[I] = Omega.M[I];
+
+	// For the second hyperrectangle
+	toReturn[1].l[I] = vBest;
+	toReturn[1].L[I] = Omega.L[I];
+	toReturn[1].m[I] = Omega.m[I];
+	toReturn[1].M[I] = wBest;
+
+	// For the third hyperrectangle
+	toReturn[2].l[I] = vBest;
+	toReturn[2].L[I] = Omega.L[I];
+	toReturn[2].m[I] = wBest;
+	toReturn[2].M[I] = Omega.M[I];
+
+	// For the fourth hyperrectangle
+	toReturn[3].l[I] = Omega.l[I];
+	toReturn[3].L[I] = vBest;
+	toReturn[3].m[I] = wBest;
+	toReturn[3].M[I] = Omega.M[I];
+	
+	// Determine the index which gives the biggest difference TODO
+	//int I = 0;
+	//double bestVal = -10000000;
+	//double val = 0;
+	//double vTemp = 0;
+	//double wTemp = 0;
+	//for (int i=0; i<K; i++){
+		//vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
+		//wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
+		//val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
+									 //Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
+		//if (val > bestVal){
+			//bestVal = val;
+			//I = i;
+		//}
+	//}
+
+	//// Split the y hyperrect into a number of subdivisions
+	//double wDelta = (Omega.M[I]-Omega.m[I]) / numRects;
+	//for (int i=0; i<numRects; i++){
+		//toReturn[i] = Omega;
+		//toReturn[i].m[I] = Omega.m[I] + i*wDelta;
+		//toReturn[i].M[I] = Omega.m[I] + (i+1)*wDelta;
+	//}
 
 	// Return these hyperrectangles
 	return toReturn;
@@ -833,6 +849,10 @@ void JCB(int d, int n){
 
 	// Exact y solution for d2n2 TODO
 	complex3 YTest;
+	YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+		              { +0.0+0.0i , +0.0+0.0i } });
+	YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+		              { +0.0+0.0i , +1.0+0.0i } });
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
 	//YTest.push_back({ { +0.787874051893482+0.000000000000000i , -0.141173539811072+0.383664648148024i },
@@ -1081,20 +1101,6 @@ void JCB(int d, int n){
 	// Prevent memory leaks
 	lModel->dispose();
 	mModel->dispose();
-
-	// Extra hyperrect contraints TODO
-	//for (int i=0; i<K; i++){
-		//if (std::abs(D.m[i] - D.M[i]) < 1e-5){
-			//double mid = (D.l[i] + D.L[i]) / 2.0;
-			//D.l[i] = mid;
-			//D.L[i] = mid;
-		//}
-	//}
-	//for (int i=K; i<p*p; i++){
-		//double mid = (D.l[i] + D.L[i]) / 2.0;
-		//D.l[i] = mid;
-		//D.L[i] = mid;
-	//}
 
 	// Output various things
 	if (verbosity >= 2){
@@ -1449,9 +1455,31 @@ void JCB(int d, int n){
 	double bestLowerBound = lowers[0];
 	double bestUpperBound = uppers[0];
 
+	// Try just branching a bunch first TODO
+	//while (P.size() < 1000){
+
+		//newRects = branchHyperrectangle(p, q, P[0], xCoords[0], yCoords[0]);
+
+		//// Remove the current rect
+		//P.erase(P.begin(), P.begin()+1);
+		//xCoords.erase(xCoords.begin(), xCoords.begin()+1);
+		//yCoords.erase(yCoords.begin(), yCoords.begin()+1);
+		//lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
+
+		//// Add all the new rects to the end
+		//for (int j=0; j<numRects; j++){
+			//newLoc = P.size();
+			//P.insert(P.begin()+newLoc, newRects[j]);
+			//xCoords.insert(xCoords.begin()+newLoc, xs[0]);
+			//yCoords.insert(yCoords.begin()+newLoc, ys[0]);
+			//lowerBounds.insert(lowerBounds.begin()+newLoc, lowers[0]);
+		//}
+
+	//}
+
 	// Keep looping until the bounds match
 	int iter = 0;
-	while (bestUpperBound - bestLowerBound > epsilon && P.size() > 0){
+	while (std::abs(bestUpperBound - bestLowerBound) > epsilon && P.size() > 1 && iter < numIters){
 
 		// Per-iteration output
 		std::cout << "-------------------------------------" << std::endl;
@@ -1569,7 +1597,7 @@ void JCB(int d, int n){
 			// Get the corresponding bounds
 			std::cout << "For hyperrect " << j << ": " << lowers[j] << " " << uppers[j] << std::endl;
 
-			// Is it the new best upper?
+			// Is it the new best upper? TODO without this it goes forever
 			if (uppers[j] < bestUpperBound){
 				bestUpperBound = uppers[j];
 			}
@@ -2673,7 +2701,7 @@ int main (int argc, char ** argv) {
 
 		// Set the iteration limit
 		} else if (arg == "-i") {
-			d = std::stoi(argv[i+1]);
+			numIters = std::stoi(argv[i+1]);
 			i += 1;
 
 		// Set the verbosity
@@ -2683,6 +2711,7 @@ int main (int argc, char ** argv) {
 		// Set the tolerance
 		} else if (arg == "-t") {
 			tol = std::stod(argv[i+1]);
+			epsilon = std::stod(argv[i+1]);
 			i += 1;
 
 		// Set the precision
