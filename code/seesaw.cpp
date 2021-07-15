@@ -55,7 +55,7 @@ class hyperRect {
 const double root2 = sqrt(2.0);
 const std::complex<double> im = sqrt(std::complex<double>(-1.0));
 
-// How many hyperrects to split into each iteration
+// How many hyperrects to split into each iteration TODO
 int numRects = 4;
 
 // How many decimals to output for the matrices
@@ -466,62 +466,14 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	// Number of non-zero single values
 	int K = std::min(p*p, q*q);
 
-	int I = 0;
-	double bestVal = -10000000;
-	double val = 0;
-	double vTemp = 0;
-	double wTemp = 0;
-	double vBest = 0;
-	double wBest = 0;
-	for (int i=0; i<K; i++){
-		vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
-		wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
-		val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
-		                             Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
-		if (val > bestVal){
-			bestVal = val;
-			I = i;
-			vBest = vTemp;
-			wBest = wTemp;
-		}
-	}
-
-	// Rectangles are the same apart from the special index I
-	toReturn[0] = Omega;
-	toReturn[1] = Omega;
-	toReturn[2] = Omega;
-	toReturn[3] = Omega;
-
-	// For the first hyperrectangle
-	toReturn[0].l[I] = Omega.l[I];
-	toReturn[0].L[I] = vBest;
-	toReturn[0].m[I] = Omega.m[I];
-	toReturn[0].M[I] = wBest;
-
-	// For the second hyperrectangle
-	toReturn[1].l[I] = vBest;
-	toReturn[1].L[I] = Omega.L[I];
-	toReturn[1].m[I] = Omega.m[I];
-	toReturn[1].M[I] = wBest;
-
-	// For the third hyperrectangle
-	toReturn[2].l[I] = vBest;
-	toReturn[2].L[I] = Omega.L[I];
-	toReturn[2].m[I] = wBest;
-	toReturn[2].M[I] = Omega.M[I];
-
-	// For the fourth hyperrectangle
-	toReturn[3].l[I] = Omega.l[I];
-	toReturn[3].L[I] = vBest;
-	toReturn[3].m[I] = wBest;
-	toReturn[3].M[I] = Omega.M[I];
-	
-	// Determine the index which gives the biggest difference TODO
+	// Old method
 	//int I = 0;
 	//double bestVal = -10000000;
 	//double val = 0;
 	//double vTemp = 0;
 	//double wTemp = 0;
+	//double vBest = 0;
+	//double wBest = 0;
 	//for (int i=0; i<K; i++){
 		//vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
 		//wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
@@ -530,16 +482,80 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 		//if (val > bestVal){
 			//bestVal = val;
 			//I = i;
+			//vBest = vTemp;
+			//wBest = wTemp;
 		//}
 	//}
 
-	//// Split the y hyperrect into a number of subdivisions
-	//double wDelta = (Omega.M[I]-Omega.m[I]) / numRects;
-	//for (int i=0; i<numRects; i++){
-		//toReturn[i] = Omega;
-		//toReturn[i].m[I] = Omega.m[I] + i*wDelta;
-		//toReturn[i].M[I] = Omega.m[I] + (i+1)*wDelta;
-	//}
+	//// Rectangles are the same apart from the special index I
+	//toReturn[0] = Omega;
+	//toReturn[1] = Omega;
+	//toReturn[2] = Omega;
+	//toReturn[3] = Omega;
+
+	//// For the first hyperrectangle
+	//toReturn[0].l[I] = Omega.l[I];
+	//toReturn[0].L[I] = vBest;
+	//toReturn[0].m[I] = Omega.m[I];
+	//toReturn[0].M[I] = wBest;
+
+	//// For the second hyperrectangle
+	//toReturn[1].l[I] = vBest;
+	//toReturn[1].L[I] = Omega.L[I];
+	//toReturn[1].m[I] = Omega.m[I];
+	//toReturn[1].M[I] = wBest;
+
+	//// For the third hyperrectangle
+	//toReturn[2].l[I] = vBest;
+	//toReturn[2].L[I] = Omega.L[I];
+	//toReturn[2].m[I] = wBest;
+	//toReturn[2].M[I] = Omega.M[I];
+
+	//// For the fourth hyperrectangle
+	//toReturn[3].l[I] = Omega.l[I];
+	//toReturn[3].L[I] = vBest;
+	//toReturn[3].m[I] = wBest;
+	//toReturn[3].M[I] = Omega.M[I];
+	
+	// Determine the index which gives the biggest difference TODO
+	int I = 0;
+	double bestVal = -10000000;
+	double val = 0;
+	double vTemp = 0;
+	double wTemp = 0;
+	for (int i=0; i<K; i++){
+		vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
+		wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
+		val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
+									 Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
+		if (val > bestVal){
+			bestVal = val;
+			I = i;
+		}
+	}
+
+	// Split the y hyperrect into a number of subdivisions
+	if (numRects > 2){
+		double wDelta = (Omega.M[I]-Omega.m[I]) / (numRects/2);
+		double vDelta = (Omega.L[I]-Omega.l[I]) / (numRects/2);
+		for (int i=0; i<numRects/2; i++){
+			toReturn[i] = Omega;
+			toReturn[i].m[I] = Omega.m[I] + i*wDelta;
+			toReturn[i].M[I] = Omega.m[I] + (i+1)*wDelta;
+		}
+		for (int i=numRects/2; i<numRects; i++){
+			toReturn[i] = Omega;
+			toReturn[i].l[I] = Omega.l[I] + i*vDelta;
+			toReturn[i].L[I] = Omega.l[I] + (i+1)*vDelta;
+		}
+	} else {
+		double wDelta = (Omega.M[I]-Omega.m[I]) / numRects;
+		for (int i=0; i<numRects; i++){
+			toReturn[i] = Omega;
+			toReturn[i].m[I] = Omega.m[I] + i*wDelta;
+			toReturn[i].M[I] = Omega.m[I] + (i+1)*wDelta;
+		}
+	}
 
 	// Return these hyperrectangles
 	return toReturn;
@@ -1295,7 +1311,7 @@ void JCB(int d, int n){
 		model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 
-	// Combined constraint with r
+	// Combined constraint with r TODO
 	for (int j=0; j<K; j++){
 
 		// For l and m
@@ -1304,14 +1320,14 @@ void JCB(int d, int n){
 								mosek::fusion::Expr::sub(
 									mosek::fusion::Expr::add(
 										mosek::fusion::Expr::mul(
-											GMParams[j], 
+											GmParams[j], 
 											mosek::fusion::Expr::sub(
 												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
 												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
 											)
 										),
 										mosek::fusion::Expr::mul(
-											HLParams[j], 
+											HlParams[j], 
 											mosek::fusion::Expr::sub(
 												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
 												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
@@ -1332,14 +1348,14 @@ void JCB(int d, int n){
 									mosek::fusion::Expr::add(
 										mosek::fusion::Expr::mul(
 											GMParams[j], 
-											mosek::fusion::Expr::sub(
+											mosek::fusion::Expr::add(
 												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
 												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
 											)
 										),
 										mosek::fusion::Expr::mul(
 											HLParams[j], 
-											mosek::fusion::Expr::sub(
+											mosek::fusion::Expr::add(
 												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
 												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
 											)
@@ -1479,7 +1495,7 @@ void JCB(int d, int n){
 
 	// Keep looping until the bounds match
 	int iter = 0;
-	while (std::abs(bestUpperBound - bestLowerBound) > epsilon && P.size() > 1 && iter < numIters){
+	while (std::abs(bestUpperBound - bestLowerBound) > epsilon && P.size() > 0 && iter < numIters){
 
 		// Per-iteration output
 		std::cout << "-------------------------------------" << std::endl;
@@ -1597,7 +1613,7 @@ void JCB(int d, int n){
 			// Get the corresponding bounds
 			std::cout << "For hyperrect " << j << ": " << lowers[j] << " " << uppers[j] << std::endl;
 
-			// Is it the new best upper? TODO without this it goes forever
+			// Is it the new best upper?
 			if (uppers[j] < bestUpperBound){
 				bestUpperBound = uppers[j];
 			}
@@ -1635,12 +1651,6 @@ void JCB(int d, int n){
 		// Iteration finished
 		iter += 1;
 
-	}
-
-	// Output the ideal matrices
-	if (verbosity >= 2){
-		prettyPrint("x = ", xCoords[0]);
-		prettyPrint("y = ", yCoords[0]);
 	}
 
 	// Stop the timer 
@@ -2717,6 +2727,11 @@ int main (int argc, char ** argv) {
 		// Set the precision
 		} else if (arg == "-p") {
 			precision = std::stod(argv[i+1]);
+			i += 1;
+
+		// DEBUG parameter
+		} else if (arg == "-db") {
+			numRects = std::stod(argv[i+1]);
 			i += 1;
 
 		// Use the standard method
