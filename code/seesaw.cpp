@@ -52,6 +52,15 @@ class hyperRect {
 			m = oth.m;
 			M = oth.M;
 		}
+		double getVolume(){
+			double vol = -100000;
+			for (int i=0; i<m.size(); i++){
+				if (M[i]-m[i] > vol){
+					vol = M[i]-m[i];
+				}
+			}
+			return vol;
+		}
 };
 
 // Useful values
@@ -465,7 +474,7 @@ void prettyPrint(std::string pre, hyperRect arr){
 }
 
 // Branch a hyperrectangle at a certain point
-std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real1 &v, real1 &w){
+std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega){
 
 	// List of 4 hyperrectangles to return
 	std::vector<hyperRect> toReturn(numRects, hyperRect(p, q));
@@ -473,60 +482,7 @@ std::vector<hyperRect> branchHyperrectangle(int p, int q, hyperRect &Omega, real
 	// Number of non-zero single values
 	int K = std::min(p*p, q*q);
 
-	// Old method
-	//int I = 0;
-	//double bestVal = -10000000;
-	//double val = 0;
-	//double vTemp = 0;
-	//double wTemp = 0;
-	//double vBest = 0;
-	//double wBest = 0;
-	//for (int i=0; i<K; i++){
-		//vTemp = v[i];
-		//wTemp = w[i];
-		////vTemp = Omega.l[i] + (Omega.L[i]-Omega.l[i]) / 2;
-		////wTemp = Omega.m[i] + (Omega.M[i]-Omega.m[i]) / 2;
-		//val = vTemp*wTemp - std::max(Omega.m[i]*vTemp + Omega.l[i]*wTemp - Omega.l[i]*Omega.m[i],
-									 //Omega.M[i]*vTemp + Omega.L[i]*wTemp - Omega.L[i]*Omega.M[i]);
-		//if (val > bestVal){
-			//bestVal = val;
-			//I = i;
-			//vBest = vTemp;
-			//wBest = wTemp;
-		//}
-	//}
-
-	//// Rectangles are the same apart from the special index I
-	//toReturn[0] = Omega;
-	//toReturn[1] = Omega;
-	//toReturn[2] = Omega;
-	//toReturn[3] = Omega;
-
-	//// For the first hyperrectangle
-	//toReturn[0].l[I] = Omega.l[I];
-	//toReturn[0].L[I] = vBest;
-	//toReturn[0].m[I] = Omega.m[I];
-	//toReturn[0].M[I] = wBest;
-
-	//// For the second hyperrectangle
-	//toReturn[1].l[I] = vBest;
-	//toReturn[1].L[I] = Omega.L[I];
-	//toReturn[1].m[I] = Omega.m[I];
-	//toReturn[1].M[I] = wBest;
-
-	//// For the third hyperrectangle
-	//toReturn[2].l[I] = vBest;
-	//toReturn[2].L[I] = Omega.L[I];
-	//toReturn[2].m[I] = wBest;
-	//toReturn[2].M[I] = Omega.M[I];
-
-	//// For the fourth hyperrectangle
-	//toReturn[3].l[I] = Omega.l[I];
-	//toReturn[3].L[I] = vBest;
-	//toReturn[3].m[I] = wBest;
-	//toReturn[3].M[I] = Omega.M[I];
-	
-	// Determine the index which gives the biggest difference TODO
+	// Determine the index which gives the biggest difference
 	int I = 0;
 	double bestVal = -10000000;
 	double val = 0;
@@ -608,14 +564,19 @@ void JCB(int d, int n){
 	auto t1 = std::chrono::high_resolution_clock::now();
 
 	// Output basic info
-	std::cout << "d = " << d << "  n = " << n << std::endl;
-	std::cout << "p = " << p << "  p*p = " << p*p << std::endl;
-	std::cout << "q = " << q << "  q*q = " << q*q << std::endl;
-	std::cout << "idealRaw = " << idealRaw << std::endl;
-	std::cout << "idealScaled = " << idealScaled << std::endl;
+	if (procID == 0){
+		std::cout << std::fixed << std::setprecision(precision);
+		std::cout << "d = " << d << "  n = " << n << std::endl;
+		std::cout << "p = " << p << "  p*p = " << p*p << std::endl;
+		std::cout << "q = " << q << "  q*q = " << q*q << std::endl;
+		std::cout << "idealRaw = " << idealRaw << std::endl;
+		std::cout << "idealScaled = " << idealScaled << std::endl;
+	}
 
 	// Assemble eta to be orthonormal and self-adjoint
-	std::cout << "Constructing eta..." << std::endl;
+	if (procID == 0){
+		std::cout << "Constructing eta..." << std::endl;
+	}
 	complex3 eta(p*p, complex2(p, complex1(p)));
 	std::vector<std::vector<Eigen::Triplet<std::complex<double>>>> tripletsEta(p*p, std::vector<Eigen::Triplet<std::complex<double>>>(2));
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> etaSparse(p*p);
@@ -656,7 +617,9 @@ void JCB(int d, int n){
 	}
 
 	// Assemble xi to be orthonormal and self-adjoint
-	std::cout << "Constructing xi..." << std::endl;
+	if (procID == 0){
+		std::cout << "Constructing xi..." << std::endl;
+	}
 	complex3 xi(q*q, complex2(q, complex1(q)));
 	std::vector<std::vector<Eigen::Triplet<std::complex<double>>>> tripletsXi(q*q, std::vector<Eigen::Triplet<std::complex<double>>>(2));
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> xiSparse(q*q);
@@ -697,7 +660,9 @@ void JCB(int d, int n){
 	}
 
 	// The coefficients for the block-diagonals of Q
-	std::cout << "Constructing Q..." << std::endl;
+	if (procID == 0){
+		std::cout << "Constructing Q..." << std::endl;
+	}
 	real1 blockQ(numMeasureA*numOutcomeA*numMeasureB*numOutcomeB);
 	int nextInd = 0;
 	int perB = numMeasureB*numOutcomeB;
@@ -732,12 +697,13 @@ void JCB(int d, int n){
 	QSparse.setFromTriplets(tripletsQ.begin(), tripletsQ.end());
 
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
-	std::cout << "Calculating U from Q... 0%" << std::flush;
 	Eigen::MatrixXcd UEigen(p*p, q*q);
-	int cuart = p*p;
+	if (procID == 0){
+		std::cout << "Calculating U from Q... 0%" << std::flush;
+	}
 	for (int j=0; j<p*p; j++){
-		if (j < cuart){
-			std::cout << "\rCalculating U from Q... " << (100*j) / cuart << "%" << std::flush;
+		if (procID == 0){
+			std::cout << "\rCalculating U from Q... " << (100*j) / (p*p) << "%" << std::flush;
 		}
 		for (int k=0; k<q*q; k++){
 			Eigen::KroneckerProductSparse<Eigen::SparseMatrix<std::complex<double>>, Eigen::SparseMatrix<std::complex<double>>> prod(etaSparse[j], xiSparse[k]);
@@ -746,10 +712,14 @@ void JCB(int d, int n){
 			UEigen(j,k) = QSparse.cwiseProduct(result).sum();
 		}
 	}
-	std::cout << std::endl;
+	if (procID == 0){
+		std::cout << std::endl;
+	}
 	
 	// Pre-calculate the decomposition U = S Delta T
-	std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
+	if (procID == 0){
+		std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
+	}
 	Eigen::BDCSVD<Eigen::MatrixXcd> svd(UEigen, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	complex2 Delta = matToVec(svd.singularValues());
 	complex2 S = matToVec(svd.matrixU());
@@ -758,11 +728,12 @@ void JCB(int d, int n){
 	// Assemble the combined S and Eta matrices
 	real3 SEtar(p*p, real2(d, real1(p)));
 	real3 SEtai(p*p, real2(d, real1(p)));
-	std::cout << "Precalculating S*eta... 0%" << std::flush;
-	cuart = p*p;
+	if (procID == 0){
+		std::cout << "Precalculating S*eta... 0%" << std::flush;
+	}
 	for (int j=0; j<p*p; j++){
-		if (j < cuart){
-			std::cout << "\rPrecalculating S*eta... " << (100*j) / cuart << "%" << std::flush;
+		if (procID == 0){
+			std::cout << "\rPrecalculating S*eta... " << (100*j) / (p*p) << "%" << std::flush;
 		}
 		for (int block=0; block<numMeasureA*numOutcomeA; block++){
 			for (int k=0; k<p*p; k++){
@@ -775,16 +746,19 @@ void JCB(int d, int n){
 			}
 		}
 	}
-	std::cout << std::endl;
+	if (procID == 0){
+		std::cout << std::endl;
+	}
 
 	// Assemble the combined T and Xi matrices
-	std::cout << "Precalculating T*Xi: 0%" << std::flush;
-	cuart = q*q;
 	real3 TXir(q*q, real2(d, real1(q)));
 	real3 TXii(q*q, real2(d, real1(q)));
+	if (procID == 0){
+		std::cout << "Precalculating T*Xi: 0%" << std::flush;
+	}
 	for (int j=0; j<q*q; j++){
-		if (j < cuart){
-			std::cout << "\rPrecalculating T*Xi: " << (100*j) / cuart << "%" << std::flush;
+		if (procID == 0){
+			std::cout << "\rPrecalculating T*Xi: " << (100*j) / (q*q) << "%" << std::flush;
 		}
 		for (int block=0; block<numMeasureB*numOutcomeB; block++){
 			for (int k=0; k<q*q; k++){
@@ -797,7 +771,9 @@ void JCB(int d, int n){
 			}
 		}
 	}
-	std::cout << std::endl;
+	if (procID == 0){
+		std::cout << std::endl;
+	}
 
 	// Reference to the zero/identity matrix for MOSEK
 	real2 zero(d, real1(d, 0.0));
@@ -844,6 +820,18 @@ void JCB(int d, int n){
 
 	// Exact x solution for d2n2 TODO
 	complex3 XTest;
+	//XTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +0.0+0.0i } });
+	//XTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +1.0+0.0i } });
+	//XTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +0.0+0.0i } });
+	//XTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+					  //{ +0.5+0.0i , +0.5+0.0i } });
+	//XTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+					  //{ -0.5+0.0i , +0.5+0.0i } });
+	//XTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+					  //{ +0.0+0.0i , +0.0+0.0i } });
 	//XTest.push_back({ { +0.052836114238185+0.000000000000000i , +0.219222663560252+0.044563248399554i },
 		//{ +0.219222663560252-0.044563248399554i , +0.947163885761815+0.000000000000000i } });
 	//XTest.push_back({ { +0.947163885639723+0.000000000000000i , -0.219222663560252-0.044563248399554i },
@@ -869,12 +857,16 @@ void JCB(int d, int n){
 	//XTest.push_back({ { +0.000000000122091+0.000000000000000i , -0.000000000000000-0.000000000000000i },
 		//{ -0.000000000000000+0.000000000000000i , -0.000000000122091+0.000000000000000i } });
 
-	// Exact y solution for d2n2 TODO
+	// Exact y solution for d2n2
 	complex3 YTest;
-	//YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-					  //{ +0.0+0.0i , +0.0+0.0i } });
-	//YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-					  //{ +0.0+0.0i , +1.0+0.0i } });
+	YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+					  { +0.0+0.0i , +0.0+0.0i } });
+	YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+					  { +0.0+0.0i , +1.0+0.0i } });
+	//YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+					  //{ +0.5+0.0i , +0.5+0.0i } });
+	//YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+					  //{ -0.5+0.0i , +0.5+0.0i } });
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
 	//YTest.push_back({ { +0.787874051893482+0.000000000000000i , -0.141173539811072+0.383664648148024i },
@@ -889,6 +881,9 @@ void JCB(int d, int n){
 
 	// Create the MOSEK model for x
 	mosek::fusion::Model::t lModel = new mosek::fusion::Model(); 
+
+	// Only use one core
+	lModel->setSolverParam("numThreads", 1);
 
 	// The matrices to optimise
 	mosek::fusion::Variable::t XrOptL = lModel->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
@@ -956,6 +951,9 @@ void JCB(int d, int n){
 	// Create the MOSEK model for y
 	mosek::fusion::Model::t mModel = new mosek::fusion::Model(); 
 
+	// Only use one core
+	mModel->setSolverParam("numThreads", 1);
+
 	// The matrices to optimise
 	mosek::fusion::Variable::t YrOptM = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
 	mosek::fusion::Variable::t YiOptM = mModel->variable(dimYRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
@@ -1017,14 +1015,15 @@ void JCB(int d, int n){
 	// The objective function should be real
 	mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
 
-	// Get the X sections
-	cuart = p*p;
-	std::cout << "Bounding hyperrect for X... 0%" << std::flush;
+	// Get the X sections TODO parallelise
+	if (procID == 0){
+		std::cout << "Bounding hyperrect for X... 0%" << std::flush;
+	}
 	for (int j=0; j<p*p; j++){
 
 		// Progress indicator
-		if (j < cuart){
-			std::cout << "\rBounding hyperrect for X... " << (100*j) / cuart << "%" << std::flush;
+		if (procID == 0){
+			std::cout << "\rBounding hyperrect for X... " << (100*j) / (p*p) << "%" << std::flush;
 		}
 
 		// Set the param for this j
@@ -1037,7 +1036,7 @@ void JCB(int d, int n){
 		D.l[j] = lModel->primalObjValue();
 
 		// Extract the X values just to see
-		if (verbosity >= 2){
+		if (procID == 0 && verbosity >= 2){
 			auto tempXr = *(XrOptL->level());
 			auto tempXi = *(XiOptL->level());
 			complex2 X(d, complex1(p));
@@ -1054,7 +1053,7 @@ void JCB(int d, int n){
 		D.L[j] = lModel->primalObjValue();
 
 		// Extract the X values just to see
-		if (verbosity >= 2){
+		if (procID == 0 && verbosity >= 2){
 			auto tempXr = *(XrOptL->level());
 			auto tempXi = *(XiOptL->level());
 			complex2 X(d, complex1(p));
@@ -1066,16 +1065,19 @@ void JCB(int d, int n){
 		}
 
 	}
-	std::cout << std::endl;
+	if (procID == 0){
+		std::cout << std::endl;
+	}
 
 	// Get the Y sections
-	cuart = q*q;
-	std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
+	if (procID == 0){
+		std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
+	}
 	for (int k=0; k<q*q; k++){
 
 		// Progress indicator
-		if (k < cuart){
-			std::cout << "\rBounding hyperrect for Y... " << (100*k) / cuart << "%" << std::flush;
+		if (procID == 0){
+			std::cout << "\rBounding hyperrect for Y... " << (100*k) / (q*q) << "%" << std::flush;
 		}
 
 		// Set the param for this k
@@ -1088,7 +1090,7 @@ void JCB(int d, int n){
 		D.m[k] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
-		if (verbosity >= 2){
+		if (procID == 0 && verbosity >= 2){
 			auto tempYr = *(YrOptM->level());
 			auto tempYi = *(YiOptM->level());
 			complex2 Y(d, complex1(q));
@@ -1105,7 +1107,7 @@ void JCB(int d, int n){
 		D.M[k] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
-		if (verbosity >= 2){
+		if (procID == 0 && verbosity >= 2){
 			auto tempYr = *(YrOptM->level());
 			auto tempYi = *(YiOptM->level());
 			complex2 Y(d, complex1(q));
@@ -1117,14 +1119,16 @@ void JCB(int d, int n){
 		}
 
 	}
-	std::cout << std::endl;
+	if (procID == 0){
+		std::cout << std::endl;
+	}
 
 	// Prevent memory leaks
 	lModel->dispose();
 	mModel->dispose();
 
 	// Output various things
-	if (verbosity >= 2){
+	if (procID == 0 && verbosity >= 2){
 		std::cout << std::endl;
 		prettyPrint("blockQ = ", blockQ);
 		std::cout << std::endl;
@@ -1156,17 +1160,11 @@ void JCB(int d, int n){
 		std::cout << std::endl;
 	}
 
-	// Init things here to prevent re-init each iterations
-	hyperRect Omega(p, q);
-	std::vector<hyperRect> newRects;
-	real1 lowers(numRects, 0.0);
-	real1 uppers(numRects, 0.0);
-	real2 xs(numRects, real1(p*p));
-	real2 ys(numRects, real1(q*q));
-	int newLoc = -1;
-
 	// Setup the MOSEK model
 	mosek::fusion::Model::t model = new mosek::fusion::Model(); 
+
+	// Only use one core
+	model->setSolverParam("numThreads", 1);
 
 	// The matrices to optimise
 	mosek::fusion::Variable::t XrOpt = model->variable(dimXRef, mosek::fusion::Domain::inRange(-1.0, 1.0));
@@ -1376,7 +1374,9 @@ void JCB(int d, int n){
 	}
 
 	// Get the initial value for the upper/lower bounds
-	std::cout << "Calculating initial bounds..." << std::endl;
+	if (procID == 0){
+		std::cout << "Calculating initial bounds..." << std::endl;
+	}
 
 	// Set the parameters
 	for (int i=0; i<p*p; i++){
@@ -1399,8 +1399,20 @@ void JCB(int d, int n){
 	// Solve 
 	model->solve();
 
+	// Init things here to prevent re-init each iterations
+	hyperRect Omega(p, q);
+	std::vector<hyperRect> localRects(numRects, hyperRect(p, q));
+	std::vector<hyperRect> globalRects(numRects*numProcs, hyperRect(p, q));
+	real1 localLowers(numRects, 0.0);
+	real1 localUppers(numRects, 0.0);
+	real1 globalLowers(numRects*numProcs, 0.0);
+	real1 globalUppers(numRects*numProcs, 0.0);
+	real2 xs(numRects, real1(p*p));
+	real2 ys(numRects, real1(q*q));
+	int newLoc = -1;
+
 	// Extract the data
-	lowers[0] = model->primalObjValue();
+	localLowers[0] = model->primalObjValue();
 	auto tempXr = *(XrOpt->level());
 	auto tempXi = *(XiOpt->level());
 	auto tempYr = *(YrOpt->level());
@@ -1430,13 +1442,13 @@ void JCB(int d, int n){
 	}
 
 	// Calculate the upper bound from these
-	uppers[0] = 0;
+	localUppers[0] = 0;
 	for (int j=0; j<K; j++){
-		uppers[0] += std::real(Delta[j][0]*xs[0][j]*ys[0][j]);
+		localUppers[0] += std::real(Delta[j][0]*xs[0][j]*ys[0][j]);
 	}
 
 	// Verbose output
-	if (verbosity >= 2){
+	if (procID == 0 && verbosity >= 2){
 
 		// Also get the complex X and Y
 		complex2 X(d, complex1(p));
@@ -1466,30 +1478,43 @@ void JCB(int d, int n){
 	}
 
 	// Output initial bounds
-	std::cout << "Raw bounds: " << lowers[0] << " < raw < " << uppers[0] << std::endl;
-	std::cout << "Scaled bounds: " << -uppers[0]/d-sub  << " < scaled < " << -lowers[0]/d-sub << std::endl;
+	if (procID == 0){
+		std::cout << "Raw bounds: " << localLowers[0] << " < raw < " << localUppers[0] << std::endl;
+		std::cout << "Scaled bounds: " << -localUppers[0]/d-sub  << " < scaled < " << -localLowers[0]/d-sub << std::endl;
+	}
 
 	// Keep track of the remaining hyperrects and their bounds
 	std::vector<hyperRect> P = {D};
-	real2 xCoords = {xs[0]};
-	real2 yCoords = {ys[0]};
-	std::vector<double> lowerBounds = {lowers[0]};
-	double bestLowerBound = lowers[0];
-	double bestUpperBound = uppers[0];
+	std::vector<double> lowerBounds = {localLowers[0]};
+	double bestLowerBound = localLowers[0];
+	double bestUpperBound = localUppers[0];
 
-	// Keep looping until the bounds match TODO parallelise
+	// Create enough branches for the number of cores
+	while (P.size() < numProcs){
+
+		// Branch the first element
+		localRects = branchHyperrectangle(p, q, P[0]);
+
+		// Remove this rect 
+		P.erase(P.begin(), P.begin()+1);
+		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+1);
+
+		// Add these new rects to the list
+		for (int j=0; j<numRects; j++){
+			P.insert(P.begin(), localRects[j]);
+			lowerBounds.insert(lowerBounds.begin(), -1000000);
+		}
+
+	}
+
+	// Keep looping until any of stopping criteria are met
 	int iter = 0;
 	bool shouldStop = false;
 	while (!shouldStop){
 
-		// Per-iteration output
-		std::cout << "-------------------------------------" << std::endl;
-		std::cout << "        Iteration: " << iter << std::endl;
-		std::cout << "-------------------------------------" << std::endl;
-
 		// Create the new hyperrectangles
 		for (int i=0; i<numProcs; i++){
-			localRects = branchHyperrectangle(p, q, P[i], xCoords[i], yCoords[i]);
+			localRects = branchHyperrectangle(p, q, P[i]);
 			for (int j=0; j<numRects; j++){
 				globalRects[i*numRects+j] = localRects[j];
 			}
@@ -1497,31 +1522,32 @@ void JCB(int d, int n){
 
 		// Remove the rects used to create them
 		P.erase(P.begin(), P.begin()+numProcs);
-		xCoords.erase(xCoords.begin(), xCoords.begin()+numProcs);
-		yCoords.erase(yCoords.begin(), yCoords.begin()+numProcs);
 		lowerBounds.erase(lowerBounds.begin(), lowerBounds.begin()+numProcs);
 
-		// Transfer these to the other cores TODO
+		// This core should only do part the work
+		for (int j=0; j<numRects; j++){
+			 localRects[j] = globalRects[procID*numRects+j];
+		}
 
 		// For each of this core's hyperrects
 		for (int j=0; j<numRects; j++){
 
 			// Set the parameters
 			for (int i=0; i<p*p; i++){
-				lParams[i]->setValue(newRects[j].l[i]);
-				LParams[i]->setValue(newRects[j].L[i]);
+				lParams[i]->setValue(localRects[j].l[i]);
+				LParams[i]->setValue(localRects[j].L[i]);
 			}
 			for (int i=0; i<q*q; i++){
-				mParams[i]->setValue(newRects[j].m[i]);
-				MParams[i]->setValue(newRects[j].M[i]);
+				mParams[i]->setValue(localRects[j].m[i]);
+				MParams[i]->setValue(localRects[j].M[i]);
 			}
 			for (int i=0; i<K; i++){
-				HlParams[i]->setValue(std::real(Delta[i][0]*newRects[j].l[i]));
-				HLParams[i]->setValue(std::real(Delta[i][0]*newRects[j].L[i]));
-				GmParams[i]->setValue(std::real(Delta[i][0]*newRects[j].m[i]));
-				GMParams[i]->setValue(std::real(Delta[i][0]*newRects[j].M[i]));
-				slmParams[i]->setValue(std::real(Delta[i][0]*newRects[j].l[i]*newRects[j].m[i]));
-				sLMParams[i]->setValue(std::real(Delta[i][0]*newRects[j].L[i]*newRects[j].M[i]));
+				HlParams[i]->setValue(std::real(Delta[i][0]*localRects[j].l[i]));
+				HLParams[i]->setValue(std::real(Delta[i][0]*localRects[j].L[i]));
+				GmParams[i]->setValue(std::real(Delta[i][0]*localRects[j].m[i]));
+				GMParams[i]->setValue(std::real(Delta[i][0]*localRects[j].M[i]));
+				slmParams[i]->setValue(std::real(Delta[i][0]*localRects[j].l[i]*localRects[j].m[i]));
+				sLMParams[i]->setValue(std::real(Delta[i][0]*localRects[j].L[i]*localRects[j].M[i]));
 			}
 
 			// Solve 
@@ -1529,10 +1555,10 @@ void JCB(int d, int n){
 
 			// Extract the data
 			try {
-				lowers[j] = model->primalObjValue();
+				localLowers[j] = model->primalObjValue();
 			} catch (mosek::fusion::SolutionError e){
-				lowers[j] = 10000;
-				uppers[j] = 10000;
+				localLowers[j] = 10000;
+				localUppers[j] = 10000;
 				continue;
 			}
 			auto tempXr = *(XrOpt->level());
@@ -1559,16 +1585,16 @@ void JCB(int d, int n){
 			}
 
 			// Calculate the upper bound from these
-			uppers[j] = 0;
+			localUppers[j] = 0;
 			for (int i=0; i<K; i++){
-				uppers[j] += std::real(Delta[i][0]*xs[j][i]*ys[j][i]);
+				localUppers[j] += std::real(Delta[i][0]*xs[j][i]*ys[j][i]);
 			}
 
 			// Verbose output
-			if (verbosity >= 2){
+			if (procID == 0 && verbosity >= 2){
 
 				// Output the hyperrect
-				prettyPrint("hyperrect " + std::to_string(j), newRects[j]);
+				prettyPrint("hyperrect " + std::to_string(j), localRects[j]);
 
 				// Also get the complex X and Y
 				complex2 X(d, complex1(p));
@@ -1599,51 +1625,65 @@ void JCB(int d, int n){
 
 		}
 
-		// Collect all the results onto the root node TODO
+		// Collect all the results TODO
+		MPI_Allgather(&localLowers[0], numRects, MPI_DOUBLE, &globalLowers[0], numRects, MPI_DOUBLE, MPI_COMM_WORLD);
+		MPI_Allgather(&localUppers[0], numRects, MPI_DOUBLE, &globalUppers[0], numRects, MPI_DOUBLE, MPI_COMM_WORLD);
+
+		// Iteration header
+		if (procID == 0){
+			std::cout << "-------------------------------------" << std::endl;
+			std::cout << "        Iteration: " << iter << std::endl;
+			std::cout << "-------------------------------------" << std::endl;
+
+			// For each of the results, output the bounds
+			for (int j=0; j<numRects*numProcs; j++){
+				std::cout << "For hyperrect " << j << ": " << globalLowers[j] << " " << globalUppers[j] << ", volume = " << globalRects[j].getVolume() << std::endl;
+			}
+
+		}
 
 		// For each of the results
-		for (int j=0; j<numRects; j++){
-
-			// Get the corresponding bounds
-			std::cout << "For hyperrect " << j << ": " << lowers[j] << " " << uppers[j] << std::endl;
+		for (int j=0; j<numRects*numProcs; j++){
 
 			// Is it the new best upper?
-			if (uppers[j] < bestUpperBound){
-				bestUpperBound = uppers[j];
+			if (globalUppers[j] < bestUpperBound){
+				bestUpperBound = globalUppers[j];
 			}
 
 			// If the lower bound is a valid overall lower bound
-			if (lowers[j] < bestUpperBound){
+			if (globalLowers[j] <= bestUpperBound){
 
 				// Figure out where in the queue it should go
 				newLoc = lowerBounds.size();
 				for (int i=0; i<lowerBounds.size(); i++){
-					if (lowers[j] < lowerBounds[i]){
+					if (globalLowers[j] < lowerBounds[i]){
 						newLoc = i;
 						break;
 					}
 				}
 
 				// Place it into the queue
-				P.insert(P.begin()+newLoc, newRects[j]);
-				xCoords.insert(xCoords.begin()+newLoc, xs[j]);
-				yCoords.insert(yCoords.begin()+newLoc, ys[j]);
-				lowerBounds.insert(lowerBounds.begin()+newLoc, lowers[j]);
+				P.insert(P.begin()+newLoc, globalRects[j]);
+				lowerBounds.insert(lowerBounds.begin()+newLoc, globalLowers[j]);
 
 			}
 
 		}
 
 		// The lowest bound of the whole set
-		bestLowerBound = lowerBounds[0];
+		if (lowerBounds.size() > 0){
+			bestLowerBound = lowerBounds[0];
+		}
 
 		// Output the best so far
-		std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
-		std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
-		std::cout << "Size of space: " << P.size() << std::endl;
+		if (procID == 0){
+			std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
+			std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
+			std::cout << "Size of space: " << P.size() << std::endl;
+		}
 
-		// Sync all cores should now stop TODO
-		shouldStop = bestUpperBound - bestLowerBound > epsilon && P.size() > 0 && iter < numIters;
+		// Sync whether all cores should now stop
+		shouldStop = bestUpperBound - bestLowerBound < epsilon || P.size() == 0 || iter > numIters;
 
 		// Iteration finished
 		iter += 1;
@@ -1654,13 +1694,15 @@ void JCB(int d, int n){
 	auto t2 = std::chrono::high_resolution_clock::now();
 
 	// Return the best
-	std::cout << "-------------------------------------" << std::endl;
-	std::cout << "    Final results" << std::endl;
-	std::cout << "-------------------------------------" << std::endl;
-	std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
-	std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
-	std::cout << "Iterations required: " << iter << std::endl;
-	std::cout << "Time required: " << std::chrono::duration_cast<std::chrono::seconds>(t2-t1).count() << " s" << std::endl;
+	if (procID == 0){
+		std::cout << "-------------------------------------" << std::endl;
+		std::cout << "    Final results" << std::endl;
+		std::cout << "-------------------------------------" << std::endl;
+		std::cout << "Raw bounds: " << bestLowerBound << " < raw < " << bestUpperBound << std::endl;
+		std::cout << "Scaled bounds: " << -bestUpperBound/d-sub  << " < scaled < " << -bestLowerBound/d-sub << std::endl;
+		std::cout << "Iterations required: " << iter << std::endl;
+		std::cout << "Time required: " << std::chrono::duration_cast<std::chrono::seconds>(t2-t1).count() << " s" << std::endl;
+	}
 
 }
 
