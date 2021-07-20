@@ -32,6 +32,8 @@ using real1 = std::vector<double>;
 using real2 = std::vector<real1>;
 using real3 = std::vector<real2>;
 using real4 = std::vector<real3>;
+using int1 = std::vector<int>;
+using int2 = std::vector<int1>;
 
 // Hyperrectangle structure
 class hyperRect {
@@ -190,6 +192,20 @@ std::complex<double> inner(complex2 mat1, real2 mat2){
 		for (int j=0; j<mat1[0].size(); j++){
 			sum += mat1[i][j] * std::conj(mat2[i][j]);
 		}
+	}
+	return sum;
+}
+
+// Get the inner product of a matrix with a sparse matrix
+double inner(real2 mat1, monty::rc_ptr<mosek::fusion::Matrix> mat2){
+	double sum = 0;
+	int nonZero = mat2->numNonzeros();
+	auto subi = monty::new_array_ptr(std::vector<int>(nonZero));
+	auto subj = monty::new_array_ptr(std::vector<int>(nonZero));
+	auto val = monty::new_array_ptr(std::vector<double>(nonZero));
+	mat2->getDataAsTriplets(subi, subj, val);
+	for (int i=0; i<val->size(); i++){
+		sum += mat1[subi->operator[](i)][subj->operator[](i)] * val->operator[](i);
 	}
 	return sum;
 }
@@ -577,7 +593,6 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << "Constructing eta..." << std::endl;
 	}
-	complex3 eta(p*p, complex2(p, complex1(p)));
 	std::vector<std::vector<Eigen::Triplet<std::complex<double>>>> tripletsEta(p*p, std::vector<Eigen::Triplet<std::complex<double>>>(2));
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> etaSparse(p*p);
 	int next = 0;
@@ -588,22 +603,17 @@ void JCB(int d, int n){
 			if (i != j){
 
 				// Self-adjoint 1's
-				eta[next][i][j] = oneOverSqrt2;
-				eta[next][j][i] = oneOverSqrt2;
 				tripletsEta[next][0] = Eigen::Triplet<std::complex<double>>(i, j, oneOverSqrt2);
 				tripletsEta[next][1] = Eigen::Triplet<std::complex<double>>(j, i, oneOverSqrt2);
 				next += 1;
 
 				// Self-adjoint i's
-				eta[next][i][j] = imagOverSqrt2;
-				eta[next][j][i] = -imagOverSqrt2;
 				tripletsEta[next][0] = Eigen::Triplet<std::complex<double>>(i, j, imagOverSqrt2);
 				tripletsEta[next][1] = Eigen::Triplet<std::complex<double>>(j, i, -imagOverSqrt2);
 				next += 1;
 
 			// For the diags
 			} else {
-				eta[next][i][i] = 1.0;
 				tripletsEta[next][0] = Eigen::Triplet<std::complex<double>>(i, i, 1.0);
 				next += 1;
 
@@ -620,7 +630,6 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << "Constructing xi..." << std::endl;
 	}
-	complex3 xi(q*q, complex2(q, complex1(q)));
 	std::vector<std::vector<Eigen::Triplet<std::complex<double>>>> tripletsXi(q*q, std::vector<Eigen::Triplet<std::complex<double>>>(2));
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> xiSparse(q*q);
 	next = 0;
@@ -631,22 +640,17 @@ void JCB(int d, int n){
 			if (i != j){
 
 				// Self-adjoint 1's
-				xi[next][i][j] = oneOverSqrt2;
-				xi[next][j][i] = oneOverSqrt2;
 				tripletsXi[next][0] = Eigen::Triplet<std::complex<double>>(i, j, oneOverSqrt2);
 				tripletsXi[next][1] = Eigen::Triplet<std::complex<double>>(j, i, oneOverSqrt2);
 				next += 1;
 
 				// Self-adjoint i's
-				xi[next][i][j] = imagOverSqrt2;
-				xi[next][j][i] = -imagOverSqrt2;
 				tripletsXi[next][0] = Eigen::Triplet<std::complex<double>>(i, j, imagOverSqrt2);
 				tripletsXi[next][1] = Eigen::Triplet<std::complex<double>>(j, i, -imagOverSqrt2);
 				next += 1;
 
 			// For the diags
 			} else {
-				xi[next][i][i] = 1.0;
 				tripletsXi[next][0] = Eigen::Triplet<std::complex<double>>(i, i, 1.0);
 				next += 1;
 
@@ -681,7 +685,6 @@ void JCB(int d, int n){
 	}
 
 	// Construct Q
-	real2 Q(p*q, real1(p*q, 0.0));
 	std::vector<Eigen::Triplet<std::complex<double>>> tripletsQ;
 	Eigen::SparseMatrix<std::complex<double>> QSparse(p*q, p*q);
 	int numB = numMeasureB*numOutcomeB;
@@ -689,7 +692,6 @@ void JCB(int d, int n){
 		int topLeftLoc = std::floor(i/numB)*numB*d*d + (i%numB)*d;
 		for (int j=0; j<d; j++){
 			for (int k=0; k<d; k++){
-				Q[topLeftLoc+j*numB*d+j][topLeftLoc+k*numB*d+k] = -blockQ[i];
 				tripletsQ.push_back(Eigen::Triplet<std::complex<double>>(topLeftLoc+j*numB*d+j, topLeftLoc+k*numB*d+k, -blockQ[i]));
 			}
 		}
@@ -701,13 +703,13 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << "Calculating U from Q... 0%" << std::flush;
 	}
+	Eigen::SparseMatrix<std::complex<double>> result(p*q, p*q);
 	for (int j=0; j<p*p; j++){
 		if (procID == 0){
 			std::cout << "\rCalculating U from Q... " << (100*j) / (p*p) << "%" << std::flush;
 		}
 		for (int k=0; k<q*q; k++){
 			Eigen::KroneckerProductSparse<Eigen::SparseMatrix<std::complex<double>>, Eigen::SparseMatrix<std::complex<double>>> prod(etaSparse[j], xiSparse[k]);
-			Eigen::SparseMatrix<std::complex<double>> result(p*q, p*q);
 			prod.evalTo(result);
 			UEigen(j,k) = QSparse.cwiseProduct(result).sum();
 		}
@@ -716,63 +718,93 @@ void JCB(int d, int n){
 		std::cout << std::endl;
 	}
 	
-	// Pre-calculate the decomposition U = S Delta T
+	// Pre-calculate the decomposition U = S Delta T TODO memory intensive
 	if (procID == 0){
 		std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
 	}
 	Eigen::BDCSVD<Eigen::MatrixXcd> svd(UEigen, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	complex2 Delta = matToVec(svd.singularValues());
-	complex2 S = matToVec(svd.matrixU());
-	complex2 T = matToVec(svd.matrixV());
+	Eigen::SparseMatrix<std::complex<double>> S = svd.matrixU().sparseView();
+	Eigen::SparseMatrix<std::complex<double>> T = svd.matrixV().sparseView();
 
-	// Assemble the combined S and Eta matrices
-	real3 SEtar(p*p, real2(d, real1(p)));
-	real3 SEtai(p*p, real2(d, real1(p)));
+	// For each non-zero S
 	if (procID == 0){
-		std::cout << "Precalculating S*eta... 0%" << std::flush;
+		std::cout << "Precalculating S*eta..." << std::endl;
 	}
+	std::vector<Eigen::SparseMatrix<std::complex<double>>> SEta(p*p, Eigen::SparseMatrix<std::complex<double>>(p,p));
+	for (int j1=0; j1<S.outerSize(); ++j1){
+		for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(S, j1); it; ++it){
+			SEta[it.col()] += it.value()*etaSparse[it.row()];
+		}
+	}
+
+	// Turn it into MOSEK form
+	std::vector<mosek::fusion::Matrix::t> SEtarRef(p*p);
+	std::vector<mosek::fusion::Matrix::t> SEtaiRef(p*p);
 	for (int j=0; j<p*p; j++){
-		if (procID == 0){
-			std::cout << "\rPrecalculating S*eta... " << (100*j) / (p*p) << "%" << std::flush;
-		}
-		for (int block=0; block<numMeasureA*numOutcomeA; block++){
-			for (int k=0; k<p*p; k++){
-				for (int i1=0; i1<d; i1++){
-					for (int i2=0; i2<d; i2++){
-						SEtar[j][i1][block*d+i2] += std::real(S[k][j]*eta[k][block*d+i1][block*d+i2]);
-						SEtai[j][i1][block*d+i2] += std::imag(S[k][j]*eta[k][block*d+i1][block*d+i2]);
-					}
+
+		// Get the lists of locations and values
+		int1 nonZeroRows;
+		int1 nonZeroCols;
+		real1 nonZeroValsr;
+		real1 nonZeroValsi;
+		for (int i1=0; i1<SEta[j].outerSize(); ++i1){
+			for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(SEta[j], i1); it; ++it){
+				int j = it.row();
+				int i = it.col();
+				if (j < (std::floor(i / d) * d + d) && j >= std::floor(i / d) * d){
+					nonZeroRows.push_back(j % d);
+					nonZeroCols.push_back(i);
+					nonZeroValsr.push_back(std::real(it.value()));
+					nonZeroValsi.push_back(std::imag(it.value()));
 				}
 			}
 		}
-	}
-	if (procID == 0){
-		std::cout << std::endl;
+
+		// Make the sparse matrix from this data
+		SEtarRef[j] = mosek::fusion::Matrix::sparse(d, p, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsr));
+		SEtaiRef[j] = mosek::fusion::Matrix::sparse(d, p, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsi));
+
 	}
 
-	// Assemble the combined T and Xi matrices
-	real3 TXir(q*q, real2(d, real1(q)));
-	real3 TXii(q*q, real2(d, real1(q)));
+	// For each non-zero T
 	if (procID == 0){
-		std::cout << "Precalculating T*Xi: 0%" << std::flush;
+		std::cout << "Precalculating T*Xi..." << std::endl;
 	}
-	for (int j=0; j<q*q; j++){
-		if (procID == 0){
-			std::cout << "\rPrecalculating T*Xi: " << (100*j) / (q*q) << "%" << std::flush;
+	std::vector<Eigen::SparseMatrix<std::complex<double>>> TXi(q*q, Eigen::SparseMatrix<std::complex<double>>(q,q));
+	for (int j1=0; j1<T.outerSize(); ++j1){
+		for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(T, j1); it; ++it){
+			TXi[it.col()] += it.value()*xiSparse[it.row()];
 		}
-		for (int block=0; block<numMeasureB*numOutcomeB; block++){
-			for (int k=0; k<q*q; k++){
-				for (int i1=0; i1<d; i1++){
-					for (int i2=0; i2<d; i2++){
-						TXir[j][i1][block*d+i2] += std::real(T[k][j]*xi[k][block*d+i1][block*d+i2]);
-						TXii[j][i1][block*d+i2] += std::imag(T[k][j]*xi[k][block*d+i1][block*d+i2]);
-					}
+	}
+
+	// Turn it into MOSEK form
+	std::vector<mosek::fusion::Matrix::t> TXirRef(q*q);
+	std::vector<mosek::fusion::Matrix::t> TXiiRef(q*q);
+	for (int j=0; j<q*q; j++){
+
+		// Get the lists of locations and values
+		int1 nonZeroRows;
+		int1 nonZeroCols;
+		real1 nonZeroValsr;
+		real1 nonZeroValsi;
+		for (int i1=0; i1<TXi[j].outerSize(); ++i1){
+			for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(TXi[j], i1); it; ++it){
+				int j = it.row();
+				int i = it.col();
+				if (j < (std::floor(i / d) * d + d) && j >= std::floor(i / d) * d){
+					nonZeroRows.push_back(j % d);
+					nonZeroCols.push_back(i);
+					nonZeroValsr.push_back(std::real(it.value()));
+					nonZeroValsi.push_back(std::imag(it.value()));
 				}
 			}
 		}
-	}
-	if (procID == 0){
-		std::cout << std::endl;
+
+		// Make the sparse matrix from this data
+		TXirRef[j] = mosek::fusion::Matrix::sparse(d, q, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsr));
+		TXiiRef[j] = mosek::fusion::Matrix::sparse(d, q, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsi));
+
 	}
 
 	// Reference to the zero/identity matrix for MOSEK
@@ -783,22 +815,6 @@ void JCB(int d, int n){
 	}
 	auto identityRef = monty::new_array_ptr(identity);
 	auto zeroRef = monty::new_array_ptr(zero);
-
-	// Convert the SEta matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtarRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> SEtaiRef;
-	for (int j=0; j<p*p; j++){
-		SEtarRef.push_back(monty::new_array_ptr(SEtar[j]));
-		SEtaiRef.push_back(monty::new_array_ptr(SEtai[j]));
-	}
-
-	// Convert the TXi matrices to MOSEK form
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXirRef;
-	std::vector<std::shared_ptr<monty::ndarray<double,2>>> TXiiRef;
-	for (int j=0; j<q*q; j++){
-		TXirRef.push_back(monty::new_array_ptr(TXir[j]));
-		TXiiRef.push_back(monty::new_array_ptr(TXii[j]));
-	}
 
 	// Dimensions of X and Y for MOSEK
 	auto dimXRef = monty::new_array_ptr(std::vector<int>({d, p}));
@@ -818,7 +834,7 @@ void JCB(int d, int n){
 		endY.push_back(monty::new_array_ptr(std::vector<int>({d, i+d})));
 	}
 
-	// Exact x solution for d2n2 TODO
+	// Exact x solution for d2n2
 	complex3 XTest;
 	//XTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
 					  //{ +0.0+0.0i , +0.0+0.0i } });
@@ -857,16 +873,18 @@ void JCB(int d, int n){
 	//XTest.push_back({ { +0.000000000122091+0.000000000000000i , -0.000000000000000-0.000000000000000i },
 		//{ -0.000000000000000+0.000000000000000i , -0.000000000122091+0.000000000000000i } });
 
-	// Exact y solution for d2n2
+	// Exact y solution for d2n2 TODO
 	complex3 YTest;
-	YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-					  { +0.0+0.0i , +0.0+0.0i } });
-	YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-					  { +0.0+0.0i , +1.0+0.0i } });
-	//YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
-					  //{ +0.5+0.0i , +0.5+0.0i } });
-	//YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
-					  //{ -0.5+0.0i , +0.5+0.0i } });
+	if (d == 2){
+		YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+						  { +0.0+0.0i , +0.0+0.0i } });
+		YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+						  { +0.0+0.0i , +1.0+0.0i } });
+		YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+						  { +0.5+0.0i , +0.5+0.0i } });
+		YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+						  { -0.5+0.0i , +0.5+0.0i } });
+	}
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
 	//YTest.push_back({ { +0.787874051893482+0.000000000000000i , -0.141173539811072+0.383664648148024i },
@@ -1015,25 +1033,36 @@ void JCB(int d, int n){
 	// The objective function should be real
 	mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
 
-	// Get the X sections TODO parallelise
+	// Number of cores needs to divide nice
+	if (p*p % numProcs != 0){
+		std::cerr << "Error - number of cores should divide p*p" << std::endl;
+	}
+	if (q*q % numProcs != 0){
+		std::cerr << "Error - number of cores should divide q*q" << std::endl;
+	}
+	
+	// Get the X sections 
 	if (procID == 0){
 		std::cout << "Bounding hyperrect for X... 0%" << std::flush;
 	}
-	for (int j=0; j<p*p; j++){
+	int pPerCore = (p*p) / numProcs;
+	real1 locall(pPerCore);
+	real1 localL(pPerCore);
+	for (int j=procID*pPerCore; j<(procID+1)*pPerCore; j++){
 
 		// Progress indicator
 		if (procID == 0){
-			std::cout << "\rBounding hyperrect for X... " << (100*j) / (p*p) << "%" << std::flush;
+			std::cout << "\rBounding hyperrect for X... " << (100*j) / (pPerCore) << "%" << std::flush;
 		}
 
 		// Set the param for this j
-		lParamr->setValue(SEtarRef[j]);
-		lParami->setValue(SEtaiRef[j]);
+		lParamr->setValue(SEtarRef[j]->getDataAsArray());
+		lParami->setValue(SEtaiRef[j]->getDataAsArray());
 
 		// Minimise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExprL);
 		lModel->solve();
-		D.l[j] = lModel->primalObjValue();
+		locall[j%pPerCore] = lModel->primalObjValue();
 
 		// Extract the X values just to see
 		if (procID == 0 && verbosity >= 2){
@@ -1050,7 +1079,7 @@ void JCB(int d, int n){
 		// Maximise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExprL);
 		lModel->solve();
-		D.L[j] = lModel->primalObjValue();
+		localL[j%pPerCore] = lModel->primalObjValue();
 
 		// Extract the X values just to see
 		if (procID == 0 && verbosity >= 2){
@@ -1068,12 +1097,17 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << std::endl;
 	}
+	MPI_Allgather(&locall[0], pPerCore, MPI_DOUBLE, &D.l[0], pPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
+	MPI_Allgather(&localL[0], pPerCore, MPI_DOUBLE, &D.L[0], pPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 
 	// Get the Y sections
 	if (procID == 0){
 		std::cout << "Bounding hyperrect for Y... 0%" << std::flush;
 	}
-	for (int k=0; k<q*q; k++){
+	int qPerCore = (q*q) / numProcs;
+	real1 localm(qPerCore);
+	real1 localM(qPerCore);
+	for (int k=procID*qPerCore; k<(procID+1)*qPerCore; k++){
 
 		// Progress indicator
 		if (procID == 0){
@@ -1081,13 +1115,13 @@ void JCB(int d, int n){
 		}
 
 		// Set the param for this k
-		mParamr->setValue(TXirRef[k]);
-		mParami->setValue(TXiiRef[k]);
+		mParamr->setValue(TXirRef[k]->getDataAsArray());
+		mParami->setValue(TXiiRef[k]->getDataAsArray());
 
 		// Minimise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Minimize, objectiveExprM);
 		mModel->solve();
-		D.m[k] = mModel->primalObjValue();
+		localm[k%qPerCore] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
 		if (procID == 0 && verbosity >= 2){
@@ -1104,7 +1138,7 @@ void JCB(int d, int n){
 		// Maximise the object function
 		mModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExprM);
 		mModel->solve();
-		D.M[k] = mModel->primalObjValue();
+		localM[k%qPerCore] = mModel->primalObjValue();
 
 		// Extract the Y values just to see
 		if (procID == 0 && verbosity >= 2){
@@ -1122,6 +1156,8 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << std::endl;
 	}
+	MPI_Allgather(&localm[0], qPerCore, MPI_DOUBLE, &D.m[0], qPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
+	MPI_Allgather(&localM[0], qPerCore, MPI_DOUBLE, &D.M[0], qPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 
 	// Prevent memory leaks
 	lModel->dispose();
@@ -1130,32 +1166,6 @@ void JCB(int d, int n){
 	// Output various things
 	if (procID == 0 && verbosity >= 2){
 		std::cout << std::endl;
-		prettyPrint("blockQ = ", blockQ);
-		std::cout << std::endl;
-		prettyPrint("Q = ", Q);
-		std::cout << std::endl;
-		prettyPrint("Delta = ", Delta);
-		std::cout << std::endl;
-		prettyPrint("S = ", S);
-		std::cout << std::endl;
-		prettyPrint("T = ", T);
-		std::cout << std::endl;
-		for (int j=0; j<p*p; j++){
-			prettyPrint("eta = ", eta[j]);
-			std::cout << std::endl;
-			prettyPrint("SEtar", SEtar[j]);
-			std::cout << std::endl;
-			prettyPrint("SEtai", SEtai[j]);
-			std::cout << std::endl;
-		}
-		for (int j=0; j<q*q; j++){
-			prettyPrint("xi = ", xi[j]);
-			std::cout << std::endl;
-			prettyPrint("TXir", TXir[j]);
-			std::cout << std::endl;
-			prettyPrint("TXii", TXii[j]);
-			std::cout << std::endl;
-		}
 		prettyPrint("initial hyperrect", D);
 		std::cout << std::endl;
 	}
@@ -1411,6 +1421,7 @@ void JCB(int d, int n){
 	real2 ys(numRects, real1(q*q));
 	int newLoc = -1;
 
+	// Init things here to prevent re-init each iterations
 	// Extract the data
 	localLowers[0] = model->primalObjValue();
 	auto tempXr = *(XrOpt->level());
@@ -1433,12 +1444,12 @@ void JCB(int d, int n){
 
 	// Convert X to x
 	for (int i=0; i<p*p; i++){
-		xs[0][i] = inner(Xr, SEtar[i]) - inner(Xi, SEtai[i]);
+		xs[0][i] = inner(Xr, SEtarRef[i]) - inner(Xi, SEtaiRef[i]);
 	}
 
 	// Convert Y to y
 	for (int i=0; i<q*q; i++){
-		ys[0][i] = inner(Yr, TXir[i]) - inner(Yi, TXii[i]);
+		ys[0][i] = inner(Yr, TXirRef[i]) - inner(Yi, TXiiRef[i]);
 	}
 
 	// Calculate the upper bound from these
@@ -1576,12 +1587,12 @@ void JCB(int d, int n){
 
 			// Convert X to x
 			for (int i=0; i<p*p; i++){
-				xs[j][i] = inner(Xr, SEtar[i]) - inner(Xi, SEtai[i]);
+				xs[j][i] = inner(Xr, SEtarRef[i]) - inner(Xi, SEtaiRef[i]);
 			}
 
 			// Convert Y to y
 			for (int i=0; i<q*q; i++){
-				ys[j][i] = inner(Yr, TXir[i]) - inner(Yi, TXii[i]);
+				ys[j][i] = inner(Yr, TXirRef[i]) - inner(Yi, TXiiRef[i]);
 			}
 
 			// Calculate the upper bound from these
@@ -1625,7 +1636,7 @@ void JCB(int d, int n){
 
 		}
 
-		// Collect all the results TODO
+		// Collect all the results
 		MPI_Allgather(&localLowers[0], numRects, MPI_DOUBLE, &globalLowers[0], numRects, MPI_DOUBLE, MPI_COMM_WORLD);
 		MPI_Allgather(&localUppers[0], numRects, MPI_DOUBLE, &globalUppers[0], numRects, MPI_DOUBLE, MPI_COMM_WORLD);
 
