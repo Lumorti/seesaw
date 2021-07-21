@@ -20,6 +20,9 @@ using namespace std::complex_literals;
 // MOSEK
 #include "fusion.h"
 
+// RedSVD https://code.google.com/archive/p/redsvd
+#include "RedSVD.h"
+
 // MPI parallelisation
 #include "mpi.h"
 
@@ -722,10 +725,23 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
 	}
-	Eigen::BDCSVD<Eigen::MatrixXcd> svd(UEigen, Eigen::ComputeFullU | Eigen::ComputeFullV);
-	complex2 Delta = matToVec(svd.singularValues());
-	Eigen::SparseMatrix<std::complex<double>> S = svd.matrixU().sparseView();
-	Eigen::SparseMatrix<std::complex<double>> T = svd.matrixV().sparseView();
+	//Eigen::BDCSVD<Eigen::MatrixXcd> svd(UEigen, Eigen::ComputeFullU | Eigen::ComputeFullV);
+	//complex2 Delta = matToVec(svd.singularValues());
+	//Eigen::SparseMatrix<std::complex<double>> S = svd.matrixU().sparseView();
+	//Eigen::SparseMatrix<std::complex<double>> T = svd.matrixV().sparseView();
+	RedSVD::RedSVD<Eigen::MatrixXcd> decomp(UEigen);
+	Eigen::Matrix<std::complex<double>, -1, 1> DeltaFull = decomp.singularValues();
+	Eigen::Matrix<std::complex<double>, -1, -1> SFull = decomp.matrixU();
+	Eigen::Matrix<std::complex<double>, -1, -1> TFull = decomp.matrixV();
+	complex2 Delta = matToVec(DeltaFull);
+	Eigen::SparseMatrix<std::complex<double>> S = SFull.sparseView();
+	Eigen::SparseMatrix<std::complex<double>> T = TFull.sparseView();
+
+	// Clear some memory TODO
+	UEigen.resize(0, 0);
+	DeltaFull.resize(0, 0);
+	SFull.resize(0, 0);
+	TFull.resize(0, 0);
 
 	// For each non-zero S
 	if (procID == 0){
@@ -876,14 +892,14 @@ void JCB(int d, int n){
 	// Exact y solution for d2n2 TODO
 	complex3 YTest;
 	if (d == 2){
-		YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-						  { +0.0+0.0i , +0.0+0.0i } });
-		YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-						  { +0.0+0.0i , +1.0+0.0i } });
-		YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
-						  { +0.5+0.0i , +0.5+0.0i } });
-		YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
-						  { -0.5+0.0i , +0.5+0.0i } });
+		//YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+						  //{ +0.0+0.0i , +0.0+0.0i } });
+		//YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+						  //{ +0.0+0.0i , +1.0+0.0i } });
+		//YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+						  //{ +0.5+0.0i , +0.5+0.0i } });
+		//YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+						  //{ -0.5+0.0i , +0.5+0.0i } });
 	}
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
@@ -1064,39 +1080,17 @@ void JCB(int d, int n){
 		lModel->solve();
 		locall[j%pPerCore] = lModel->primalObjValue();
 
-		// Extract the X values just to see
-		if (procID == 0 && verbosity >= 2){
-			auto tempXr = *(XrOptL->level());
-			auto tempXi = *(XiOptL->level());
-			complex2 X(d, complex1(p));
-			for (int i=0; i<p*d; i++){
-				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
-			}
-			prettyPrint("X after rect l = ", X);
-			std::cout << std::endl;
-		}
-
 		// Maximise the object function
 		lModel->objective(mosek::fusion::ObjectiveSense::Maximize, objectiveExprL);
 		lModel->solve();
 		localL[j%pPerCore] = lModel->primalObjValue();
 
-		// Extract the X values just to see
-		if (procID == 0 && verbosity >= 2){
-			auto tempXr = *(XrOptL->level());
-			auto tempXi = *(XiOptL->level());
-			complex2 X(d, complex1(p));
-			for (int i=0; i<p*d; i++){
-				X[i/p][i%p] = tempXr[i] + im*tempXi[i];
-			}
-			prettyPrint("X after rect L = ", X);
-			std::cout << std::endl;
-		}
-
 	}
 	if (procID == 0){
 		std::cout << std::endl;
 	}
+
+	// Sync the results between cores
 	MPI_Allgather(&locall[0], pPerCore, MPI_DOUBLE, &D.l[0], pPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 	MPI_Allgather(&localL[0], pPerCore, MPI_DOUBLE, &D.L[0], pPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 
@@ -1140,22 +1134,12 @@ void JCB(int d, int n){
 		mModel->solve();
 		localM[k%qPerCore] = mModel->primalObjValue();
 
-		// Extract the Y values just to see
-		if (procID == 0 && verbosity >= 2){
-			auto tempYr = *(YrOptM->level());
-			auto tempYi = *(YiOptM->level());
-			complex2 Y(d, complex1(q));
-			for (int i=0; i<q*d; i++){
-				Y[i/q][i%q] = tempYr[i] + im*tempYi[i];
-			}
-			prettyPrint("Y after rect M = ", Y);
-			std::cout << std::endl;
-		}
-
 	}
 	if (procID == 0){
 		std::cout << std::endl;
 	}
+
+	// Sync the results between cores
 	MPI_Allgather(&localm[0], qPerCore, MPI_DOUBLE, &D.m[0], qPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 	MPI_Allgather(&localM[0], qPerCore, MPI_DOUBLE, &D.M[0], qPerCore, MPI_DOUBLE, MPI_COMM_WORLD);
 
