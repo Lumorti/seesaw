@@ -86,6 +86,9 @@ double tol = 1e-8;
 double epsilon = 1e-5;
 int numInRowRequired = 10;
 
+// What counts as zero
+double zeroThresh = 1e-7;
+
 // How much to output (0 == none, 1 == normal, 2 == extra)
 int verbosity = 1;
 
@@ -108,25 +111,6 @@ bool restrictRankB = false;
 // Keeping track of MPI things
 int procID = 0;
 int numProcs = 1;
-
-// Turn an Eigen matix to a std::vector
-complex2 matToVec(Eigen::MatrixXcd mat){
-	complex2 data;
-	for (int i=0; i<mat.rows(); i++){
-		Eigen::VectorXcd row = mat.row(i);
-		data.push_back(complex1(row.data(), row.data() + mat.cols()));
-	}
-	return data;
-}
-
-// Turn a std::vector into an Eigen matrix
-Eigen::MatrixXcd vecToMat(complex2 data){
-	Eigen::MatrixXcd mat(data.size(), data[0].size());
-	for (int i=0; i<data.size(); i++){
-		mat.row(i) = Eigen::VectorXcd::Map(&data[i][0], data[i].size());
-	}
-	return mat;
-}
 
 // Dot product of two 1D vectors
 double dot(real1 a1, real1 a2){
@@ -360,7 +344,7 @@ void makeOrthonormal(complex2 v, complex2 &u){
 
 }
 
-// Pretty print a generic 1D vector with length n 
+// Pretty print a generic 1D vector
 template <typename type> void prettyPrint(std::string pre, std::vector<type> arr){
 
 	// Used fixed precision
@@ -385,7 +369,7 @@ template <typename type> void prettyPrint(std::string pre, std::vector<type> arr
 
 }
 
-// Pretty print a generic 2D array with width w and height h
+// Pretty print a generic 2D array
 template <typename type> void prettyPrint(std::string pre, std::vector<std::vector<type>> arr){
 
 	// Used fixed precision
@@ -432,7 +416,7 @@ template <typename type> void prettyPrint(std::string pre, std::vector<std::vect
 
 }
 
-// Pretty print a complex 2D array with width w and height h
+// Pretty print a complex 2D array
 void prettyPrint(std::string pre, complex2 arr){
 
 	// Used fixed precision
@@ -478,6 +462,63 @@ void prettyPrint(std::string pre, complex2 arr){
 
 	// Reset things for normal output
 	std::cout << std::noshowpos;
+
+}
+
+// Pretty print a complex 2D dense Eigen array
+template <typename type>
+void prettyPrint(std::string pre, Eigen::Matrix<type, -1, -1> arr){
+
+	// Used fixed precision
+	std::cout << std::fixed << std::showpos << std::setprecision(precision);
+
+	// Loop over the array
+	std::string rowText;
+	for (int y=0; y<arr.rows(); y++){
+
+		// For the first line, add the pre text
+		if (y == 0){
+			rowText = pre + "{";
+
+		// Otherwise pad accordingly
+		} else {
+			rowText = "";
+			while (rowText.length() < pre.length()+1){
+				rowText += " ";
+			}
+		}
+
+		// Spacing
+		std::cout << rowText << " { ";
+
+		// For the x values, combine them all on one line
+		for (int x=0; x<arr.cols(); x++){
+			std::cout << std::setw(5) << arr(y,x);
+			if (x < arr.cols()-1){
+				std::cout << ", ";
+			}
+		}
+
+		// Output the row
+		std::cout << "}";
+		if (y < arr.rows()-1){
+			std::cout << ",";
+		}
+		std::cout << std::endl;
+
+	}
+
+	// Reset things for normal output
+	std::cout << std::noshowpos;
+
+}
+
+// Pretty print a complex 2D sparse Eigen array
+template <typename type>
+void prettyPrint(std::string pre, Eigen::SparseMatrix<type> arr){
+
+	// Extract the dense array and then call the routine as normal
+	prettyPrint(pre, Eigen::Matrix<type,-1,-1>(arr));
 
 }
 
@@ -702,11 +743,13 @@ void JCB(int d, int n){
 	QSparse.setFromTriplets(tripletsQ.begin(), tripletsQ.end());
 
 	// Calculate U_{j,k} = tr(Q(eta_j (x) xi_k))
-	Eigen::MatrixXcd UEigen(p*p, q*q);
+	Eigen::SparseMatrix<double> USparse(p*p, q*q);
+	std::vector<Eigen::Triplet<double>> tripletsU;
 	if (procID == 0){
 		std::cout << "Calculating U from Q... 0%" << std::flush;
 	}
 	Eigen::SparseMatrix<std::complex<double>> result(p*q, p*q);
+	double val;
 	for (int j=0; j<p*p; j++){
 		if (procID == 0){
 			std::cout << "\rCalculating U from Q... " << (100*j) / (p*p) << "%" << std::flush;
@@ -714,9 +757,13 @@ void JCB(int d, int n){
 		for (int k=0; k<q*q; k++){
 			Eigen::KroneckerProductSparse<Eigen::SparseMatrix<std::complex<double>>, Eigen::SparseMatrix<std::complex<double>>> prod(etaSparse[j], xiSparse[k]);
 			prod.evalTo(result);
-			UEigen(j,k) = QSparse.cwiseProduct(result).sum();
+			val = std::real(QSparse.cwiseProduct(result).sum());
+			if (std::abs(val) > zeroThresh){
+				tripletsU.push_back(Eigen::Triplet<double>(j, k, val));
+			}	
 		}
 	}
+	USparse.setFromTriplets(tripletsU.begin(), tripletsU.end());
 	if (procID == 0){
 		std::cout << std::endl;
 	}
@@ -725,23 +772,31 @@ void JCB(int d, int n){
 	if (procID == 0){
 		std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
 	}
-	//Eigen::BDCSVD<Eigen::MatrixXcd> svd(UEigen, Eigen::ComputeFullU | Eigen::ComputeFullV);
-	//complex2 Delta = matToVec(svd.singularValues());
-	//Eigen::SparseMatrix<std::complex<double>> S = svd.matrixU().sparseView();
-	//Eigen::SparseMatrix<std::complex<double>> T = svd.matrixV().sparseView();
-	RedSVD::RedSVD<Eigen::MatrixXcd> decomp(UEigen);
-	Eigen::Matrix<std::complex<double>, -1, 1> DeltaFull = decomp.singularValues();
-	Eigen::Matrix<std::complex<double>, -1, -1> SFull = decomp.matrixU();
-	Eigen::Matrix<std::complex<double>, -1, -1> TFull = decomp.matrixV();
-	complex2 Delta = matToVec(DeltaFull);
-	Eigen::SparseMatrix<std::complex<double>> S = SFull.sparseView();
-	Eigen::SparseMatrix<std::complex<double>> T = TFull.sparseView();
+	Eigen::BDCSVD<Eigen::MatrixXd> svd(USparse, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	Eigen::Matrix<double, -1, -1> Delta = svd.singularValues();
+	Eigen::SparseMatrix<double> S = svd.matrixU().sparseView();
+	Eigen::SparseMatrix<double> T = svd.matrixV().sparseView();
 
-	// Clear some memory TODO
-	UEigen.resize(0, 0);
-	DeltaFull.resize(0, 0);
-	SFull.resize(0, 0);
-	TFull.resize(0, 0);
+	//RedSVD::RedSVD<Eigen::MatrixXd> decomp(USparse);
+	//Eigen::Matrix<double, -1, -1> Delta2 = decomp.singularValues();
+	//Eigen::SparseMatrix<double> S2 = decomp.matrixU().sparseView();
+	//Eigen::SparseMatrix<double> T2 = decomp.matrixV().sparseView();
+	
+	//std::cout << std::endl;
+	//prettyPrint("U  = ", USparse);
+	//std::cout << std::endl;
+	//prettyPrint("Delta  = ", Delta);
+	//std::cout << std::endl;
+	//prettyPrint("Delta2 = ", Delta2);
+	//std::cout << std::endl;
+	//prettyPrint("S  = ", S);
+	//std::cout << std::endl;
+	//prettyPrint("S2 = ", S2);
+	//std::cout << std::endl;
+	//prettyPrint("T  = ", T);
+	//std::cout << std::endl;
+	//prettyPrint("T2 = ", T2);
+	//std::cout << std::endl;
 
 	// For each non-zero S
 	if (procID == 0){
@@ -749,7 +804,7 @@ void JCB(int d, int n){
 	}
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> SEta(p*p, Eigen::SparseMatrix<std::complex<double>>(p,p));
 	for (int j1=0; j1<S.outerSize(); ++j1){
-		for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(S, j1); it; ++it){
+		for (Eigen::SparseMatrix<double>::InnerIterator it(S, j1); it; ++it){
 			SEta[it.col()] += it.value()*etaSparse[it.row()];
 		}
 	}
@@ -789,7 +844,7 @@ void JCB(int d, int n){
 	}
 	std::vector<Eigen::SparseMatrix<std::complex<double>>> TXi(q*q, Eigen::SparseMatrix<std::complex<double>>(q,q));
 	for (int j1=0; j1<T.outerSize(); ++j1){
-		for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(T, j1); it; ++it){
+		for (Eigen::SparseMatrix<double>::InnerIterator it(T, j1); it; ++it){
 			TXi[it.col()] += it.value()*xiSparse[it.row()];
 		}
 	}
@@ -892,14 +947,14 @@ void JCB(int d, int n){
 	// Exact y solution for d2n2 TODO
 	complex3 YTest;
 	if (d == 2){
-		//YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-						  //{ +0.0+0.0i , +0.0+0.0i } });
-		//YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-						  //{ +0.0+0.0i , +1.0+0.0i } });
-		//YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
-						  //{ +0.5+0.0i , +0.5+0.0i } });
-		//YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
-						  //{ -0.5+0.0i , +0.5+0.0i } });
+		YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+						  { +0.0+0.0i , +0.0+0.0i } });
+		YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+						  { +0.0+0.0i , +1.0+0.0i } });
+		YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+						  { +0.5+0.0i , +0.5+0.0i } });
+		YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+						  { -0.5+0.0i , +0.5+0.0i } });
 	}
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
@@ -1194,7 +1249,7 @@ void JCB(int d, int n){
 		slmParams[i] = model->parameter();
 		sLMParams[i] = model->parameter();
 	}
-	
+
 	// Exact x solution for d2n2
 	for (int i=0; i<XTest.size(); i++){
 		int ind = i*d;
@@ -1308,6 +1363,8 @@ void JCB(int d, int n){
 		//model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 
+	std::cout << "here5" << std::endl; // TODO
+	
 	// Combined constraint with r
 	for (int j=0; j<K; j++){
 
@@ -1382,12 +1439,12 @@ void JCB(int d, int n){
 		MParams[i]->setValue(D.M[i]);
 	}
 	for (int i=0; i<K; i++){
-		HlParams[i]->setValue(std::real(Delta[i][0]*D.l[i]));
-		HLParams[i]->setValue(std::real(Delta[i][0]*D.L[i]));
-		GmParams[i]->setValue(std::real(Delta[i][0]*D.m[i]));
-		GMParams[i]->setValue(std::real(Delta[i][0]*D.M[i]));
-		slmParams[i]->setValue(std::real(Delta[i][0]*D.l[i]*D.m[i]));
-		sLMParams[i]->setValue(std::real(Delta[i][0]*D.L[i]*D.M[i]));
+		HlParams[i]->setValue(std::real(Delta(i,0)*D.l[i]));
+		HLParams[i]->setValue(std::real(Delta(i,0)*D.L[i]));
+		GmParams[i]->setValue(std::real(Delta(i,0)*D.m[i]));
+		GMParams[i]->setValue(std::real(Delta(i,0)*D.M[i]));
+		slmParams[i]->setValue(std::real(Delta(i,0)*D.l[i]*D.m[i]));
+		sLMParams[i]->setValue(std::real(Delta(i,0)*D.L[i]*D.M[i]));
 	}
 
 	// Solve 
@@ -1439,7 +1496,7 @@ void JCB(int d, int n){
 	// Calculate the upper bound from these
 	localUppers[0] = 0;
 	for (int j=0; j<K; j++){
-		localUppers[0] += std::real(Delta[j][0]*xs[0][j]*ys[0][j]);
+		localUppers[0] += std::real(Delta(j,0)*xs[0][j]*ys[0][j]);
 	}
 
 	// Verbose output
@@ -1537,12 +1594,12 @@ void JCB(int d, int n){
 				MParams[i]->setValue(localRects[j].M[i]);
 			}
 			for (int i=0; i<K; i++){
-				HlParams[i]->setValue(std::real(Delta[i][0]*localRects[j].l[i]));
-				HLParams[i]->setValue(std::real(Delta[i][0]*localRects[j].L[i]));
-				GmParams[i]->setValue(std::real(Delta[i][0]*localRects[j].m[i]));
-				GMParams[i]->setValue(std::real(Delta[i][0]*localRects[j].M[i]));
-				slmParams[i]->setValue(std::real(Delta[i][0]*localRects[j].l[i]*localRects[j].m[i]));
-				sLMParams[i]->setValue(std::real(Delta[i][0]*localRects[j].L[i]*localRects[j].M[i]));
+				HlParams[i]->setValue(std::real(Delta(i,0)*localRects[j].l[i]));
+				HLParams[i]->setValue(std::real(Delta(i,0)*localRects[j].L[i]));
+				GmParams[i]->setValue(std::real(Delta(i,0)*localRects[j].m[i]));
+				GMParams[i]->setValue(std::real(Delta(i,0)*localRects[j].M[i]));
+				slmParams[i]->setValue(std::real(Delta(i,0)*localRects[j].l[i]*localRects[j].m[i]));
+				sLMParams[i]->setValue(std::real(Delta(i,0)*localRects[j].L[i]*localRects[j].M[i]));
 			}
 
 			// Solve 
@@ -1582,8 +1639,10 @@ void JCB(int d, int n){
 			// Calculate the upper bound from these
 			localUppers[j] = 0;
 			for (int i=0; i<K; i++){
-				localUppers[j] += std::real(Delta[i][0]*xs[j][i]*ys[j][i]);
+				localUppers[j] += std::real(Delta(i,0)*xs[j][i]*ys[j][i]);
 			}
+
+			// Based on X vs Y, can we eliminate bounds? TODO
 
 			// Verbose output
 			if (procID == 0 && verbosity >= 2){

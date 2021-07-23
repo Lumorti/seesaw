@@ -3,37 +3,51 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 # Load the file
-with open("temp.dat") as f:
+with open("temp.log") as f:
     data = f.readlines();
 
 # Create the data arrays
 xData = []
-yData = []
+minData = []
+maxData = []
 for line in data:
     split = line.split()
-    xData.append(int(split[0]))
-    yData.append(float(split[2]))
+    if len(split) >= 6:
+        if split[0] == "Scaled" and split[1] == "bounds:":
+            minData.append(float(split[2]))
+            maxData.append(float(split[6]))
 
-#Recast xdata and ydata into numpy arrays so we can use their handy features
+# Where to cut the arrays
 start = 0
-end = len(xData)
-xData = np.asarray(xData[start:end])
-yData = np.asarray(yData[start:end])
-sigma = xData / xData
+end = len(maxData)
+extended = 10*len(maxData)
+
+# Recast into numpy arrays
+xData = np.asarray(range(start+1,end+1))
+xDataExtended = np.asarray(range(start+1,extended+1))
+minData = np.asarray(minData[start:end])
+maxData = np.asarray(maxData[start:end])
+sigma = 1 / xData
 
 # Define the fitting function
-def fit(x, a, b):
-    return np.power(x, -a)+b
+def fit(x, a, b, c):
+    return np.power(x, -a)*c + b
+
+def inverse(f, a, b, c):
+    return np.exp(-np.log((f - b) / c) / a)
 
 # Fit the data
-parameters, covariance = curve_fit(fit, xData, yData, sigma=sigma, absolute_sigma=True)
+parameters, covariance = curve_fit(fit, xData, maxData, sigma=sigma)
 
-print(parameters)
+# Output things
+print("params:", parameters)
+print("estimated iteratons required:", inverse(minData[end-1], *parameters))
 
 # Plot the orig and the fit
-yFit = fit(xData, *parameters)
-plt.plot(xData, yData, 'o', label='data')
-plt.plot(xData, yFit, '-', label='fit')
+plt.plot(xData, minData, '-', label='min bound')
+plt.plot(xData, maxData, '-', label='max bound')
+maxFit = fit(xDataExtended, *parameters)
+plt.plot(xDataExtended, maxFit, '-', label='max fit')
 plt.legend()
 plt.show()
 
