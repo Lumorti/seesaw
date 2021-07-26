@@ -20,9 +20,6 @@ using namespace std::complex_literals;
 // MOSEK
 #include "fusion.h"
 
-// RedSVD https://code.google.com/archive/p/redsvd
-#include "RedSVD.h"
-
 // MPI parallelisation
 #include "mpi.h"
 
@@ -94,6 +91,9 @@ int verbosity = 1;
 
 // Which random method to use
 int randomMethod = 2;
+
+// Whether to use the known ideal solution if possible
+bool useIdeal = false;
 
 // The seed to use for randomness
 std::string seed = "";
@@ -768,35 +768,17 @@ void JCB(int d, int n){
 		std::cout << std::endl;
 	}
 	
-	// Pre-calculate the decomposition U = S Delta T TODO memory intensive
+	// Pre-calculate the decomposition U = S Delta T
 	if (procID == 0){
 		std::cout << "Calculating decomposition U=S*Delta*T..." << std::endl;
 	}
-	Eigen::BDCSVD<Eigen::MatrixXd> svd(USparse, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	Eigen::BDCSVD<Eigen::MatrixXd> svd(USparse, Eigen::ComputeFullU | Eigen::ComputeFullV);
 	Eigen::Matrix<double, -1, -1> Delta = svd.singularValues();
 	Eigen::SparseMatrix<double> S = svd.matrixU().sparseView();
 	Eigen::SparseMatrix<double> T = svd.matrixV().sparseView();
 
-	//RedSVD::RedSVD<Eigen::MatrixXd> decomp(USparse);
-	//Eigen::Matrix<double, -1, -1> Delta2 = decomp.singularValues();
-	//Eigen::SparseMatrix<double> S2 = decomp.matrixU().sparseView();
-	//Eigen::SparseMatrix<double> T2 = decomp.matrixV().sparseView();
-	
-	//std::cout << std::endl;
-	//prettyPrint("U  = ", USparse);
-	//std::cout << std::endl;
-	//prettyPrint("Delta  = ", Delta);
-	//std::cout << std::endl;
-	//prettyPrint("Delta2 = ", Delta2);
-	//std::cout << std::endl;
-	//prettyPrint("S  = ", S);
-	//std::cout << std::endl;
-	//prettyPrint("S2 = ", S2);
-	//std::cout << std::endl;
-	//prettyPrint("T  = ", T);
-	//std::cout << std::endl;
-	//prettyPrint("T2 = ", T2);
-	//std::cout << std::endl;
+	// Clear some memory
+	svd = Eigen::BDCSVD<Eigen::MatrixXd>();
 
 	// For each non-zero S
 	if (procID == 0){
@@ -809,7 +791,7 @@ void JCB(int d, int n){
 		}
 	}
 
-	// Turn it into MOSEK form
+	// Turn it into MOSEK form TODO isues with SEtaRef[106]
 	std::vector<mosek::fusion::Matrix::t> SEtarRef(p*p);
 	std::vector<mosek::fusion::Matrix::t> SEtaiRef(p*p);
 	for (int j=0; j<p*p; j++){
@@ -830,6 +812,14 @@ void JCB(int d, int n){
 					nonZeroValsi.push_back(std::imag(it.value()));
 				}
 			}
+		}
+
+		// Stop it from being completely "empty"
+		if (nonZeroRows.size() == 0){
+			nonZeroRows.push_back(0);
+			nonZeroCols.push_back(0);
+			nonZeroValsr.push_back(0);
+			nonZeroValsi.push_back(0);
 		}
 
 		// Make the sparse matrix from this data
@@ -877,6 +867,36 @@ void JCB(int d, int n){
 		TXiiRef[j] = mosek::fusion::Matrix::sparse(d, q, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsi));
 
 	}
+
+	// TODO Xtox
+	int1 nonZeroRows;
+	int1 nonZeroCols;
+	real1 nonZeroValsr;
+	real1 nonZeroValsi;
+	for (int j=0; j<p*p; j++){
+
+		// For the non-zero elements of SEta
+		for (int i1=0; i1<SEta[j].outerSize(); ++i1){
+			for (Eigen::SparseMatrix<std::complex<double>>::InnerIterator it(SEta[j], i1); it; ++it){
+
+				// Even then, only the dxd diagonal blocks
+				int j = it.row();
+				int i = it.col();
+				if (j < (std::floor(i / d) * d + d) && j >= std::floor(i / d) * d){
+					nonZeroRows.push_back(j);
+					nonZeroCols.push_back((j % d)*p + i);
+					nonZeroValsr.push_back(std::real(it.value()));
+					nonZeroValsi.push_back(std::imag(it.value()));
+				}
+
+			}
+		}
+
+	}
+
+	// Make the sparse matrix from this data
+	mosek::fusion::Matrix::t XToxr = mosek::fusion::Matrix::sparse(p*p, p*d, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsr));
+	mosek::fusion::Matrix::t XToxi = mosek::fusion::Matrix::sparse(p*p, p*d, monty::new_array_ptr(nonZeroRows), monty::new_array_ptr(nonZeroCols), monty::new_array_ptr(nonZeroValsi));
 
 	// Reference to the zero/identity matrix for MOSEK
 	real2 zero(d, real1(d, 0.0));
@@ -944,17 +964,58 @@ void JCB(int d, int n){
 	//XTest.push_back({ { +0.000000000122091+0.000000000000000i , -0.000000000000000-0.000000000000000i },
 		//{ -0.000000000000000+0.000000000000000i , -0.000000000122091+0.000000000000000i } });
 
-	// Exact y solution for d2n2 TODO
+	// Exact y solution for d2n2
 	complex3 YTest;
-	if (d == 2){
-		YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
-						  { +0.0+0.0i , +0.0+0.0i } });
-		YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
-						  { +0.0+0.0i , +1.0+0.0i } });
-		YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
-						  { +0.5+0.0i , +0.5+0.0i } });
-		YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
-						  { -0.5+0.0i , +0.5+0.0i } });
+	if (useIdeal){
+
+		if (d == 2 && n == 2){
+			YTest.push_back({ { +1.0+0.0i , +0.0-0.0i },
+							  { +0.0+0.0i , +0.0+0.0i } });
+			YTest.push_back({ { +0.0+0.0i , +0.0-0.0i },
+							  { +0.0+0.0i , +1.0+0.0i } });
+			YTest.push_back({ { +0.5+0.0i , +0.5-0.0i },
+							  { +0.5+0.0i , +0.5+0.0i } });
+			YTest.push_back({ { +0.5+0.0i , -0.5-0.0i },
+							  { -0.5+0.0i , +0.5+0.0i } });
+
+		} else if (d == 2 && n == 3){
+
+			YTest.push_back({ { +0.045868809+0.000000000i , -0.180704330-0.105407813i },
+            { -0.180704330+0.105407813i , +0.954131191+0.000000000i } });
+			YTest.push_back({ { +0.954131191+0.000000000i , +0.180704330+0.105407813i },
+            { +0.180704330-0.105407813i , +0.045868809+0.000000000i } });
+			YTest.push_back({ { +0.591608307+0.000000000i , -0.398272764+0.288074163i },
+            { -0.398272764-0.288074163i , +0.408391693+0.000000000i } });
+			YTest.push_back({ { +0.408391693+0.000000000i , +0.398272764-0.288074163i },
+            { +0.398272764+0.288074163i , +0.591608307+0.000000000i } });
+			YTest.push_back({ { +0.311930722+0.000000000i , +0.242325510+0.394852243i },
+            { +0.242325510-0.394852243i , +0.688069278+0.000000000i } });
+			YTest.push_back({ { +0.688069278+0.000000000i , -0.242325510-0.394852243i },
+            { -0.242325510+0.394852243i , +0.311930722+0.000000000i } });
+
+		} else if (d == 3 && n == 2){
+
+			YTest.push_back({ { +0.155411412+0.000000000i , +0.070472369-0.298607747i , -0.149654327+0.121364526i },
+            { +0.070472369+0.298607747i , +0.605701587+0.000000000i , -0.301051778-0.232512496i },
+            { -0.149654327-0.121364526i , -0.301051778+0.232512496i , +0.238886994+0.000000000i } });
+			YTest.push_back({ { +0.001377017+0.000000000i , -0.001711225+0.020141348i , -0.020897768+0.023017519i },
+            { -0.001711225-0.020141348i , +0.296729029+0.000000000i , +0.362641191+0.277062589i },
+            { -0.020897768-0.023017519i , +0.362641191-0.277062589i , +0.701893947+0.000000000i } });
+			YTest.push_back({ { +0.843211565+0.000000000i , -0.068761144+0.278466399i , +0.170552095-0.144382044i },
+            { -0.068761144-0.278466399i , +0.097569377+0.000000000i , -0.061589413-0.044550092i },
+            { +0.170552095+0.144382044i , -0.061589413+0.044550092i , +0.059219052+0.000000000i } });
+			YTest.push_back({ { +0.099150226+0.000000000i , -0.004650478+0.113922638i , +0.021751797-0.275402114i },
+            { -0.004650478-0.113922638i , +0.131114119+0.000000000i , -0.317454566-0.012075319i },
+            { +0.021751797+0.275402114i , -0.317454566+0.012075319i , +0.769735648+0.000000000i } });
+			YTest.push_back({ { +0.385723058+0.000000000i , -0.426014142+0.023847338i , -0.186971031+0.141159027i },
+            { -0.426014142-0.023847338i , +0.471988226+0.000000000i , +0.215228433-0.144344444i },
+            { -0.186971031-0.141159027i , +0.215228433+0.144344444i , +0.142288709+0.000000000i } });
+			YTest.push_back({ { +0.515126709+0.000000000i , +0.430664620-0.137769975i , +0.165219234+0.134243087i },
+            { +0.430664620+0.137769975i , +0.396897648+0.000000000i , +0.102226133+0.156419763i },
+            { +0.165219234-0.134243087i , +0.102226133-0.156419763i , +0.087975637+0.000000000i } });
+
+		}
+
 	}
 	//YTest.push_back({ { +0.212125948106518+0.000000000000000i , +0.141173539811072-0.383664648148024i },
 		//{ +0.141173539811072+0.383664648148024i , +0.787874051893482+0.000000000000000i } });
@@ -982,8 +1043,10 @@ void JCB(int d, int n){
 	mosek::fusion::Parameter::t lParamr = lModel->parameter(dimXRef);
 	mosek::fusion::Parameter::t lParami = lModel->parameter(dimXRef);
 
-	// Sections need to be semidefinite
+	// For each dxd section of X
 	for (int i=0; i<startX.size(); i++){
+
+		// Section needs to be semidefinite
 		lModel->constraint(mosek::fusion::Expr::vstack(
 								mosek::fusion::Expr::hstack(
 									XrOptL->slice(startX[i], endX[i]), 
@@ -1051,8 +1114,10 @@ void JCB(int d, int n){
 	mosek::fusion::Parameter::t mParamr = mModel->parameter(dimYRef);
 	mosek::fusion::Parameter::t mParami = mModel->parameter(dimYRef);
 
-	// Sections need to be semidefinite
+	// For each dxd section of Y
 	for (int i=0; i<startY.size(); i++){
+
+		// Section needs to be semidefinite
 		mModel->constraint(mosek::fusion::Expr::vstack(
 								mosek::fusion::Expr::hstack(
 									YrOptM->slice(startY[i], endY[i]), 
@@ -1363,10 +1428,13 @@ void JCB(int d, int n){
 		//model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 
-	std::cout << "here5" << std::endl; // TODO
+	std::cout << "here" << std::endl; // TODO either SEtaRef[106]
 	
 	// Combined constraint with r
 	for (int j=0; j<K; j++){
+
+		std::cout << j << " " << SEtarRef[j]->numRows() << " x " << SEtarRef[j]->numColumns() << " " << SEtarRef[j]->numNonzeros() << std::endl; // TODO
+		std::cout << j << " " << SEtaiRef[j]->numRows() << " x " << SEtaiRef[j]->numColumns() << " " << SEtaiRef[j]->numNonzeros() << std::endl; // TODO
 
 		// For l and m
 		model->constraint(
@@ -1396,31 +1464,31 @@ void JCB(int d, int n){
 						);
 		
 		// For L and M
-		model->constraint(
-							mosek::fusion::Expr::sub(
-								mosek::fusion::Expr::sub(
-									mosek::fusion::Expr::add(
-										mosek::fusion::Expr::mul(
-											GMParams[j], 
-											mosek::fusion::Expr::sub(
-												mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
-												mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
-											)
-										),
-										mosek::fusion::Expr::mul(
-											HLParams[j], 
-											mosek::fusion::Expr::sub(
-												mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
-												mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
-											)
-										)
-									),
-									rOpt->index(j)
-								),
-								sLMParams[j]
-							), 
-							mosek::fusion::Domain::lessThan(0.0)
-						);
+		//model->constraint(
+							//mosek::fusion::Expr::sub(
+								//mosek::fusion::Expr::sub(
+									//mosek::fusion::Expr::add(
+										//mosek::fusion::Expr::mul(
+											//GMParams[j], 
+											//mosek::fusion::Expr::sub(
+												//mosek::fusion::Expr::dot(XrOpt, SEtarRef[j]), 
+												//mosek::fusion::Expr::dot(XiOpt, SEtaiRef[j])
+											//)
+										//),
+										//mosek::fusion::Expr::mul(
+											//HLParams[j], 
+											//mosek::fusion::Expr::sub(
+												//mosek::fusion::Expr::dot(YrOpt, TXirRef[j]), 
+												//mosek::fusion::Expr::dot(YiOpt, TXiiRef[j]) 
+											//)
+										//)
+									//),
+									//rOpt->index(j)
+								//),
+								//sLMParams[j]
+							//), 
+							//mosek::fusion::Domain::lessThan(0.0)
+						//);
 
 	}
 
@@ -2737,6 +2805,7 @@ int main (int argc, char ** argv) {
 			std::cout << "-i [int]         set the iteration limit" << std::endl;
 			std::cout << "                        " << std::endl;
 			std::cout << "   initialisation options          " << std::endl;
+			std::cout << "-k               use a known maximal solution if possible" << std::endl;
 			std::cout << "-r               start completely random without G-S" << std::endl;
 			std::cout << "-s [str]         set the random seed" << std::endl;
 			std::cout << "-f 2*[int] [dbl] set part of the initial array" << std::endl;
@@ -2772,6 +2841,10 @@ int main (int argc, char ** argv) {
 		} else if (arg == "-M") {
 			outputMethod = 6;
 			verbosity = 0;
+
+		// Use a known ideal if possible
+		} else if (arg == "-k") {
+			useIdeal = true;
 
 		// Only output the number of iterations required
 		} else if (arg == "-N") {

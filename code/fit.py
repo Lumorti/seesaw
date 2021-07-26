@@ -23,8 +23,8 @@ end = len(maxData)
 extended = 10*len(maxData)
 
 # Recast into numpy arrays
-xData = np.asarray(range(start+1,end+1))
-xDataExtended = np.asarray(range(start+1,extended+1))
+xData = np.asarray(range(start+1,end+1)) / 10000.0
+xDataExtended = np.asarray(range(start+1,extended+1)) / 10000.0
 minData = np.asarray(minData[start:end])
 maxData = np.asarray(maxData[start:end])
 sigma = 1 / xData
