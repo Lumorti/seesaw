@@ -465,7 +465,7 @@ void prettyPrint(std::string pre, complex2 arr){
 
 }
 
-// Pretty print a complex 2D dense Eigen array
+// Pretty print a generic 2D dense Eigen array
 template <typename type>
 void prettyPrint(std::string pre, Eigen::Matrix<type, -1, -1> arr){
 
@@ -513,7 +513,7 @@ void prettyPrint(std::string pre, Eigen::Matrix<type, -1, -1> arr){
 
 }
 
-// Pretty print a complex 2D sparse Eigen array
+// Pretty print a generic 2D sparse Eigen array
 template <typename type>
 void prettyPrint(std::string pre, Eigen::SparseMatrix<type> arr){
 
@@ -1085,7 +1085,7 @@ void JCB(int d, int n){
 	mosek::fusion::Expression::t objectiveExprL = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(XrOptL, lParamr), mosek::fusion::Expr::dot(XiOptL, lParami));
 
 	// The objective function should be real
-	lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOptL, lParami), mosek::fusion::Expr::dot(XiOptL, lParamr)), mosek::fusion::Domain::equalsTo(0.0));
+	//lModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(XrOptL, lParami), mosek::fusion::Expr::dot(XiOptL, lParamr)), mosek::fusion::Domain::equalsTo(0.0));
 
 	// Exact x solution for d2n2
 	for (int i=0; i<XTest.size(); i++){
@@ -1167,7 +1167,7 @@ void JCB(int d, int n){
 	mosek::fusion::Expression::t objectiveExprM = mosek::fusion::Expr::sub(mosek::fusion::Expr::dot(YrOptM, mParamr), mosek::fusion::Expr::dot(YiOptM, mParami));
 
 	// The objective function should be real
-	mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
+	//mModel->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YrOptM, mParami), mosek::fusion::Expr::dot(YiOptM, mParamr)), mosek::fusion::Domain::equalsTo(0.0));
 
 	// Number of cores needs to divide nice
 	if (p*p % numProcs != 0){
@@ -1428,8 +1428,6 @@ void JCB(int d, int n){
 		//model->constraint(mosek::fusion::Expr::add(mosek::fusion::Expr::dot(YiOpt, TXirRef[j]), mosek::fusion::Expr::dot(YrOpt, TXiiRef[j])), mosek::fusion::Domain::equalsTo(0.0));
 	}
 
-	std::cout << "here" << std::endl; // TODO either SEtaRef[106]
-	
 	// Combined constraint with r
 	for (int j=0; j<K; j++){
 
