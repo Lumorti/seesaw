@@ -95,7 +95,7 @@ bool restrictRankB = false;
 int procID = 0;
 int numProcs = 1;
 
-// Turn an Eigen matix to a std::vector
+// Turn an Eigen matrix to a std::vector
 complex2 matToVec(Eigen::MatrixXcd mat){
 	complex2 data;
 	for (int i=0; i<mat.rows(); i++){
@@ -911,7 +911,7 @@ void JCB(int d, int n){
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-		// Real is symetric, imag is anti-symmetric
+		// Real is symmetric, imag is anti-symmetric
 		lModel->constraint(mosek::fusion::Expr::sub(XrOptL->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XrOptL->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 		lModel->constraint(mosek::fusion::Expr::add(XiOptL->slice(startX[i], endX[i]), mosek::fusion::Expr::transpose(XiOptL->slice(startX[i], endX[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
@@ -977,7 +977,7 @@ void JCB(int d, int n){
 								)
 						   ), mosek::fusion::Domain::inPSDCone(2*d));
 
-		// Real is symetric, imag is anti-symmetric
+		// Real is symmetric, imag is anti-symmetric
 		mModel->constraint(mosek::fusion::Expr::sub(YrOptM->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YrOptM->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 		mModel->constraint(mosek::fusion::Expr::add(YiOptM->slice(startY[i], endY[i]), mosek::fusion::Expr::transpose(YiOptM->slice(startY[i], endY[i]))), mosek::fusion::Domain::equalsTo(zeroRef));
 
@@ -1731,7 +1731,7 @@ void seesawExtended(int d, int n){
 	}
 	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
-	// If told to just generate a random symteric matrix
+	// If told to just generate a random symmetric matrix
 	if (randomMethod == 1){
 
 		// Randomise B
