@@ -2284,7 +2284,7 @@ void seesawExtended(int d, int n){
 			for (int i=0; i<d*d; i++){
 				A[x][a][i/d][i%d] = Ar[x*numOutcomeA+a][i] + im*Ai[x*numOutcomeA+a][i];
 			}
-			if (verbosity >= 2){
+			if (outputMethod == 1 && verbosity >= 1){
 				std::cout << std::endl;
 				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a]);
 			}
@@ -2298,7 +2298,7 @@ void seesawExtended(int d, int n){
 			for (int i=0; i<d*d; i++){
 				B[y][b][i/d][i%d] = Br[i][y*numOutcomeB+b] + im*Bi[i][y*numOutcomeB+b];
 			}
-			if (verbosity >= 2){
+			if (outputMethod == 1 && verbosity >= 1){
 				std::cout << std::endl;
 				prettyPrint("B[" + std::to_string(y) + "][" + std::to_string(b) + "] = ", B[y][b]);
 			}
@@ -2322,7 +2322,7 @@ void seesawExtended(int d, int n){
 			}
 
 			// Output if allowed
-			if (verbosity >= 2){
+			if (outputMethod == 1 && verbosity >= 1){
 				std::cout << std::endl;
 				prettyPrint("moments " + std::to_string(y1) + " " + std::to_string(y2) + " = ", momentB);
 			}
@@ -2345,6 +2345,7 @@ void seesawExtended(int d, int n){
 	} else if (outputMethod == 5){
 		std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count() << std::endl;
 	} else if (outputMethod == 1){
+		std::cout << std::setprecision(5) << "finished in " << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count() << " ms" << std::endl;
 		std::cout << std::setprecision(5) << "final result = " << finalResult << " <= " << exact << " (" << delta << " away)" << std::endl;
 	}
 
