@@ -18,7 +18,7 @@ To download this repo if you haven't already:
 git clone https://github.com/Lumorti/seesaw
 ```
 
-To then compile the binaries, enter the new seesaw directory, then the code directory:
+To then compile the binaries, enter the new seesaw directory, then enter the code directory:
 ```bash
 cd seesaw/code
 make
