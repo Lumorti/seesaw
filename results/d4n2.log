@@ -1,196 +1,677 @@
-iter    0 val 1.171325430 (2.292776185 from ideal, 2.171325430 from prev)
-iter    1 val 3.403517438 (0.060584177 from ideal, 2.232192008 from prev)
-iter    2 val 3.424930481 (0.039171134 from ideal, 0.021413042 from prev)
-iter    3 val 3.434738483 (0.029363132 from ideal, 0.009808002 from prev)
-iter    4 val 3.440096212 (0.024005403 from ideal, 0.005357729 from prev)
-iter    5 val 3.443490694 (0.020610921 from ideal, 0.003394482 from prev)
-iter    6 val 3.445929277 (0.018172338 from ideal, 0.002438584 from prev)
-iter    7 val 3.447871561 (0.016230054 from ideal, 0.001942283 from prev)
-iter    8 val 3.449543378 (0.014558237 from ideal, 0.001671817 from prev)
-iter    9 val 3.451058112 (0.013043503 from ideal, 0.001514734 from prev)
-iter   10 val 3.452470286 (0.011631329 from ideal, 0.001412173 from prev)
-iter   11 val 3.453802199 (0.010299417 from ideal, 0.001331913 from prev)
-iter   12 val 3.455058546 (0.009043069 from ideal, 0.001256347 from prev)
-iter   13 val 3.456235070 (0.007866545 from ideal, 0.001176524 from prev)
-iter   14 val 3.457323978 (0.006777637 from ideal, 0.001088908 from prev)
-iter   15 val 3.458317395 (0.005784221 from ideal, 0.000993417 from prev)
-iter   16 val 3.459209508 (0.004892107 from ideal, 0.000892114 from prev)
-iter   17 val 3.459997693 (0.004103923 from ideal, 0.000788184 from prev)
-iter   18 val 3.460682866 (0.003418749 from ideal, 0.000685174 from prev)
-iter   19 val 3.461269270 (0.002832345 from ideal, 0.000586404 from prev)
-iter   20 val 3.461763855 (0.002337760 from ideal, 0.000494585 from prev)
-iter   21 val 3.462175467 (0.001926149 from ideal, 0.000411611 from prev)
-iter   22 val 3.462513996 (0.001587619 from ideal, 0.000338530 from prev)
-iter   23 val 3.462789621 (0.001311994 from ideal, 0.000275625 from prev)
-iter   24 val 3.463012193 (0.001089423 from ideal, 0.000222572 from prev)
-iter   25 val 3.463190814 (0.000910801 from ideal, 0.000178621 from prev)
-iter   26 val 3.463333584 (0.000768031 from ideal, 0.000142770 from prev)
-iter   27 val 3.463447492 (0.000654123 from ideal, 0.000113908 from prev)
-iter   28 val 3.463538418 (0.000563197 from ideal, 0.000090926 from prev)
-iter   29 val 3.463611204 (0.000490411 from ideal, 0.000072786 from prev)
-iter   30 val 3.463669767 (0.000431848 from ideal, 0.000058563 from prev)
-iter   31 val 3.463717234 (0.000384382 from ideal, 0.000047466 from prev)
-iter   32 val 3.463756064 (0.000345551 from ideal, 0.000038831 from prev)
-iter   33 val 3.463788180 (0.000313435 from ideal, 0.000032115 from prev)
-iter   34 val 3.463815066 (0.000286549 from ideal, 0.000026886 from prev)
-iter   35 val 3.463837866 (0.000263749 from ideal, 0.000022800 from prev)
-iter   36 val 3.463857457 (0.000244158 from ideal, 0.000019591 from prev)
-iter   37 val 3.463874508 (0.000227107 from ideal, 0.000017051 from prev)
-iter   38 val 3.463889531 (0.000212084 from ideal, 0.000015023 from prev)
-iter   39 val 3.463902915 (0.000198700 from ideal, 0.000013384 from prev)
-iter   40 val 3.463914960 (0.000186655 from ideal, 0.000012045 from prev)
-iter   41 val 3.463925894 (0.000175721 from ideal, 0.000010934 from prev)
-iter   42 val 3.463935896 (0.000165719 from ideal, 0.000010002 from prev)
-iter   43 val 3.463945103 (0.000156512 from ideal, 0.000009207 from prev)
-iter   44 val 3.463953623 (0.000147992 from ideal, 0.000008520 from prev)
-iter   45 val 3.463961543 (0.000140072 from ideal, 0.000007920 from prev)
-iter   46 val 3.463968932 (0.000132683 from ideal, 0.000007389 from prev)
-iter   47 val 3.463975846 (0.000125769 from ideal, 0.000006914 from prev)
-iter   48 val 3.463982331 (0.000119284 from ideal, 0.000006485 from prev)
-iter   49 val 3.463988426 (0.000113189 from ideal, 0.000006095 from prev)
-iter   50 val 3.463994164 (0.000107451 from ideal, 0.000005738 from prev)
-iter   51 val 3.463999574 (0.000102041 from ideal, 0.000005410 from prev)
-iter   52 val 3.464004680 (0.000096936 from ideal, 0.000005106 from prev)
-iter   53 val 3.464009503 (0.000092112 from ideal, 0.000004823 from prev)
-iter   54 val 3.464014063 (0.000087552 from ideal, 0.000004560 from prev)
-iter   55 val 3.464018378 (0.000083237 from ideal, 0.000004315 from prev)
-iter   56 val 3.464022462 (0.000079153 from ideal, 0.000004085 from prev)
-iter   57 val 3.464026331 (0.000075284 from ideal, 0.000003869 from prev)
-iter   58 val 3.464029998 (0.000071617 from ideal, 0.000003666 from prev)
-iter   59 val 3.464033474 (0.000068142 from ideal, 0.000003476 from prev)
-iter   60 val 3.464036770 (0.000064845 from ideal, 0.000003297 from prev)
-iter   61 val 3.464039897 (0.000061718 from ideal, 0.000003127 from prev)
-iter   62 val 3.464042865 (0.000058750 from ideal, 0.000002968 from prev)
-iter   63 val 3.464045683 (0.000055932 from ideal, 0.000002817 from prev)
-iter   64 val 3.464048358 (0.000053257 from ideal, 0.000002675 from prev)
-iter   65 val 3.464050899 (0.000050716 from ideal, 0.000002541 from prev)
-iter   66 val 3.464053313 (0.000048303 from ideal, 0.000002414 from prev)
-iter   67 val 3.464055606 (0.000046009 from ideal, 0.000002294 from prev)
-iter   68 val 3.464057786 (0.000043829 from ideal, 0.000002180 from prev)
-iter   69 val 3.464059858 (0.000041757 from ideal, 0.000002072 from prev)
-iter   70 val 3.464061828 (0.000039787 from ideal, 0.000001970 from prev)
-iter   71 val 3.464063701 (0.000037914 from ideal, 0.000001873 from prev)
-iter   72 val 3.464065483 (0.000036132 from ideal, 0.000001782 from prev)
-iter   73 val 3.464067178 (0.000034437 from ideal, 0.000001695 from prev)
-iter   74 val 3.464068790 (0.000032825 from ideal, 0.000001612 from prev)
-iter   75 val 3.464070324 (0.000031291 from ideal, 0.000001534 from prev)
-iter   76 val 3.464071784 (0.000029831 from ideal, 0.000001460 from prev)
-iter   77 val 3.464073174 (0.000028441 from ideal, 0.000001390 from prev)
-iter   78 val 3.464074496 (0.000027119 from ideal, 0.000001323 from prev)
-iter   79 val 3.464075756 (0.000025859 from ideal, 0.000001259 from prev)
-iter   80 val 3.464076955 (0.000024661 from ideal, 0.000001199 from prev)
-iter   81 val 3.464078096 (0.000023519 from ideal, 0.000001142 from prev)
-iter   82 val 3.464079183 (0.000022432 from ideal, 0.000001087 from prev)
-iter   83 val 3.464080219 (0.000021396 from ideal, 0.000001035 from prev)
-iter   84 val 3.464081205 (0.000020410 from ideal, 0.000000986 from prev)
-iter   85 val 3.464082145 (0.000019470 from ideal, 0.000000940 from prev)
-iter   86 val 3.464083040 (0.000018575 from ideal, 0.000000895 from prev)
-iter   87 val 3.464083893 (0.000017723 from ideal, 0.000000853 from prev)
-iter   88 val 3.464084705 (0.000016910 from ideal, 0.000000813 from prev)
-iter   89 val 3.464085479 (0.000016136 from ideal, 0.000000774 from prev)
-iter   90 val 3.464086217 (0.000015398 from ideal, 0.000000738 from prev)
-iter   91 val 3.464086921 (0.000014695 from ideal, 0.000000703 from prev)
-iter   92 val 3.464087591 (0.000014024 from ideal, 0.000000670 from prev)
-iter   93 val 3.464088230 (0.000013385 from ideal, 0.000000639 from prev)
-iter   94 val 3.464088839 (0.000012776 from ideal, 0.000000609 from prev)
-iter   95 val 3.464089420 (0.000012196 from ideal, 0.000000581 from prev)
-iter   96 val 3.464089973 (0.000011642 from ideal, 0.000000554 from prev)
-iter   97 val 3.464090501 (0.000011114 from ideal, 0.000000528 from prev)
-iter   98 val 3.464091004 (0.000010611 from ideal, 0.000000503 from prev)
-iter   99 val 3.464091484 (0.000010131 from ideal, 0.000000480 from prev)
-iter  100 val 3.464091941 (0.000009674 from ideal, 0.000000458 from prev)
-iter  101 val 3.464092378 (0.000009237 from ideal, 0.000000436 from prev)
-iter  102 val 3.464092794 (0.000008821 from ideal, 0.000000416 from prev)
-iter  103 val 3.464093191 (0.000008424 from ideal, 0.000000397 from prev)
-iter  104 val 3.464093569 (0.000008046 from ideal, 0.000000378 from prev)
-iter  105 val 3.464093930 (0.000007685 from ideal, 0.000000361 from prev)
-iter  106 val 3.464094275 (0.000007341 from ideal, 0.000000344 from prev)
-iter  107 val 3.464094603 (0.000007012 from ideal, 0.000000328 from prev)
-iter  108 val 3.464094916 (0.000006699 from ideal, 0.000000313 from prev)
-iter  109 val 3.464095215 (0.000006400 from ideal, 0.000000299 from prev)
-iter  110 val 3.464095500 (0.000006115 from ideal, 0.000000285 from prev)
-iter  111 val 3.464095772 (0.000005843 from ideal, 0.000000272 from prev)
-iter  112 val 3.464096032 (0.000005583 from ideal, 0.000000260 from prev)
-iter  113 val 3.464096280 (0.000005335 from ideal, 0.000000248 from prev)
-iter  114 val 3.464096516 (0.000005099 from ideal, 0.000000236 from prev)
-iter  115 val 3.464096741 (0.000004874 from ideal, 0.000000225 from prev)
-iter  116 val 3.464096957 (0.000004659 from ideal, 0.000000215 from prev)
-iter  117 val 3.464097162 (0.000004453 from ideal, 0.000000205 from prev)
-iter  118 val 3.464097358 (0.000004257 from ideal, 0.000000196 from prev)
-iter  119 val 3.464097545 (0.000004071 from ideal, 0.000000187 from prev)
-iter  120 val 3.464097723 (0.000003892 from ideal, 0.000000178 from prev)
-iter  121 val 3.464097893 (0.000003722 from ideal, 0.000000170 from prev)
-iter  122 val 3.464098056 (0.000003559 from ideal, 0.000000162 from prev)
-iter  123 val 3.464098211 (0.000003404 from ideal, 0.000000155 from prev)
-iter  124 val 3.464098359 (0.000003256 from ideal, 0.000000148 from prev)
-iter  125 val 3.464098500 (0.000003115 from ideal, 0.000000141 from prev)
-iter  126 val 3.464098635 (0.000002980 from ideal, 0.000000135 from prev)
-iter  127 val 3.464098764 (0.000002852 from ideal, 0.000000129 from prev)
-iter  128 val 3.464098886 (0.000002729 from ideal, 0.000000123 from prev)
-iter  129 val 3.464099004 (0.000002611 from ideal, 0.000000117 from prev)
-iter  130 val 3.464099116 (0.000002500 from ideal, 0.000000112 from prev)
-iter  131 val 3.464099222 (0.000002393 from ideal, 0.000000107 from prev)
-iter  132 val 3.464099325 (0.000002291 from ideal, 0.000000102 from prev)
-iter  133 val 3.464099422 (0.000002193 from ideal, 0.000000097 from prev)
-iter  134 val 3.464099515 (0.000002100 from ideal, 0.000000093 from prev)
-iter  135 val 3.464099604 (0.000002011 from ideal, 0.000000089 from prev)
-iter  136 val 3.464099688 (0.000001927 from ideal, 0.000000085 from prev)
-iter  137 val 3.464099769 (0.000001846 from ideal, 0.000000081 from prev)
-iter  138 val 3.464099847 (0.000001769 from ideal, 0.000000077 from prev)
-iter  139 val 3.464099920 (0.000001695 from ideal, 0.000000074 from prev)
-iter  140 val 3.464099991 (0.000001624 from ideal, 0.000000070 from prev)
-iter  141 val 3.464100058 (0.000001557 from ideal, 0.000000067 from prev)
-iter  142 val 3.464100122 (0.000001493 from ideal, 0.000000064 from prev)
-iter  143 val 3.464100184 (0.000001432 from ideal, 0.000000061 from prev)
-iter  144 val 3.464100242 (0.000001373 from ideal, 0.000000059 from prev)
-iter  145 val 3.464100298 (0.000001317 from ideal, 0.000000056 from prev)
-iter  146 val 3.464100351 (0.000001264 from ideal, 0.000000053 from prev)
-iter  147 val 3.464100402 (0.000001213 from ideal, 0.000000051 from prev)
-iter  148 val 3.464100451 (0.000001164 from ideal, 0.000000049 from prev)
-iter  149 val 3.464100498 (0.000001117 from ideal, 0.000000047 from prev)
-iter  150 val 3.464100542 (0.000001073 from ideal, 0.000000044 from prev)
-iter  151 val 3.464100585 (0.000001031 from ideal, 0.000000042 from prev)
-iter  152 val 3.464100625 (0.000000990 from ideal, 0.000000041 from prev)
-iter  153 val 3.464100664 (0.000000951 from ideal, 0.000000039 from prev)
-iter  154 val 3.464100701 (0.000000914 from ideal, 0.000000037 from prev)
-iter  155 val 3.464100736 (0.000000879 from ideal, 0.000000035 from prev)
-iter  156 val 3.464100770 (0.000000845 from ideal, 0.000000034 from prev)
-iter  157 val 3.464100802 (0.000000813 from ideal, 0.000000032 from prev)
-iter  158 val 3.464100833 (0.000000782 from ideal, 0.000000031 from prev)
-iter  159 val 3.464100862 (0.000000753 from ideal, 0.000000029 from prev)
-iter  160 val 3.464100890 (0.000000725 from ideal, 0.000000028 from prev)
-iter  161 val 3.464100917 (0.000000698 from ideal, 0.000000027 from prev)
-iter  162 val 3.464100943 (0.000000672 from ideal, 0.000000026 from prev)
-iter  163 val 3.464100967 (0.000000648 from ideal, 0.000000025 from prev)
-iter  164 val 3.464100991 (0.000000624 from ideal, 0.000000023 from prev)
-iter  165 val 3.464101013 (0.000000602 from ideal, 0.000000022 from prev)
-iter  166 val 3.464101035 (0.000000580 from ideal, 0.000000021 from prev)
-iter  167 val 3.464101055 (0.000000560 from ideal, 0.000000020 from prev)
-iter  168 val 3.464101075 (0.000000540 from ideal, 0.000000020 from prev)
-iter  169 val 3.464101093 (0.000000522 from ideal, 0.000000019 from prev)
-iter  170 val 3.464101111 (0.000000504 from ideal, 0.000000018 from prev)
-iter  171 val 3.464101128 (0.000000487 from ideal, 0.000000017 from prev)
-iter  172 val 3.464101145 (0.000000471 from ideal, 0.000000016 from prev)
-iter  173 val 3.464101160 (0.000000455 from ideal, 0.000000016 from prev)
-iter  174 val 3.464101175 (0.000000440 from ideal, 0.000000015 from prev)
-iter  175 val 3.464101189 (0.000000426 from ideal, 0.000000014 from prev)
-iter  176 val 3.464101203 (0.000000412 from ideal, 0.000000014 from prev)
-iter  177 val 3.464101216 (0.000000399 from ideal, 0.000000013 from prev)
-iter  178 val 3.464101228 (0.000000387 from ideal, 0.000000012 from prev)
-iter  179 val 3.464101240 (0.000000375 from ideal, 0.000000012 from prev)
-iter  180 val 3.464101252 (0.000000364 from ideal, 0.000000011 from prev)
-iter  181 val 3.464101262 (0.000000353 from ideal, 0.000000011 from prev)
-iter  182 val 3.464101273 (0.000000342 from ideal, 0.000000010 from prev)
-iter  183 val 3.464101283 (0.000000332 from ideal, 0.000000010 from prev)
-iter  184 val 3.464101292 (0.000000323 from ideal, 0.000000010 from prev)
-iter  185 val 3.464101301 (0.000000314 from ideal, 0.000000009 from prev)
-iter  186 val 3.464101310 (0.000000305 from ideal, 0.000000009 from prev)
-iter  187 val 3.464101318 (0.000000297 from ideal, 0.000000008 from prev)
-iter  188 val 3.464101326 (0.000000289 from ideal, 0.000000008 from prev)
-iter  189 val 3.464101334 (0.000000281 from ideal, 0.000000008 from prev)
-iter  190 val 3.464101341 (0.000000274 from ideal, 0.000000007 from prev)
-iter  191 val 3.464101348 (0.000000267 from ideal, 0.000000007 from prev)
-iter  192 val 3.464101355 (0.000000260 from ideal, 0.000000007 from prev)
-iter  193 val 3.464101361 (0.000000254 from ideal, 0.000000006 from prev)
-finished in 11824 ms
-final result = 3.46410 <= 3.46410 (0.00000 away)
+iter    0 val 10.794275585 (3.062130876 from ideal, 11.794275585 from prev)
+iter    1 val 13.821801923 (0.034604538 from ideal, 3.027526338 from prev)
+iter    2 val 13.825482961 (0.030923500 from ideal, 0.003681038 from prev)
+iter    3 val 13.828752773 (0.027653687 from ideal, 0.003269812 from prev)
+iter    4 val 13.831710594 (0.024695867 from ideal, 0.002957820 from prev)
+iter    5 val 13.834411248 (0.021995212 from ideal, 0.002700655 from prev)
+iter    6 val 13.836884809 (0.019521651 from ideal, 0.002473561 from prev)
+iter    7 val 13.839147517 (0.017258943 from ideal, 0.002262708 from prev)
+iter    8 val 13.841208270 (0.015198191 from ideal, 0.002060752 from prev)
+iter    9 val 13.843072980 (0.013333481 from ideal, 0.001864710 from prev)
+iter   10 val 13.844746998 (0.011659462 from ideal, 0.001674019 from prev)
+iter   11 val 13.846237016 (0.010169445 from ideal, 0.001490017 from prev)
+iter   12 val 13.847551768 (0.008854692 from ideal, 0.001314753 from prev)
+iter   13 val 13.848702170 (0.007704290 from ideal, 0.001150402 from prev)
+iter   14 val 13.849701014 (0.006705447 from ideal, 0.000998843 from prev)
+iter   15 val 13.850562367 (0.005844094 from ideal, 0.000861353 from prev)
+iter   16 val 13.851300951 (0.005105509 from ideal, 0.000738584 from prev)
+iter   17 val 13.851931483 (0.004474977 from ideal, 0.000630532 from prev)
+iter   18 val 13.852468135 (0.003938325 from ideal, 0.000536652 from prev)
+iter   19 val 13.852924131 (0.003482329 from ideal, 0.000455996 from prev)
+iter   20 val 13.853311483 (0.003094978 from ideal, 0.000387351 from prev)
+iter   21 val 13.853640872 (0.002765588 from ideal, 0.000329389 from prev)
+iter   22 val 13.853921594 (0.002484867 from ideal, 0.000280722 from prev)
+iter   23 val 13.854161622 (0.002244839 from ideal, 0.000240028 from prev)
+iter   24 val 13.854367750 (0.002038711 from ideal, 0.000206128 from prev)
+iter   25 val 13.854545624 (0.001860837 from ideal, 0.000177874 from prev)
+iter   26 val 13.854699953 (0.001706508 from ideal, 0.000154329 from prev)
+iter   27 val 13.854834816 (0.001571645 from ideal, 0.000134863 from prev)
+iter   28 val 13.854953656 (0.001452805 from ideal, 0.000118840 from prev)
+iter   29 val 13.855058565 (0.001347896 from ideal, 0.000104909 from prev)
+iter   30 val 13.855151730 (0.001254731 from ideal, 0.000093165 from prev)
+iter   31 val 13.855234949 (0.001171512 from ideal, 0.000083219 from prev)
+iter   32 val 13.855309691 (0.001096770 from ideal, 0.000074742 from prev)
+iter   33 val 13.855377165 (0.001029296 from ideal, 0.000067474 from prev)
+iter   34 val 13.855438367 (0.000968093 from ideal, 0.000061202 from prev)
+iter   35 val 13.855494123 (0.000912337 from ideal, 0.000055756 from prev)
+iter   36 val 13.855545120 (0.000861341 from ideal, 0.000050997 from prev)
+iter   37 val 13.855591932 (0.000814529 from ideal, 0.000046812 from prev)
+iter   38 val 13.855635044 (0.000771416 from ideal, 0.000043112 from prev)
+iter   39 val 13.855674868 (0.000731592 from ideal, 0.000039824 from prev)
+iter   40 val 13.855711753 (0.000694708 from ideal, 0.000036885 from prev)
+iter   41 val 13.855746000 (0.000660461 from ideal, 0.000034247 from prev)
+iter   42 val 13.855777867 (0.000628594 from ideal, 0.000031867 from prev)
+iter   43 val 13.855807582 (0.000598878 from ideal, 0.000029715 from prev)
+iter   44 val 13.855835343 (0.000571118 from ideal, 0.000027760 from prev)
+iter   45 val 13.855861322 (0.000545138 from ideal, 0.000025980 from prev)
+iter   46 val 13.855885674 (0.000520786 from ideal, 0.000024352 from prev)
+iter   47 val 13.855908535 (0.000497926 from ideal, 0.000022861 from prev)
+iter   48 val 13.855930026 (0.000476435 from ideal, 0.000021491 from prev)
+iter   49 val 13.855950255 (0.000456206 from ideal, 0.000020229 from prev)
+iter   50 val 13.855969321 (0.000437140 from ideal, 0.000019066 from prev)
+iter   51 val 13.855987311 (0.000419150 from ideal, 0.000017990 from prev)
+iter   52 val 13.856004304 (0.000402156 from ideal, 0.000016994 from prev)
+iter   53 val 13.856020374 (0.000386086 from ideal, 0.000016070 from prev)
+iter   54 val 13.856035586 (0.000370875 from ideal, 0.000015211 from prev)
+iter   55 val 13.856049998 (0.000356462 from ideal, 0.000014413 from prev)
+iter   56 val 13.856063667 (0.000342794 from ideal, 0.000013669 from prev)
+iter   57 val 13.856076641 (0.000329820 from ideal, 0.000012974 from prev)
+iter   58 val 13.856088967 (0.000317494 from ideal, 0.000012326 from prev)
+iter   59 val 13.856100686 (0.000305775 from ideal, 0.000011719 from prev)
+iter   60 val 13.856111837 (0.000294624 from ideal, 0.000011151 from prev)
+iter   61 val 13.856122455 (0.000284005 from ideal, 0.000010619 from prev)
+iter   62 val 13.856132574 (0.000273886 from ideal, 0.000010119 from prev)
+iter   63 val 13.856142224 (0.000264236 from ideal, 0.000009650 from prev)
+iter   64 val 13.856151433 (0.000255028 from ideal, 0.000009208 from prev)
+iter   65 val 13.856160226 (0.000246235 from ideal, 0.000008793 from prev)
+iter   66 val 13.856168628 (0.000237833 from ideal, 0.000008402 from prev)
+iter   67 val 13.856176661 (0.000229800 from ideal, 0.000008033 from prev)
+iter   68 val 13.856184345 (0.000222115 from ideal, 0.000007685 from prev)
+iter   69 val 13.856191702 (0.000214759 from ideal, 0.000007356 from prev)
+iter   70 val 13.856198747 (0.000207713 from ideal, 0.000007046 from prev)
+iter   71 val 13.856205498 (0.000200962 from ideal, 0.000006751 from prev)
+iter   72 val 13.856211971 (0.000194489 from ideal, 0.000006473 from prev)
+iter   73 val 13.856218181 (0.000188279 from ideal, 0.000006210 from prev)
+iter   74 val 13.856224140 (0.000182320 from ideal, 0.000005959 from prev)
+iter   75 val 13.856229863 (0.000176598 from ideal, 0.000005722 from prev)
+iter   76 val 13.856235360 (0.000171101 from ideal, 0.000005497 from prev)
+iter   77 val 13.856240643 (0.000165817 from ideal, 0.000005283 from prev)
+iter   78 val 13.856245723 (0.000160737 from ideal, 0.000005080 from prev)
+iter   79 val 13.856250610 (0.000155851 from ideal, 0.000004886 from prev)
+iter   80 val 13.856255312 (0.000151149 from ideal, 0.000004702 from prev)
+iter   81 val 13.856259839 (0.000146621 from ideal, 0.000004527 from prev)
+iter   82 val 13.856264199 (0.000142262 from ideal, 0.000004360 from prev)
+iter   83 val 13.856268399 (0.000138061 from ideal, 0.000004200 from prev)
+iter   84 val 13.856272448 (0.000134013 from ideal, 0.000004049 from prev)
+iter   85 val 13.856276351 (0.000130109 from ideal, 0.000003903 from prev)
+iter   86 val 13.856280116 (0.000126345 from ideal, 0.000003765 from prev)
+iter   87 val 13.856283748 (0.000122712 from ideal, 0.000003632 from prev)
+iter   88 val 13.856287254 (0.000119206 from ideal, 0.000003506 from prev)
+iter   89 val 13.856290639 (0.000115822 from ideal, 0.000003385 from prev)
+iter   90 val 13.856293907 (0.000112553 from ideal, 0.000003269 from prev)
+iter   91 val 13.856297065 (0.000109395 from ideal, 0.000003158 from prev)
+iter   92 val 13.856300117 (0.000106344 from ideal, 0.000003052 from prev)
+iter   93 val 13.856303066 (0.000103394 from ideal, 0.000002950 from prev)
+iter   94 val 13.856305919 (0.000100542 from ideal, 0.000002852 from prev)
+iter   95 val 13.856308677 (0.000097783 from ideal, 0.000002759 from prev)
+iter   96 val 13.856311346 (0.000095115 from ideal, 0.000002669 from prev)
+iter   97 val 13.856313928 (0.000092533 from ideal, 0.000002582 from prev)
+iter   98 val 13.856316427 (0.000090033 from ideal, 0.000002499 from prev)
+iter   99 val 13.856318847 (0.000087613 from ideal, 0.000002420 from prev)
+iter  100 val 13.856321191 (0.000085270 from ideal, 0.000002343 from prev)
+iter  101 val 13.856323460 (0.000083000 from ideal, 0.000002270 from prev)
+iter  102 val 13.856325660 (0.000080801 from ideal, 0.000002199 from prev)
+iter  103 val 13.856327791 (0.000078669 from ideal, 0.000002131 from prev)
+iter  104 val 13.856329856 (0.000076604 from ideal, 0.000002065 from prev)
+iter  105 val 13.856331859 (0.000074601 from ideal, 0.000002003 from prev)
+iter  106 val 13.856333801 (0.000072659 from ideal, 0.000001942 from prev)
+iter  107 val 13.856335685 (0.000070776 from ideal, 0.000001883 from prev)
+iter  108 val 13.856337512 (0.000068949 from ideal, 0.000001827 from prev)
+iter  109 val 13.856339285 (0.000067176 from ideal, 0.000001773 from prev)
+iter  110 val 13.856341005 (0.000065455 from ideal, 0.000001720 from prev)
+iter  111 val 13.856342675 (0.000063785 from ideal, 0.000001670 from prev)
+iter  112 val 13.856344296 (0.000062164 from ideal, 0.000001621 from prev)
+iter  113 val 13.856345871 (0.000060590 from ideal, 0.000001574 from prev)
+iter  114 val 13.856347399 (0.000059061 from ideal, 0.000001529 from prev)
+iter  115 val 13.856348884 (0.000057576 from ideal, 0.000001485 from prev)
+iter  116 val 13.856350327 (0.000056134 from ideal, 0.000001442 from prev)
+iter  117 val 13.856351728 (0.000054732 from ideal, 0.000001402 from prev)
+iter  118 val 13.856353090 (0.000053370 from ideal, 0.000001362 from prev)
+iter  119 val 13.856354414 (0.000052047 from ideal, 0.000001324 from prev)
+iter  120 val 13.856355701 (0.000050760 from ideal, 0.000001287 from prev)
+iter  121 val 13.856356952 (0.000049509 from ideal, 0.000001251 from prev)
+iter  122 val 13.856358168 (0.000048292 from ideal, 0.000001216 from prev)
+iter  123 val 13.856359351 (0.000047109 from ideal, 0.000001183 from prev)
+iter  124 val 13.856360502 (0.000045959 from ideal, 0.000001150 from prev)
+iter  125 val 13.856361621 (0.000044839 from ideal, 0.000001119 from prev)
+iter  126 val 13.856362710 (0.000043751 from ideal, 0.000001089 from prev)
+iter  127 val 13.856363769 (0.000042691 from ideal, 0.000001059 from prev)
+iter  128 val 13.856364800 (0.000041660 from ideal, 0.000001031 from prev)
+iter  129 val 13.856365803 (0.000040657 from ideal, 0.000001003 from prev)
+iter  130 val 13.856366780 (0.000039681 from ideal, 0.000000977 from prev)
+iter  131 val 13.856367731 (0.000038730 from ideal, 0.000000951 from prev)
+iter  132 val 13.856368656 (0.000037805 from ideal, 0.000000925 from prev)
+iter  133 val 13.856369557 (0.000036904 from ideal, 0.000000901 from prev)
+iter  134 val 13.856370435 (0.000036026 from ideal, 0.000000878 from prev)
+iter  135 val 13.856371289 (0.000035172 from ideal, 0.000000854 from prev)
+iter  136 val 13.856372121 (0.000034339 from ideal, 0.000000832 from prev)
+iter  137 val 13.856372932 (0.000033529 from ideal, 0.000000811 from prev)
+iter  138 val 13.856373722 (0.000032739 from ideal, 0.000000790 from prev)
+iter  139 val 13.856374491 (0.000031970 from ideal, 0.000000769 from prev)
+iter  140 val 13.856375241 (0.000031220 from ideal, 0.000000750 from prev)
+iter  141 val 13.856375971 (0.000030489 from ideal, 0.000000731 from prev)
+iter  142 val 13.856376683 (0.000029778 from ideal, 0.000000712 from prev)
+iter  143 val 13.856377377 (0.000029084 from ideal, 0.000000694 from prev)
+iter  144 val 13.856378053 (0.000028407 from ideal, 0.000000676 from prev)
+iter  145 val 13.856378712 (0.000027748 from ideal, 0.000000659 from prev)
+iter  146 val 13.856379355 (0.000027106 from ideal, 0.000000642 from prev)
+iter  147 val 13.856379981 (0.000026479 from ideal, 0.000000627 from prev)
+iter  148 val 13.856380592 (0.000025869 from ideal, 0.000000610 from prev)
+iter  149 val 13.856381187 (0.000025273 from ideal, 0.000000595 from prev)
+iter  150 val 13.856381768 (0.000024693 from ideal, 0.000000581 from prev)
+iter  151 val 13.856382334 (0.000024127 from ideal, 0.000000566 from prev)
+iter  152 val 13.856382886 (0.000023574 from ideal, 0.000000552 from prev)
+iter  153 val 13.856383425 (0.000023036 from ideal, 0.000000538 from prev)
+iter  154 val 13.856383950 (0.000022511 from ideal, 0.000000525 from prev)
+iter  155 val 13.856384462 (0.000021998 from ideal, 0.000000512 from prev)
+iter  156 val 13.856384962 (0.000021498 from ideal, 0.000000500 from prev)
+iter  157 val 13.856385450 (0.000021011 from ideal, 0.000000488 from prev)
+iter  158 val 13.856385926 (0.000020535 from ideal, 0.000000476 from prev)
+iter  159 val 13.856386390 (0.000020071 from ideal, 0.000000464 from prev)
+iter  160 val 13.856386843 (0.000019617 from ideal, 0.000000453 from prev)
+iter  161 val 13.856387285 (0.000019176 from ideal, 0.000000442 from prev)
+iter  162 val 13.856387716 (0.000018744 from ideal, 0.000000431 from prev)
+iter  163 val 13.856388137 (0.000018323 from ideal, 0.000000421 from prev)
+iter  164 val 13.856388548 (0.000017913 from ideal, 0.000000411 from prev)
+iter  165 val 13.856388949 (0.000017511 from ideal, 0.000000401 from prev)
+iter  166 val 13.856389340 (0.000017120 from ideal, 0.000000391 from prev)
+iter  167 val 13.856389723 (0.000016738 from ideal, 0.000000382 from prev)
+iter  168 val 13.856390095 (0.000016365 from ideal, 0.000000373 from prev)
+iter  169 val 13.856390460 (0.000016001 from ideal, 0.000000364 from prev)
+iter  170 val 13.856390815 (0.000015646 from ideal, 0.000000355 from prev)
+iter  171 val 13.856391162 (0.000015299 from ideal, 0.000000347 from prev)
+iter  172 val 13.856391501 (0.000014960 from ideal, 0.000000339 from prev)
+iter  173 val 13.856391832 (0.000014629 from ideal, 0.000000331 from prev)
+iter  174 val 13.856392155 (0.000014306 from ideal, 0.000000323 from prev)
+iter  175 val 13.856392470 (0.000013990 from ideal, 0.000000316 from prev)
+iter  176 val 13.856392779 (0.000013682 from ideal, 0.000000308 from prev)
+iter  177 val 13.856393080 (0.000013381 from ideal, 0.000000301 from prev)
+iter  178 val 13.856393373 (0.000013087 from ideal, 0.000000294 from prev)
+iter  179 val 13.856393661 (0.000012800 from ideal, 0.000000287 from prev)
+iter  180 val 13.856393941 (0.000012520 from ideal, 0.000000280 from prev)
+iter  181 val 13.856394214 (0.000012246 from ideal, 0.000000274 from prev)
+iter  182 val 13.856394482 (0.000011979 from ideal, 0.000000267 from prev)
+iter  183 val 13.856394744 (0.000011717 from ideal, 0.000000262 from prev)
+iter  184 val 13.856394998 (0.000011462 from ideal, 0.000000255 from prev)
+iter  185 val 13.856395248 (0.000011213 from ideal, 0.000000250 from prev)
+iter  186 val 13.856395491 (0.000010969 from ideal, 0.000000243 from prev)
+iter  187 val 13.856395729 (0.000010731 from ideal, 0.000000238 from prev)
+iter  188 val 13.856395962 (0.000010499 from ideal, 0.000000232 from prev)
+iter  189 val 13.856396189 (0.000010272 from ideal, 0.000000227 from prev)
+iter  190 val 13.856396411 (0.000010050 from ideal, 0.000000222 from prev)
+iter  191 val 13.856396628 (0.000009833 from ideal, 0.000000217 from prev)
+iter  192 val 13.856396840 (0.000009621 from ideal, 0.000000212 from prev)
+iter  193 val 13.856397047 (0.000009414 from ideal, 0.000000207 from prev)
+iter  194 val 13.856397249 (0.000009212 from ideal, 0.000000202 from prev)
+iter  195 val 13.856397447 (0.000009014 from ideal, 0.000000198 from prev)
+iter  196 val 13.856397640 (0.000008821 from ideal, 0.000000193 from prev)
+iter  197 val 13.856397828 (0.000008632 from ideal, 0.000000189 from prev)
+iter  198 val 13.856398013 (0.000008448 from ideal, 0.000000185 from prev)
+iter  199 val 13.856398193 (0.000008268 from ideal, 0.000000180 from prev)
+iter  200 val 13.856398369 (0.000008091 from ideal, 0.000000176 from prev)
+iter  201 val 13.856398541 (0.000007919 from ideal, 0.000000172 from prev)
+iter  202 val 13.856398709 (0.000007751 from ideal, 0.000000168 from prev)
+iter  203 val 13.856398874 (0.000007586 from ideal, 0.000000165 from prev)
+iter  204 val 13.856399035 (0.000007426 from ideal, 0.000000161 from prev)
+iter  205 val 13.856399192 (0.000007269 from ideal, 0.000000157 from prev)
+iter  206 val 13.856399345 (0.000007115 from ideal, 0.000000153 from prev)
+iter  207 val 13.856399495 (0.000006965 from ideal, 0.000000150 from prev)
+iter  208 val 13.856399642 (0.000006819 from ideal, 0.000000147 from prev)
+iter  209 val 13.856399785 (0.000006676 from ideal, 0.000000143 from prev)
+iter  210 val 13.856399925 (0.000006535 from ideal, 0.000000140 from prev)
+iter  211 val 13.856400062 (0.000006398 from ideal, 0.000000137 from prev)
+iter  212 val 13.856400196 (0.000006264 from ideal, 0.000000134 from prev)
+iter  213 val 13.856400327 (0.000006133 from ideal, 0.000000131 from prev)
+iter  214 val 13.856400455 (0.000006006 from ideal, 0.000000128 from prev)
+iter  215 val 13.856400580 (0.000005881 from ideal, 0.000000125 from prev)
+iter  216 val 13.856400702 (0.000005758 from ideal, 0.000000122 from prev)
+iter  217 val 13.856400822 (0.000005639 from ideal, 0.000000119 from prev)
+iter  218 val 13.856400939 (0.000005522 from ideal, 0.000000117 from prev)
+iter  219 val 13.856401053 (0.000005408 from ideal, 0.000000114 from prev)
+iter  220 val 13.856401165 (0.000005296 from ideal, 0.000000112 from prev)
+iter  221 val 13.856401273 (0.000005187 from ideal, 0.000000109 from prev)
+iter  222 val 13.856401380 (0.000005080 from ideal, 0.000000107 from prev)
+iter  223 val 13.856401485 (0.000004976 from ideal, 0.000000105 from prev)
+iter  224 val 13.856401587 (0.000004874 from ideal, 0.000000102 from prev)
+iter  225 val 13.856401686 (0.000004774 from ideal, 0.000000099 from prev)
+iter  226 val 13.856401784 (0.000004677 from ideal, 0.000000098 from prev)
+iter  227 val 13.856401879 (0.000004581 from ideal, 0.000000096 from prev)
+iter  228 val 13.856401973 (0.000004488 from ideal, 0.000000093 from prev)
+iter  229 val 13.856402064 (0.000004397 from ideal, 0.000000091 from prev)
+iter  230 val 13.856402153 (0.000004308 from ideal, 0.000000089 from prev)
+iter  231 val 13.856402241 (0.000004220 from ideal, 0.000000088 from prev)
+iter  232 val 13.856402325 (0.000004135 from ideal, 0.000000085 from prev)
+iter  233 val 13.856402409 (0.000004052 from ideal, 0.000000083 from prev)
+iter  234 val 13.856402490 (0.000003970 from ideal, 0.000000081 from prev)
+iter  235 val 13.856402570 (0.000003891 from ideal, 0.000000080 from prev)
+iter  236 val 13.856402648 (0.000003813 from ideal, 0.000000078 from prev)
+iter  237 val 13.856402724 (0.000003737 from ideal, 0.000000076 from prev)
+iter  238 val 13.856402799 (0.000003662 from ideal, 0.000000075 from prev)
+iter  239 val 13.856402871 (0.000003589 from ideal, 0.000000073 from prev)
+iter  240 val 13.856402943 (0.000003518 from ideal, 0.000000071 from prev)
+iter  241 val 13.856403013 (0.000003448 from ideal, 0.000000070 from prev)
+iter  242 val 13.856403080 (0.000003380 from ideal, 0.000000068 from prev)
+iter  243 val 13.856403147 (0.000003313 from ideal, 0.000000067 from prev)
+iter  244 val 13.856403212 (0.000003248 from ideal, 0.000000065 from prev)
+iter  245 val 13.856403276 (0.000003184 from ideal, 0.000000064 from prev)
+iter  246 val 13.856403339 (0.000003122 from ideal, 0.000000062 from prev)
+iter  247 val 13.856403399 (0.000003061 from ideal, 0.000000061 from prev)
+iter  248 val 13.856403459 (0.000003002 from ideal, 0.000000060 from prev)
+iter  249 val 13.856403517 (0.000002943 from ideal, 0.000000058 from prev)
+iter  250 val 13.856403574 (0.000002886 from ideal, 0.000000057 from prev)
+iter  251 val 13.856403630 (0.000002830 from ideal, 0.000000056 from prev)
+iter  252 val 13.856403685 (0.000002776 from ideal, 0.000000054 from prev)
+iter  253 val 13.856403738 (0.000002723 from ideal, 0.000000053 from prev)
+iter  254 val 13.856403791 (0.000002670 from ideal, 0.000000053 from prev)
+iter  255 val 13.856403841 (0.000002619 from ideal, 0.000000051 from prev)
+iter  256 val 13.856403892 (0.000002569 from ideal, 0.000000050 from prev)
+iter  257 val 13.856403940 (0.000002520 from ideal, 0.000000049 from prev)
+iter  258 val 13.856403988 (0.000002473 from ideal, 0.000000048 from prev)
+iter  259 val 13.856404035 (0.000002426 from ideal, 0.000000047 from prev)
+iter  260 val 13.856404081 (0.000002380 from ideal, 0.000000046 from prev)
+iter  261 val 13.856404125 (0.000002335 from ideal, 0.000000045 from prev)
+iter  262 val 13.856404169 (0.000002291 from ideal, 0.000000044 from prev)
+iter  263 val 13.856404212 (0.000002249 from ideal, 0.000000042 from prev)
+iter  264 val 13.856404254 (0.000002207 from ideal, 0.000000042 from prev)
+iter  265 val 13.856404294 (0.000002166 from ideal, 0.000000041 from prev)
+iter  266 val 13.856404334 (0.000002126 from ideal, 0.000000040 from prev)
+iter  267 val 13.856404374 (0.000002087 from ideal, 0.000000039 from prev)
+iter  268 val 13.856404412 (0.000002048 from ideal, 0.000000038 from prev)
+iter  269 val 13.856404449 (0.000002011 from ideal, 0.000000037 from prev)
+iter  270 val 13.856404486 (0.000001974 from ideal, 0.000000037 from prev)
+iter  271 val 13.856404522 (0.000001939 from ideal, 0.000000036 from prev)
+iter  272 val 13.856404557 (0.000001904 from ideal, 0.000000035 from prev)
+iter  273 val 13.856404592 (0.000001869 from ideal, 0.000000035 from prev)
+iter  274 val 13.856404625 (0.000001836 from ideal, 0.000000033 from prev)
+iter  275 val 13.856404658 (0.000001803 from ideal, 0.000000033 from prev)
+iter  276 val 13.856404690 (0.000001771 from ideal, 0.000000032 from prev)
+iter  277 val 13.856404721 (0.000001739 from ideal, 0.000000032 from prev)
+iter  278 val 13.856404752 (0.000001708 from ideal, 0.000000031 from prev)
+iter  279 val 13.856404782 (0.000001678 from ideal, 0.000000030 from prev)
+iter  280 val 13.856404812 (0.000001649 from ideal, 0.000000029 from prev)
+iter  281 val 13.856404841 (0.000001620 from ideal, 0.000000029 from prev)
+iter  282 val 13.856404869 (0.000001592 from ideal, 0.000000028 from prev)
+iter  283 val 13.856404896 (0.000001564 from ideal, 0.000000028 from prev)
+iter  284 val 13.856404923 (0.000001537 from ideal, 0.000000027 from prev)
+iter  285 val 13.856404950 (0.000001511 from ideal, 0.000000027 from prev)
+iter  286 val 13.856404976 (0.000001485 from ideal, 0.000000026 from prev)
+iter  287 val 13.856405001 (0.000001460 from ideal, 0.000000025 from prev)
+iter  288 val 13.856405025 (0.000001435 from ideal, 0.000000025 from prev)
+iter  289 val 13.856405050 (0.000001411 from ideal, 0.000000024 from prev)
+iter  290 val 13.856405073 (0.000001387 from ideal, 0.000000024 from prev)
+iter  291 val 13.856405097 (0.000001364 from ideal, 0.000000023 from prev)
+iter  292 val 13.856405119 (0.000001341 from ideal, 0.000000023 from prev)
+iter  293 val 13.856405141 (0.000001319 from ideal, 0.000000022 from prev)
+iter  294 val 13.856405163 (0.000001298 from ideal, 0.000000022 from prev)
+iter  295 val 13.856405184 (0.000001276 from ideal, 0.000000021 from prev)
+iter  296 val 13.856405205 (0.000001256 from ideal, 0.000000021 from prev)
+iter  297 val 13.856405225 (0.000001235 from ideal, 0.000000021 from prev)
+iter  298 val 13.856405245 (0.000001216 from ideal, 0.000000020 from prev)
+iter  299 val 13.856405264 (0.000001196 from ideal, 0.000000019 from prev)
+iter  300 val 13.856405284 (0.000001177 from ideal, 0.000000019 from prev)
+iter  301 val 13.856405302 (0.000001158 from ideal, 0.000000019 from prev)
+iter  302 val 13.856405321 (0.000001140 from ideal, 0.000000019 from prev)
+iter  303 val 13.856405338 (0.000001122 from ideal, 0.000000018 from prev)
+iter  304 val 13.856405356 (0.000001105 from ideal, 0.000000017 from prev)
+iter  305 val 13.856405373 (0.000001088 from ideal, 0.000000017 from prev)
+iter  306 val 13.856405390 (0.000001071 from ideal, 0.000000017 from prev)
+iter  307 val 13.856405406 (0.000001054 from ideal, 0.000000016 from prev)
+iter  308 val 13.856405422 (0.000001039 from ideal, 0.000000016 from prev)
+iter  309 val 13.856405438 (0.000001023 from ideal, 0.000000016 from prev)
+iter  310 val 13.856405453 (0.000001007 from ideal, 0.000000016 from prev)
+iter  311 val 13.856405468 (0.000000993 from ideal, 0.000000014 from prev)
+iter  312 val 13.856405482 (0.000000978 from ideal, 0.000000014 from prev)
+iter  313 val 13.856405497 (0.000000964 from ideal, 0.000000015 from prev)
+iter  314 val 13.856405511 (0.000000950 from ideal, 0.000000014 from prev)
+iter  315 val 13.856405525 (0.000000936 from ideal, 0.000000014 from prev)
+iter  316 val 13.856405538 (0.000000922 from ideal, 0.000000014 from prev)
+iter  317 val 13.856405551 (0.000000909 from ideal, 0.000000013 from prev)
+iter  318 val 13.856405564 (0.000000896 from ideal, 0.000000013 from prev)
+iter  319 val 13.856405577 (0.000000884 from ideal, 0.000000013 from prev)
+iter  320 val 13.856405589 (0.000000871 from ideal, 0.000000012 from prev)
+iter  321 val 13.856405601 (0.000000859 from ideal, 0.000000012 from prev)
+iter  322 val 13.856405613 (0.000000848 from ideal, 0.000000011 from prev)
+iter  323 val 13.856405625 (0.000000836 from ideal, 0.000000012 from prev)
+iter  324 val 13.856405636 (0.000000824 from ideal, 0.000000011 from prev)
+iter  325 val 13.856405647 (0.000000814 from ideal, 0.000000011 from prev)
+iter  326 val 13.856405658 (0.000000803 from ideal, 0.000000011 from prev)
+iter  327 val 13.856405669 (0.000000792 from ideal, 0.000000011 from prev)
+iter  328 val 13.856405679 (0.000000782 from ideal, 0.000000010 from prev)
+iter  329 val 13.856405689 (0.000000771 from ideal, 0.000000010 from prev)
+iter  330 val 13.856405699 (0.000000762 from ideal, 0.000000010 from prev)
+iter  331 val 13.856405709 (0.000000752 from ideal, 0.000000010 from prev)
+iter  332 val 13.856405719 (0.000000742 from ideal, 0.000000010 from prev)
+iter  333 val 13.856405728 (0.000000732 from ideal, 0.000000010 from prev)
+iter  334 val 13.856405737 (0.000000724 from ideal, 0.000000009 from prev)
+iter  335 val 13.856405746 (0.000000715 from ideal, 0.000000009 from prev)
+iter  336 val 13.856405754 (0.000000706 from ideal, 0.000000009 from prev)
+iter  337 val 13.856405763 (0.000000697 from ideal, 0.000000009 from prev)
+iter  338 val 13.856405772 (0.000000688 from ideal, 0.000000009 from prev)
+iter  339 val 13.856405780 (0.000000681 from ideal, 0.000000008 from prev)
+iter  340 val 13.856405788 (0.000000673 from ideal, 0.000000008 from prev)
+
+A[0][0] = { { +0.108270517+0.000000000i , +0.167879411-0.098098786i , +0.122154950+0.081455513i , -0.129938209+0.142479346i },
+            { +0.167879411+0.098098786i , +0.349188989+0.000000000i , +0.115605017+0.236980102i , -0.330570176+0.103191240i },
+            { +0.122154950-0.081455513i , +0.115605017-0.236980102i , +0.199101608+0.000000000i , -0.039409316+0.258507517i },
+            { -0.129938209-0.142479346i , -0.330570176-0.103191240i , -0.039409316-0.258507517i , +0.343438884+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[0][1] = { { +0.113008020+0.000000000i , +0.155640088-0.108977903i , -0.226292343-0.049509576i , +0.096587321-0.033891661i },
+            { +0.155640088+0.108977903i , +0.319446568+0.000000000i , -0.263916779-0.286409253i , +0.165707733+0.046465579i },
+            { -0.226292343+0.049509576i , -0.263916779+0.286409253i , +0.474828483+0.000000000i , -0.178562641+0.110181745i },
+            { +0.096587321+0.033891661i , +0.165707733-0.046465579i , -0.178562641-0.110181745i , +0.092716927+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[0][2] = { { +0.778721462+0.000000000i , -0.323519498+0.207076690i , +0.104137393-0.031945937i , +0.033350888-0.108587685i },
+            { -0.323519498-0.207076690i , +0.331364441+0.000000000i , +0.148311762+0.049429151i , +0.164862443-0.149656819i },
+            { +0.104137393+0.031945937i , +0.148311762-0.049429151i , +0.326069907+0.000000000i , +0.217971957-0.368689262i },
+            { +0.033350888+0.108587685i , +0.164862443+0.149656819i , +0.217971957+0.368689262i , +0.563844187+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[1][0] = { { +0.151292138+0.000000000i , +0.222657872+0.001417186i , -0.046827167+0.152187439i , -0.223179053-0.060511117i },
+            { +0.222657872-0.001417186i , +0.327700696+0.000000000i , -0.067490351+0.224414136i , -0.329021257-0.086964144i },
+            { -0.046827167-0.152187439i , -0.067490351-0.224414136i , +0.167581748+0.000000000i , +0.008208027+0.243228851i },
+            { -0.223179053+0.060511117i , -0.329021257+0.086964144i , +0.008208027-0.243228851i , +0.353425416+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[1][1] = { { +0.583274964+0.000000000i , -0.016288218-0.133754962i , +0.277952389-0.227951476i , +0.222739084-0.214656621i },
+            { -0.016288218+0.133754962i , +0.031127171+0.000000000i , +0.044511242+0.070104901i , +0.043004362+0.057072279i },
+            { +0.277952389+0.227951476i , +0.044511242-0.070104901i , +0.221541158+0.000000000i , +0.190034137-0.015242588i },
+            { +0.222739084+0.214656621i , +0.043004362-0.057072279i , +0.190034137+0.015242588i , +0.164056705+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[1][2] = { { +0.265432896+0.000000000i , -0.206369654+0.132337776i , -0.231125222+0.075764037i , +0.000439969+0.275167739i },
+            { -0.206369654-0.132337776i , +0.641172131+0.000000000i , +0.022979109-0.294519036i , +0.286016895+0.029891865i },
+            { -0.231125222-0.075764037i , +0.022979109+0.294519036i , +0.610877093+0.000000000i , -0.198242164-0.227986263i },
+            { +0.000439969-0.275167739i , +0.286016895-0.029891865i , -0.198242164+0.227986263i , +0.482517877+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[2][0] = { { +0.165651844+0.000000000i , +0.073397343-0.210628294i , +0.114751927+0.165206459i , -0.145316998+0.163956233i },
+            { +0.073397343+0.210628294i , +0.300337428+0.000000000i , -0.159217481+0.219108448i , -0.272859648-0.112126251i },
+            { +0.114751927-0.165206459i , -0.159217481-0.219108448i , +0.244254342+0.000000000i , +0.062850032+0.258503625i },
+            { -0.145316998-0.163956233i , -0.272859648+0.112126251i , +0.062850032-0.258503625i , +0.289756385+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[2][1] = { { +0.361141495+0.000000000i , -0.268674029+0.340661163i , -0.030536360+0.203176356i , -0.015828213-0.004348504i },
+            { -0.268674029-0.340661163i , +0.521224419+0.000000000i , +0.214371995-0.122349996i , +0.007673627+0.018165700i },
+            { -0.030536360-0.203176356i , +0.214371995+0.122349996i , +0.116887994+0.000000000i , -0.001108089+0.009272558i },
+            { -0.015828213+0.004348504i , +0.007673627-0.018165700i , -0.001108089-0.009272558i , +0.000746090+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[2][2] = { { +0.473206660+0.000000000i , +0.195276687-0.130032869i , -0.084215567-0.368382815i , +0.161145211-0.159607730i },
+            { +0.195276687+0.130032869i , +0.178438151+0.000000000i , -0.055154513-0.096758452i , +0.265186021+0.093960551i },
+            { -0.084215567+0.368382815i , -0.055154513+0.096758452i , +0.638857663+0.000000000i , -0.061741943-0.267776183i },
+            { +0.161145211+0.159607730i , +0.265186021-0.093960551i , -0.061741943+0.267776183i , +0.709497523+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[3][0] = { { +0.086500398+0.000000000i , +0.177895367-0.060430363i , +0.039646972+0.182533683i , -0.085566889+0.038824749i },
+            { +0.177895367+0.060430363i , +0.408074349+0.000000000i , -0.045983194+0.403093863i , -0.203099047+0.020068174i },
+            { +0.039646972-0.182533683i , -0.045983194-0.403093863i , +0.403355722+0.000000000i , +0.042709131+0.198358912i },
+            { -0.085566889-0.038824749i , -0.203099047-0.020068174i , +0.042709131-0.198358912i , +0.102069529+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[3][1] = { { +0.073522154+0.000000000i , -0.042913106+0.000822230i , -0.082591825-0.081330328i , -0.147088160+0.176645034i },
+            { -0.042913106-0.000822230i , +0.025056547+0.000000000i , +0.047297307+0.048394211i , +0.087827317-0.101458501i },
+            { -0.082591825+0.081330328i , +0.047297307-0.048394211i , +0.182748097+0.000000000i , -0.030172119-0.361145122i },
+            { -0.147088160-0.176645034i , +0.087827317+0.101458501i , -0.030172119+0.361145122i , +0.718673200+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[3][2] = { { +0.839977446+0.000000000i , -0.134982260+0.059608133i , +0.042944853-0.101203354i , +0.232655049-0.215469783i },
+            { -0.134982260-0.059608133i , +0.566869102+0.000000000i , -0.001314113-0.451488074i , +0.115271730+0.081390327i },
+            { +0.042944853+0.101203354i , -0.001314113+0.451488074i , +0.413896179+0.000000000i , -0.012537012+0.162786211i },
+            { +0.232655049+0.215469783i , +0.115271730-0.081390327i , -0.012537012-0.162786211i , +0.179257270+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[4][0] = { { +0.235480029+0.000000000i , -0.043117724+0.150451493i , +0.284366028+0.036950733i , -0.008272910-0.270622525i },
+            { -0.043117724-0.150451493i , +0.104020675+0.000000000i , -0.028460680-0.188451333i , -0.171389716+0.054838192i },
+            { +0.284366028-0.036950733i , -0.028460680+0.188451333i , +0.349199026+0.000000000i , -0.052455554-0.325506009i },
+            { -0.008272910+0.270622525i , -0.171389716-0.054838192i , -0.052455554+0.325506009i , +0.311300269+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[4][1] = { { +0.235123842+0.000000000i , +0.248246137-0.099760146i , -0.273504534+0.034783047i , +0.042892365-0.174379001i },
+            { +0.248246137+0.099760146i , +0.304427802+0.000000000i , -0.303526883-0.079320305i , +0.119273058-0.165912423i },
+            { -0.273504534-0.034783047i , -0.303526883+0.079320305i , +0.323295977+0.000000000i , -0.075690706+0.196498670i },
+            { +0.042892365+0.174379001i , +0.119273058+0.165912423i , -0.075690706-0.196498670i , +0.137152377+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[4][2] = { { +0.529396127+0.000000000i , -0.205128413-0.050691347i , -0.010861494-0.071733780i , -0.034619455+0.445001525i },
+            { -0.205128413+0.050691347i , +0.591551521+0.000000000i , +0.331987562+0.267771638i , +0.052116658+0.111074231i },
+            { -0.010861494+0.071733780i , +0.331987562-0.267771638i , +0.327504996+0.000000000i , +0.128146260+0.129007340i },
+            { -0.034619455-0.445001525i , +0.052116658-0.111074231i , +0.128146260-0.129007340i , +0.551547352+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[5][0] = { { +0.031657904+0.000000000i , -0.046969654+0.077489176i , +0.113789183+0.040023959i , -0.022194039-0.086037695i },
+            { -0.046969654-0.077489176i , +0.259357718+0.000000000i , -0.070857997-0.337904327i , -0.177666354+0.181975378i },
+            { +0.113789183-0.040023959i , -0.070857997+0.337904327i , +0.459597636+0.000000000i , -0.188547263-0.281189406i },
+            { -0.022194039+0.086037695i , -0.177666354-0.181975378i , -0.188547263+0.281189406i , +0.249386740+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[5][1] = { { +0.458430090+0.000000000i , +0.017705176-0.296910186i , +0.229205840-0.211214743i , +0.248197508+0.032462449i },
+            { +0.017705176+0.296910186i , +0.192982829+0.000000000i , +0.145649121+0.140291744i , -0.011439149+0.162003157i },
+            { +0.229205840+0.211214743i , +0.145649121-0.140291744i , +0.211912330+0.000000000i , +0.109137192+0.130583831i },
+            { +0.248197508-0.032462449i , -0.011439149-0.162003157i , +0.109137192-0.130583831i , +0.136674749+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[5][2] = { { +0.509912004+0.000000000i , +0.029264478+0.219421010i , -0.342995023+0.171190784i , -0.226003469+0.053575246i },
+            { +0.029264478-0.219421010i , +0.547659452+0.000000000i , -0.074791123+0.197612583i , +0.189105503-0.343978535i },
+            { -0.342995023-0.171190784i , -0.074791123-0.197612583i , +0.328490032+0.000000000i , +0.079410071+0.150605574i },
+            { -0.226003469-0.053575246i , +0.189105503+0.343978535i , +0.079410071-0.150605574i , +0.613938510+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[6][0] = { { +0.055580832+0.000000000i , -0.057071723+0.038746758i , +0.185856132-0.021968133i , -0.017032134-0.111435669i },
+            { -0.057071723-0.038746758i , +0.085613939+0.000000000i , -0.206156059-0.107007477i , -0.060195541+0.126298337i },
+            { +0.185856132+0.021968133i , -0.206156059+0.107007477i , +0.630165177+0.000000000i , -0.012909007-0.379360447i },
+            { -0.017032134+0.111435669i , -0.060195541-0.126298337i , -0.012909007+0.379360447i , +0.228640050+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[6][1] = { { +0.245904231+0.000000000i , -0.095404600+0.350516832i , -0.168751848+0.144829093i , -0.063006515-0.006983382i },
+            { -0.095404600-0.350516832i , +0.536648329+0.000000000i , +0.271913746+0.184352269i , +0.014490676+0.092520130i },
+            { -0.168751848-0.144829093i , +0.271913746-0.184352269i , +0.201105343+0.000000000i , +0.039125269+0.041901013i },
+            { -0.063006515+0.006983382i , +0.014490676-0.092520130i , +0.039125269-0.041901013i , +0.016342095+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[6][2] = { { +0.698514936+0.000000000i , +0.152476323-0.389263590i , -0.017104285-0.122860960i , +0.080038649+0.118419052i },
+            { +0.152476323+0.389263590i , +0.377737730+0.000000000i , -0.065757687-0.077344791i , +0.045704866-0.218818467i },
+            { -0.017104285+0.122860960i , -0.065757687+0.077344791i , +0.168729478+0.000000000i , -0.026216262+0.337459434i },
+            { +0.080038649-0.118419052i , +0.045704866+0.218818467i , -0.026216262-0.337459434i , +0.755017853+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[7][0] = { { +0.205040809+0.000000000i , -0.168846474+0.120691197i , +0.306137788+0.119937501i , +0.016902578-0.107389585i },
+            { -0.168846474-0.120691197i , +0.210082569+0.000000000i , -0.181499903-0.278964769i , -0.077130587+0.078483700i },
+            { +0.306137788-0.119937501i , -0.181499903+0.278964769i , +0.527238238+0.000000000i , -0.037580428-0.170225934i },
+            { +0.016902578+0.107389585i , -0.077130587-0.078483700i , -0.037580428+0.170225934i , +0.057638382+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[7][1] = { { +0.186974337+0.000000000i , -0.085999699-0.057464561i , -0.025540761-0.015127158i , -0.220137779+0.303273801i },
+            { -0.085999699+0.057464561i , +0.057217082+0.000000000i , +0.016396760-0.000891872i , +0.008045424-0.207149168i },
+            { -0.025540761+0.015127158i , +0.016396760+0.000891872i , +0.004712744+0.000000000i , +0.005534534-0.059237548i },
+            { -0.220137779-0.303273801i , +0.008045424+0.207149168i , +0.005534534+0.059237548i , +0.751095836+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[7][2] = { { +0.607984852+0.000000000i , +0.254846173-0.063226636i , -0.280597027-0.104810343i , +0.203235202-0.195884215i },
+            { +0.254846173+0.063226636i , +0.732700348+0.000000000i , +0.165103143+0.279856641i , +0.069085163+0.128665468i },
+            { -0.280597027+0.104810343i , +0.165103143-0.279856641i , +0.468049016+0.000000000i , +0.032045895+0.229463482i },
+            { +0.203235202+0.195884215i , +0.069085163-0.128665468i , +0.032045895-0.229463482i , +0.191265781+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[8][0] = { { +0.068678796+0.000000000i , -0.130413486-0.102184598i , -0.071348857-0.090164381i , -0.113696287-0.101811204i },
+            { -0.130413486+0.102184598i , +0.399677539+0.000000000i , +0.269635863+0.065054973i , +0.367377849+0.024163859i },
+            { -0.071348857+0.090164381i , +0.269635863-0.065054973i , +0.192494302+0.000000000i , +0.251778530-0.043495849i },
+            { -0.113696287+0.101811204i , +0.367377849-0.024163859i , +0.251778530+0.043495849i , +0.339149361+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[8][1] = { { +0.102900193+0.000000000i , +0.164758382-0.023200974i , -0.248513448+0.038222531i , +0.033961419-0.015964051i },
+            { +0.164758382+0.023200974i , +0.269033627+0.000000000i , -0.406524766+0.005167415i , +0.057976666-0.017903499i },
+            { -0.248513448-0.038222531i , -0.406524766-0.005167415i , +0.614380784+0.000000000i , -0.087949851+0.025939606i },
+            { +0.033961419+0.015964051i , +0.057976666+0.017903499i , -0.087949851-0.025939606i , +0.013685394+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[8][2] = { { +0.828421009+0.000000000i , -0.034344896+0.125385571i , +0.319862304+0.051941851i , +0.079734868+0.117775254i },
+            { -0.034344896-0.125385571i , +0.331288833+0.000000000i , +0.136888903-0.070222388i , -0.425354514-0.006260360i },
+            { +0.319862304-0.051941851i , +0.136888903+0.070222388i , +0.193124912+0.000000000i , -0.163828679+0.017556243i },
+            { +0.079734868-0.117775254i , -0.425354514+0.006260360i , -0.163828679-0.017556243i , +0.647165243+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[9][0] = { { +0.082820081+0.000000000i , -0.167599685-0.097051513i , -0.088883944+0.041674396i , -0.165646745-0.037098594i },
+            { -0.167599685+0.097051513i , +0.452893221+0.000000000i , +0.131035343-0.188492175i , +0.378686155-0.119035806i },
+            { -0.088883944-0.041674396i , +0.131035343+0.188492175i , +0.116362007+0.000000000i , +0.159107236+0.123166956i },
+            { -0.165646745+0.037098594i , +0.378686155+0.119035806i , +0.159107236-0.123166956i , +0.347924689+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[9][1] = { { +0.544475068+0.000000000i , -0.099103865-0.142379975i , +0.407473144-0.079136492i , +0.201449265+0.071060315i },
+            { -0.099103865+0.142379975i , +0.055270918+0.000000000i , -0.053472996+0.120958248i , -0.055249489+0.039744685i },
+            { +0.407473144+0.079136492i , -0.053472996-0.120958248i , +0.316445992+0.000000000i , +0.140431959+0.082459529i },
+            { +0.201449265-0.071060315i , -0.055249489-0.039744685i , +0.140431959-0.082459529i , +0.083808020+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[9][2] = { { +0.372704849+0.000000000i , +0.266703550+0.239431488i , -0.318589200+0.037462096i , -0.035802519-0.033961721i },
+            { +0.266703550-0.239431488i , +0.491835859+0.000000000i , -0.077562347+0.067533927i , -0.323436666+0.079291121i },
+            { -0.318589200-0.037462096i , -0.077562347-0.067533927i , +0.567191999+0.000000000i , -0.299539195-0.205626485i },
+            { -0.035802519+0.033961721i , -0.323436666-0.079291121i , -0.299539195+0.205626485i , +0.568267290+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[10][0] = { { +0.169064626+0.000000000i , +0.024057589-0.228472952i , -0.058566972-0.101515499i , -0.064910440-0.264110322i },
+             { +0.024057589+0.228472952i , +0.312180373+0.000000000i , +0.128853478-0.093592538i , +0.347680523-0.125302014i },
+             { -0.058566972+0.101515499i , +0.128853478+0.093592538i , +0.081244010+0.000000000i , +0.181072177+0.052516761i },
+             { -0.064910440+0.264110322i , +0.347680523+0.125302014i , +0.181072177-0.052516761i , +0.437510990+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[10][1] = { { +0.393969799+0.000000000i , -0.010501643+0.412459731i , -0.032416102+0.195789538i , -0.014413759-0.170094586i },
+             { -0.010501643-0.412459731i , +0.432097379+0.000000000i , +0.205842486+0.028718509i , -0.177693322+0.019624267i },
+             { -0.032416102-0.195789538i , +0.205842486-0.028718509i , +0.099967943+0.000000000i , -0.083345231+0.021158644i },
+             { -0.014413759+0.170094586i , -0.177693322-0.019624267i , -0.083345231-0.021158644i , +0.073964878+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[10][2] = { { +0.436965574+0.000000000i , -0.013555946-0.183986779i , +0.090983074-0.094274038i , +0.079324200+0.434204908i },
+             { -0.013555946+0.183986779i , +0.255722246+0.000000000i , -0.334695964+0.064874029i , -0.169987201+0.105677746i },
+             { +0.090983074+0.094274038i , -0.334695964-0.064874029i , +0.818788046+0.000000000i , -0.097726946-0.073675406i },
+             { +0.079324200-0.434204908i , -0.169987201-0.105677746i , -0.097726946+0.073675406i , +0.488524131+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[11][0] = { { +0.098103606+0.000000000i , -0.053959982-0.223486142i , -0.092135978-0.086893021i , +0.009319457-0.139625413i },
+             { -0.053959982+0.223486142i , +0.538795087+0.000000000i , +0.248625354-0.162097708i , +0.312949453+0.098028555i },
+             { -0.092135978+0.086893021i , +0.248625354+0.162097708i , +0.163494884+0.000000000i , +0.114917465+0.139386525i },
+             { +0.009319457+0.139625413i , +0.312949453-0.098028555i , +0.114917465-0.139386525i , +0.199606421+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[11][1] = { { +0.114620596+0.000000000i , +0.032616124-0.072433407i , -0.042993999-0.091374450i , -0.131115762+0.260352030i },
+             { +0.032616124+0.072433407i , +0.055054776+0.000000000i , +0.045508972-0.053170920i , -0.201836976-0.008772314i },
+             { -0.042993999+0.091374450i , +0.045508972+0.053170920i , +0.088969838+0.000000000i , -0.158368867-0.202181879i },
+             { -0.131115762-0.260352030i , -0.201836976+0.008772314i , -0.158368867+0.202181879i , +0.741354788+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[11][2] = { { +0.787275796+0.000000000i , +0.021343859+0.295919549i , +0.135129977+0.178267471i , +0.121796306-0.120726617i },
+             { +0.021343859-0.295919549i , +0.406150135+0.000000000i , -0.294134326+0.215268629i , -0.111112477-0.089256241i },
+             { +0.135129977-0.178267471i , -0.294134326-0.215268629i , +0.747535277+0.000000000i , +0.043451402+0.062795353i },
+             { +0.121796306+0.120726617i , -0.111112477+0.089256241i , +0.043451402-0.062795353i , +0.059038789+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[12][0] = { { +0.714685677+0.000000000i , -0.156197135+0.157680000i , -0.102200365-0.073329843i , +0.216973894+0.302902073i },
+             { -0.156197135-0.157680000i , +0.068926149+0.000000000i , +0.006157612+0.038574812i , +0.019408388-0.114070957i },
+             { -0.102200365+0.073329843i , +0.006157612-0.038574812i , +0.022138662+0.000000000i , -0.062106425-0.021052672i },
+             { +0.216973894-0.302902073i , +0.019408388+0.114070957i , -0.062106425+0.021052672i , +0.194249511+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[12][1] = { { +0.075633921+0.000000000i , +0.034540137-0.170137690i , -0.121595675+0.144602302i , -0.042570623-0.047602323i },
+             { +0.034540137+0.170137690i , +0.398496538+0.000000000i , -0.380811056-0.207491884i , +0.087639963-0.117500956i },
+             { -0.121595675-0.144602302i , -0.380811056+0.207491884i , +0.471948767+0.000000000i , -0.022569260+0.157919178i },
+             { -0.042570623+0.047602323i , +0.087639963+0.117500956i , -0.022569260-0.157919178i , +0.053920773+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[12][2] = { { +0.209680401+0.000000000i , +0.121656998+0.012457690i , +0.223796040-0.071272458i , -0.174403271-0.255299750i },
+             { +0.121656998-0.012457690i , +0.532577312+0.000000000i , +0.374653444+0.168917072i , -0.107048351+0.231571913i },
+             { +0.223796040+0.071272458i , +0.374653444-0.168917072i , +0.505912570+0.000000000i , +0.084675685-0.136866507i },
+             { -0.174403271+0.255299750i , -0.107048351-0.231571913i , +0.084675685+0.136866507i , +0.751829714+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[13][0] = { { +0.499955120+0.000000000i , +0.021785346+0.230897515i , -0.314261546-0.068283567i , +0.190483829+0.237707108i },
+             { +0.021785346-0.230897515i , +0.107586191+0.000000000i , -0.045229666+0.142162015i , +0.118082072-0.077614391i },
+             { -0.314261546+0.068283567i , -0.045229666-0.142162015i , +0.206864501+0.000000000i , -0.152200128-0.123401650i },
+             { +0.190483829-0.237707108i , +0.118082072+0.077614391i , -0.152200128+0.123401650i , +0.185594185+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[13][1] = { { +0.288397778+0.000000000i , -0.014229968-0.221112476i , +0.339753323-0.099583096i , +0.150359878-0.090410545i },
+             { -0.014229968+0.221112476i , +0.170227461+0.000000000i , +0.059585710+0.265399972i , +0.061898128+0.119740815i },
+             { +0.339753323+0.099583096i , +0.059585710-0.265399972i , +0.434639672+0.000000000i , +0.208353310-0.054591196i },
+             { +0.150359878+0.090410545i , +0.061898128-0.119740815i , +0.208353310+0.054591196i , +0.106735089+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[13][2] = { { +0.211647100+0.000000000i , -0.007555378-0.009785040i , -0.025491777+0.167866663i , -0.340843707-0.147296563i },
+             { -0.007555378+0.009785040i , +0.722186347+0.000000000i , -0.014356044-0.407561987i , -0.179980200-0.042126425i },
+             { -0.025491777-0.167866663i , -0.014356044+0.407561987i , +0.358495825+0.000000000i , -0.056153183+0.177992846i },
+             { -0.340843707+0.147296563i , -0.179980200+0.042126425i , -0.056153183-0.177992846i , +0.707670724+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[14][0] = { { +0.575184837+0.000000000i , +0.076624806+0.032954620i , -0.180651986-0.229366518i , +0.274117177+0.277498636i },
+             { +0.076624806-0.032954620i , +0.012095886+0.000000000i , -0.037207365-0.020205411i , +0.052416262+0.021262469i },
+             { -0.180651986+0.229366518i , -0.037207365+0.020205411i , +0.148203045+0.000000000i , -0.196751898+0.022153960i },
+             { +0.274117177-0.277498636i , +0.052416262-0.021262469i , -0.196751898-0.022153960i , +0.264516231+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[14][1] = { { +0.127169135+0.000000000i , -0.062385185+0.267188607i , +0.003228083+0.157312493i , -0.082368974-0.064600229i },
+             { -0.062385185-0.267188607i , +0.591980639+0.000000000i , +0.328937695-0.083954926i , -0.095320626+0.204752108i },
+             { +0.003228083-0.157312493i , +0.328937695+0.083954926i , +0.194682791+0.000000000i , -0.082003518+0.100253365i },
+             { -0.082368974+0.064600229i , -0.095320626-0.204752108i , -0.082003518-0.100253365i , +0.086167433+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[14][2] = { { +0.297646027+0.000000000i , -0.014239621-0.300143227i , +0.177423903+0.072054025i , -0.191748202-0.212898406i },
+             { -0.014239621+0.300143227i , +0.395923473+0.000000000i , -0.291730330+0.104160338i , +0.042904365-0.226014577i },
+             { +0.177423903-0.072054025i , -0.291730330-0.104160338i , +0.657114163+0.000000000i , +0.278755416-0.122407325i },
+             { -0.191748202+0.212898406i , +0.042904365+0.226014577i , +0.278755416+0.122407325i , +0.649316334+0.000000000i } }
+(1.999999997,0.000000000)
+
+A[15][0] = { { +0.752181460+0.000000000i , +0.059472818+0.210149788i , -0.211650863-0.148159452i , +0.267804900+0.015419828i },
+             { +0.059472818-0.210149788i , +0.063415488+0.000000000i , -0.058128462+0.047417978i , +0.025482662-0.073602028i },
+             { -0.211650863+0.148159452i , -0.058128462-0.047417978i , +0.088738318+0.000000000i , -0.078392960+0.048411467i },
+             { +0.267804900-0.015419828i , +0.025482662+0.073602028i , -0.078392960-0.048411467i , +0.095664731+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[15][1] = { { +0.095662118+0.000000000i , +0.041599182-0.045403250i , -0.004709937-0.063180339i , -0.279778651-0.020709746i },
+             { +0.041599182+0.045403250i , +0.039638971+0.000000000i , +0.027938575-0.029709745i , -0.111833964-0.141794570i },
+             { -0.004709937+0.063180339i , +0.027938575+0.029709745i , +0.041959553+0.000000000i , +0.027452760-0.183761029i },
+             { -0.279778651+0.020709746i , -0.111833964+0.141794570i , +0.027452760+0.183761029i , +0.822739357+0.000000000i } }
+(0.999999998,0.000000000)
+
+A[15][2] = { { +0.152156420+0.000000000i , -0.101072000-0.164746537i , +0.216360801+0.211339790i , +0.011973752+0.005289919i },
+             { -0.101072000+0.164746537i , +0.896945539+0.000000000i , +0.030189886-0.017708233i , +0.086351302+0.215396599i },
+             { +0.216360801-0.211339790i , +0.030189886+0.017708233i , +0.869302128+0.000000000i , +0.050940200+0.135349562i },
+             { +0.011973752-0.005289919i , +0.086351302-0.215396599i , +0.050940200-0.135349562i , +0.081595911+0.000000000i } }
+(1.999999997,0.000000000)
+
+B[0][0] = { { +0.115944350+0.000000000i , +0.176230413+0.100962596i , +0.063058145-0.159577351i , -0.160311933-0.078163141i },
+            { +0.176230413-0.100962596i , +0.355779341+0.000000000i , -0.043111895-0.297460778i , -0.311730515+0.020792614i },
+            { +0.063058145+0.159577351i , -0.043111895+0.297460778i , +0.253925789+0.000000000i , +0.020389902-0.263151903i },
+            { -0.160311933+0.078163141i , -0.311730515-0.020792614i , +0.020389902+0.263151903i , +0.274350519+0.000000000i } }
+
+B[0][1] = { { +0.120359116+0.000000000i , -0.086725069-0.106327506i , +0.244353789-0.048001710i , -0.008388113+0.157995963i },
+            { -0.086725069+0.106327506i , +0.156421687+0.000000000i , -0.133664134+0.250454485i , -0.133532527-0.121254611i },
+            { +0.244353789+0.048001710i , -0.133664134-0.250454485i , +0.515232585+0.000000000i , -0.080041660+0.317418984i },
+            { -0.008388113-0.157995963i , -0.133532527+0.121254611i , -0.080041660-0.317418984i , +0.207986610+0.000000000i } }
+
+B[0][2] = { { +0.090395242+0.000000000i , -0.089992367+0.178770805i , -0.085377587+0.065050319i , -0.091933826+0.148975201i },
+            { -0.089992367-0.178770805i , +0.443138665+0.000000000i , +0.213644308+0.104087202i , +0.386145980+0.033502352i },
+            { -0.085377587-0.065050319i , +0.213644308-0.104087202i , +0.127450030+0.000000000i , +0.194036457-0.074548376i },
+            { -0.091933826-0.148975201i , +0.386145980-0.033502352i , +0.194036457+0.074548376i , +0.339016062+0.000000000i } }
+
+B[0][3] = { { +0.673301291+0.000000000i , +0.000487023-0.173405895i , -0.222034347+0.142528742i , +0.260633872-0.228808022i },
+            { +0.000487023+0.173405895i , +0.044660306+0.000000000i , -0.036868279-0.057080909i , +0.059117062+0.066959645i },
+            { -0.222034347-0.142528742i , -0.036868279+0.057080909i , +0.103391594+0.000000000i , -0.134384699+0.020281295i },
+            { +0.260633872+0.228808022i , +0.059117062-0.066959645i , -0.134384699-0.020281295i , +0.178646808+0.000000000i } }
+
+B[1][0] = { { +0.120046367+0.000000000i , +0.165622670+0.110387809i , -0.238808651-0.046131842i , +0.035929282+0.074634225i },
+            { +0.165622670-0.110387809i , +0.330008628+0.000000000i , -0.371893963+0.155948784i , +0.118199430+0.069931020i },
+            { -0.238808651+0.046131842i , -0.371893963-0.155948784i , +0.492790580+0.000000000i , -0.100154948-0.134663090i },
+            { +0.035929282-0.074634225i , +0.118199430-0.069931020i , -0.100154948+0.134663090i , +0.057154423+0.000000000i } }
+
+B[1][1] = { { +0.490062307+0.000000000i , -0.030697376+0.218013707i , +0.344340412+0.169642371i , +0.225871875+0.055335153i },
+            { -0.030697376-0.218013707i , +0.098910496+0.000000000i , +0.053899300-0.163812855i , +0.010468359-0.103949657i },
+            { +0.344340412-0.169642371i , +0.053899300+0.163812855i , +0.300673712+0.000000000i , +0.177863100-0.039307881i },
+            { +0.225871875-0.055335153i , +0.010468359+0.103949657i , +0.177863100+0.039307881i , +0.110353484+0.000000000i } }
+
+B[1][2] = { { +0.285181117+0.000000000i , -0.119932047-0.376315155i , -0.062733413-0.192443352i , -0.048195765+0.067552190i },
+            { -0.119932047+0.376315155i , +0.547009543+0.000000000i , +0.280323947-0.001849383i , -0.068870955-0.092006335i },
+            { -0.062733413+0.192443352i , +0.280323947+0.001849383i , +0.143662824+0.000000000i , -0.034982979-0.047382990i },
+            { -0.048195765-0.067552190i , -0.068870955+0.092006335i , -0.034982979+0.047382990i , +0.024146515+0.000000000i } }
+
+B[1][3] = { { +0.104710208+0.000000000i , -0.014993246+0.047913639i , -0.042798347+0.068932823i , -0.213605391-0.197521568i },
+            { -0.014993246-0.047913639i , +0.024071332+0.000000000i , +0.037670716+0.009713454i , -0.059796833+0.126024972i },
+            { -0.042798347-0.068932823i , +0.037670716-0.009713454i , +0.062872882+0.000000000i , -0.042725173+0.221353961i },
+            { -0.213605391+0.197521568i , -0.059796833-0.126024972i , -0.042725173-0.221353961i , +0.808345577+0.000000000i } }
+
+moments 0 1 = { { +0.249519142+0.000000000i , +0.249952094+0.000000000i , +0.250478452-0.000000000i , +0.250050310-0.000000000i },
+                { +0.249910731+0.000000000i , +0.249500447+0.000000000i , +0.250089365-0.000000000i , +0.250499455-0.000000000i },
+                { +0.250078495+0.000000000i , +0.250499103-0.000000000i , +0.249907088+0.000000000i , +0.249515312-0.000000000i },
+                { +0.250491630+0.000000000i , +0.250048353+0.000000000i , +0.249525094-0.000000000i , +0.249934921-0.000000000i } }
+iterations = 340
+time elapsed = 18922 ms
+final result = 13.85641 <= 13.85641 (0.00000 away)

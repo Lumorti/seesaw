@@ -1,282 +1,1778 @@
-iter    0 val 4.885444401 (19.609453027 from ideal, 5.885444401 from prev)
-iter    1 val 23.866239728 (0.628657700 from ideal, 18.980795327 from prev)
-iter    2 val 23.971684457 (0.523212971 from ideal, 0.105444729 from prev)
-iter    3 val 24.043318074 (0.451579354 from ideal, 0.071633617 from prev)
-iter    4 val 24.093178444 (0.401718984 from ideal, 0.049860371 from prev)
-iter    5 val 24.128855820 (0.366041608 from ideal, 0.035677376 from prev)
-iter    6 val 24.155176726 (0.339720702 from ideal, 0.026320907 from prev)
-iter    7 val 24.175213207 (0.319684221 from ideal, 0.020036481 from prev)
-iter    8 val 24.190936079 (0.303961348 from ideal, 0.015722873 from prev)
-iter    9 val 24.203617593 (0.291279835 from ideal, 0.012681513 from prev)
-iter   10 val 24.214089285 (0.280808142 from ideal, 0.010471692 from prev)
-iter   11 val 24.222903904 (0.271993524 from ideal, 0.008814618 from prev)
-iter   12 val 24.230437271 (0.264460157 from ideal, 0.007533367 from prev)
-iter   13 val 24.236951858 (0.257945569 from ideal, 0.006514587 from prev)
-iter   14 val 24.242636788 (0.252260639 from ideal, 0.005684930 from prev)
-iter   15 val 24.247632901 (0.247264527 from ideal, 0.004996113 from prev)
-iter   16 val 24.252048558 (0.242848869 from ideal, 0.004415657 from prev)
-iter   17 val 24.255969686 (0.238927742 from ideal, 0.003921128 from prev)
-iter   18 val 24.259466171 (0.235431257 from ideal, 0.003496485 from prev)
-iter   19 val 24.262595991 (0.232301437 from ideal, 0.003129820 from prev)
-iter   20 val 24.265407972 (0.229489456 from ideal, 0.002811981 from prev)
-iter   21 val 24.267943734 (0.226953693 from ideal, 0.002535762 from prev)
-iter   22 val 24.270238957 (0.224658471 from ideal, 0.002295222 from prev)
-iter   23 val 24.272324371 (0.222573057 from ideal, 0.002085415 from prev)
-iter   24 val 24.274226516 (0.220670912 from ideal, 0.001902145 from prev)
-iter   25 val 24.275968330 (0.218929097 from ideal, 0.001741814 from prev)
-iter   26 val 24.277569629 (0.217327799 from ideal, 0.001601298 from prev)
-iter   27 val 24.279047533 (0.215849895 from ideal, 0.001477904 from prev)
-iter   28 val 24.280416825 (0.214480603 from ideal, 0.001369292 from prev)
-iter   29 val 24.281690206 (0.213207221 from ideal, 0.001273382 from prev)
-iter   30 val 24.282878600 (0.212018828 from ideal, 0.001188393 from prev)
-iter   31 val 24.283991389 (0.210906038 from ideal, 0.001112790 from prev)
-iter   32 val 24.285036598 (0.209860830 from ideal, 0.001045209 from prev)
-iter   33 val 24.286021076 (0.208876352 from ideal, 0.000984477 from prev)
-iter   34 val 24.286950660 (0.207946768 from ideal, 0.000929584 from prev)
-iter   35 val 24.287830315 (0.207067113 from ideal, 0.000879655 from prev)
-iter   36 val 24.288664258 (0.206233170 from ideal, 0.000833942 from prev)
-iter   37 val 24.289456058 (0.205441370 from ideal, 0.000791800 from prev)
-iter   38 val 24.290208750 (0.204688678 from ideal, 0.000752692 from prev)
-iter   39 val 24.290924917 (0.203972511 from ideal, 0.000716167 from prev)
-iter   40 val 24.291606753 (0.203290675 from ideal, 0.000681836 from prev)
-iter   41 val 24.292256135 (0.202641293 from ideal, 0.000649381 from prev)
-iter   42 val 24.292874675 (0.202022752 from ideal, 0.000618541 from prev)
-iter   43 val 24.293463775 (0.201433653 from ideal, 0.000589100 from prev)
-iter   44 val 24.294024667 (0.200872760 from ideal, 0.000560892 from prev)
-iter   45 val 24.294558451 (0.200338977 from ideal, 0.000533784 from prev)
-iter   46 val 24.295066112 (0.199831316 from ideal, 0.000507661 from prev)
-iter   47 val 24.295548565 (0.199348863 from ideal, 0.000482453 from prev)
-iter   48 val 24.296006665 (0.198890762 from ideal, 0.000458100 from prev)
-iter   49 val 24.296441229 (0.198456199 from ideal, 0.000434563 from prev)
-iter   50 val 24.296853044 (0.198044384 from ideal, 0.000411815 from prev)
-iter   51 val 24.297242883 (0.197654545 from ideal, 0.000389839 from prev)
-iter   52 val 24.297611509 (0.197285919 from ideal, 0.000368626 from prev)
-iter   53 val 24.297959681 (0.196937746 from ideal, 0.000348172 from prev)
-iter   54 val 24.298288148 (0.196609280 from ideal, 0.000328467 from prev)
-iter   55 val 24.298597685 (0.196299743 from ideal, 0.000309537 from prev)
-iter   56 val 24.298889059 (0.196008369 from ideal, 0.000291374 from prev)
-iter   57 val 24.299163037 (0.195734391 from ideal, 0.000273978 from prev)
-iter   58 val 24.299420388 (0.195477039 from ideal, 0.000257351 from prev)
-iter   59 val 24.299661880 (0.195235548 from ideal, 0.000241492 from prev)
-iter   60 val 24.299888276 (0.195009152 from ideal, 0.000226395 from prev)
-iter   61 val 24.300100330 (0.194797098 from ideal, 0.000212054 from prev)
-iter   62 val 24.300298788 (0.194598640 from ideal, 0.000198458 from prev)
-iter   63 val 24.300484386 (0.194413042 from ideal, 0.000185598 from prev)
-iter   64 val 24.300657843 (0.194239585 from ideal, 0.000173457 from prev)
-iter   65 val 24.300819856 (0.194077572 from ideal, 0.000162013 from prev)
-iter   66 val 24.300971102 (0.193926326 from ideal, 0.000151246 from prev)
-iter   67 val 24.301112241 (0.193785186 from ideal, 0.000141140 from prev)
-iter   68 val 24.301243903 (0.193653525 from ideal, 0.000131661 from prev)
-iter   69 val 24.301366693 (0.193530735 from ideal, 0.000122790 from prev)
-iter   70 val 24.301481191 (0.193416237 from ideal, 0.000114498 from prev)
-iter   71 val 24.301587950 (0.193309478 from ideal, 0.000106759 from prev)
-iter   72 val 24.301687494 (0.193209934 from ideal, 0.000099544 from prev)
-iter   73 val 24.301780319 (0.193117109 from ideal, 0.000092825 from prev)
-iter   74 val 24.301866894 (0.193030534 from ideal, 0.000086575 from prev)
-iter   75 val 24.301947660 (0.192949767 from ideal, 0.000080767 from prev)
-iter   76 val 24.302023033 (0.192874395 from ideal, 0.000075372 from prev)
-iter   77 val 24.302093398 (0.192804030 from ideal, 0.000070366 from prev)
-iter   78 val 24.302159397 (0.192738031 from ideal, 0.000065999 from prev)
-iter   79 val 24.302220888 (0.192676540 from ideal, 0.000061491 from prev)
-iter   80 val 24.302278375 (0.192619053 from ideal, 0.000057487 from prev)
-iter   81 val 24.302332150 (0.192565278 from ideal, 0.000053775 from prev)
-iter   82 val 24.302382488 (0.192514940 from ideal, 0.000050338 from prev)
-iter   83 val 24.302429639 (0.192467788 from ideal, 0.000047152 from prev)
-iter   84 val 24.302473839 (0.192423589 from ideal, 0.000044199 from prev)
-iter   85 val 24.302515303 (0.192382125 from ideal, 0.000041464 from prev)
-iter   86 val 24.302554230 (0.192343198 from ideal, 0.000038927 from prev)
-iter   87 val 24.302590804 (0.192306624 from ideal, 0.000036574 from prev)
-iter   88 val 24.302625194 (0.192272234 from ideal, 0.000034390 from prev)
-iter   89 val 24.302657557 (0.192239871 from ideal, 0.000032363 from prev)
-iter   90 val 24.302688035 (0.192209393 from ideal, 0.000030478 from prev)
-iter   91 val 24.302716761 (0.192180666 from ideal, 0.000028726 from prev)
-iter   92 val 24.302743857 (0.192153571 from ideal, 0.000027096 from prev)
-iter   93 val 24.302769434 (0.192127994 from ideal, 0.000025577 from prev)
-iter   94 val 24.302793595 (0.192103832 from ideal, 0.000024161 from prev)
-iter   95 val 24.302816436 (0.192080992 from ideal, 0.000022840 from prev)
-iter   96 val 24.302838043 (0.192059385 from ideal, 0.000021607 from prev)
-iter   97 val 24.302858496 (0.192038931 from ideal, 0.000020453 from prev)
-iter   98 val 24.302877870 (0.192019557 from ideal, 0.000019374 from prev)
-iter   99 val 24.302896234 (0.192001193 from ideal, 0.000018364 from prev)
-iter  100 val 24.302913650 (0.191983778 from ideal, 0.000017416 from prev)
-iter  101 val 24.302930177 (0.191967251 from ideal, 0.000016526 from prev)
-iter  102 val 24.302945868 (0.191951560 from ideal, 0.000015691 from prev)
-iter  103 val 24.302960772 (0.191936655 from ideal, 0.000014904 from prev)
-iter  104 val 24.302974939 (0.191922489 from ideal, 0.000014167 from prev)
-iter  105 val 24.302988408 (0.191909020 from ideal, 0.000013469 from prev)
-iter  106 val 24.303001220 (0.191896208 from ideal, 0.000012812 from prev)
-iter  107 val 24.303013412 (0.191884016 from ideal, 0.000012192 from prev)
-iter  108 val 24.303025018 (0.191872410 from ideal, 0.000011606 from prev)
-iter  109 val 24.303036071 (0.191861357 from ideal, 0.000011053 from prev)
-iter  110 val 24.303046600 (0.191850828 from ideal, 0.000010529 from prev)
-iter  111 val 24.303056633 (0.191840795 from ideal, 0.000010033 from prev)
-iter  112 val 24.303066197 (0.191831231 from ideal, 0.000009564 from prev)
-iter  113 val 24.303075316 (0.191822112 from ideal, 0.000009119 from prev)
-iter  114 val 24.303084012 (0.191813416 from ideal, 0.000008696 from prev)
-iter  115 val 24.303092306 (0.191805121 from ideal, 0.000008295 from prev)
-iter  116 val 24.303100221 (0.191797207 from ideal, 0.000007914 from prev)
-iter  117 val 24.303107773 (0.191789655 from ideal, 0.000007553 from prev)
-iter  118 val 24.303114982 (0.191782446 from ideal, 0.000007208 from prev)
-iter  119 val 24.303121864 (0.191775564 from ideal, 0.000006882 from prev)
-iter  120 val 24.303128434 (0.191768994 from ideal, 0.000006570 from prev)
-iter  121 val 24.303134708 (0.191762720 from ideal, 0.000006274 from prev)
-iter  122 val 24.303140700 (0.191756728 from ideal, 0.000005991 from prev)
-iter  123 val 24.303146423 (0.191751005 from ideal, 0.000005723 from prev)
-iter  124 val 24.303151890 (0.191745537 from ideal, 0.000005467 from prev)
-iter  125 val 24.303157113 (0.191740315 from ideal, 0.000005223 from prev)
-iter  126 val 24.303162103 (0.191735324 from ideal, 0.000004990 from prev)
-iter  127 val 24.303166872 (0.191730556 from ideal, 0.000004768 from prev)
-iter  128 val 24.303171429 (0.191725999 from ideal, 0.000004557 from prev)
-iter  129 val 24.303175783 (0.191721644 from ideal, 0.000004355 from prev)
-iter  130 val 24.303179945 (0.191717483 from ideal, 0.000004162 from prev)
-iter  131 val 24.303183923 (0.191713504 from ideal, 0.000003978 from prev)
-iter  132 val 24.303187726 (0.191709702 from ideal, 0.000003802 from prev)
-iter  133 val 24.303191360 (0.191706068 from ideal, 0.000003634 from prev)
-iter  134 val 24.303194835 (0.191702593 from ideal, 0.000003475 from prev)
-iter  135 val 24.303198156 (0.191699271 from ideal, 0.000003321 from prev)
-iter  136 val 24.303201332 (0.191696096 from ideal, 0.000003175 from prev)
-iter  137 val 24.303204367 (0.191693060 from ideal, 0.000003036 from prev)
-iter  138 val 24.303207270 (0.191690157 from ideal, 0.000002903 from prev)
-iter  139 val 24.303210045 (0.191687383 from ideal, 0.000002775 from prev)
-iter  140 val 24.303212699 (0.191684729 from ideal, 0.000002654 from prev)
-iter  141 val 24.303215237 (0.191682191 from ideal, 0.000002537 from prev)
-iter  142 val 24.303217663 (0.191679765 from ideal, 0.000002426 from prev)
-iter  143 val 24.303219982 (0.191677446 from ideal, 0.000002319 from prev)
-iter  144 val 24.303222200 (0.191675227 from ideal, 0.000002219 from prev)
-iter  145 val 24.303224322 (0.191673106 from ideal, 0.000002121 from prev)
-iter  146 val 24.303226350 (0.191671078 from ideal, 0.000002028 from prev)
-iter  147 val 24.303228290 (0.191669137 from ideal, 0.000001940 from prev)
-iter  148 val 24.303230146 (0.191667282 from ideal, 0.000001855 from prev)
-iter  149 val 24.303231920 (0.191665508 from ideal, 0.000001774 from prev)
-iter  150 val 24.303233616 (0.191663812 from ideal, 0.000001697 from prev)
-iter  151 val 24.303235239 (0.191662189 from ideal, 0.000001623 from prev)
-iter  152 val 24.303236791 (0.191660637 from ideal, 0.000001552 from prev)
-iter  153 val 24.303238276 (0.191659152 from ideal, 0.000001484 from prev)
-iter  154 val 24.303239695 (0.191657733 from ideal, 0.000001419 from prev)
-iter  155 val 24.303241052 (0.191656375 from ideal, 0.000001358 from prev)
-iter  156 val 24.303242350 (0.191655078 from ideal, 0.000001298 from prev)
-iter  157 val 24.303243592 (0.191653836 from ideal, 0.000001242 from prev)
-iter  158 val 24.303244780 (0.191652648 from ideal, 0.000001188 from prev)
-iter  159 val 24.303245916 (0.191651512 from ideal, 0.000001136 from prev)
-iter  160 val 24.303247002 (0.191650425 from ideal, 0.000001086 from prev)
-iter  161 val 24.303248041 (0.191649387 from ideal, 0.000001039 from prev)
-iter  162 val 24.303249035 (0.191648393 from ideal, 0.000000994 from prev)
-iter  163 val 24.303249985 (0.191647442 from ideal, 0.000000950 from prev)
-iter  164 val 24.303250895 (0.191646533 from ideal, 0.000000909 from prev)
-iter  165 val 24.303251764 (0.191645664 from ideal, 0.000000870 from prev)
-iter  166 val 24.303252597 (0.191644831 from ideal, 0.000000832 from prev)
-iter  167 val 24.303253392 (0.191644036 from ideal, 0.000000795 from prev)
-iter  168 val 24.303254153 (0.191643275 from ideal, 0.000000761 from prev)
-iter  169 val 24.303254881 (0.191642547 from ideal, 0.000000728 from prev)
-iter  170 val 24.303255578 (0.191641850 from ideal, 0.000000697 from prev)
-iter  171 val 24.303256243 (0.191641185 from ideal, 0.000000666 from prev)
-iter  172 val 24.303256881 (0.191640547 from ideal, 0.000000638 from prev)
-iter  173 val 24.303257490 (0.191639938 from ideal, 0.000000609 from prev)
-iter  174 val 24.303258073 (0.191639355 from ideal, 0.000000583 from prev)
-iter  175 val 24.303258631 (0.191638797 from ideal, 0.000000558 from prev)
-iter  176 val 24.303259164 (0.191638264 from ideal, 0.000000533 from prev)
-iter  177 val 24.303259675 (0.191637753 from ideal, 0.000000511 from prev)
-iter  178 val 24.303260162 (0.191637266 from ideal, 0.000000488 from prev)
-iter  179 val 24.303260629 (0.191636799 from ideal, 0.000000467 from prev)
-iter  180 val 24.303261076 (0.191636352 from ideal, 0.000000447 from prev)
-iter  181 val 24.303261503 (0.191635924 from ideal, 0.000000428 from prev)
-iter  182 val 24.303261912 (0.191635516 from ideal, 0.000000409 from prev)
-iter  183 val 24.303262303 (0.191635125 from ideal, 0.000000391 from prev)
-iter  184 val 24.303262677 (0.191634751 from ideal, 0.000000374 from prev)
-iter  185 val 24.303263035 (0.191634392 from ideal, 0.000000358 from prev)
-iter  186 val 24.303263377 (0.191634051 from ideal, 0.000000342 from prev)
-iter  187 val 24.303263704 (0.191633723 from ideal, 0.000000327 from prev)
-iter  188 val 24.303264018 (0.191633409 from ideal, 0.000000314 from prev)
-iter  189 val 24.303264318 (0.191633109 from ideal, 0.000000300 from prev)
-iter  190 val 24.303264606 (0.191632822 from ideal, 0.000000287 from prev)
-iter  191 val 24.303264879 (0.191632549 from ideal, 0.000000273 from prev)
-iter  192 val 24.303265142 (0.191632286 from ideal, 0.000000263 from prev)
-iter  193 val 24.303265394 (0.191632034 from ideal, 0.000000252 from prev)
-iter  194 val 24.303265633 (0.191631794 from ideal, 0.000000240 from prev)
-iter  195 val 24.303265864 (0.191631564 from ideal, 0.000000230 from prev)
-iter  196 val 24.303266083 (0.191631345 from ideal, 0.000000220 from prev)
-iter  197 val 24.303266294 (0.191631134 from ideal, 0.000000211 from prev)
-iter  198 val 24.303266495 (0.191630932 from ideal, 0.000000201 from prev)
-iter  199 val 24.303266688 (0.191630740 from ideal, 0.000000192 from prev)
-iter  200 val 24.303266873 (0.191630555 from ideal, 0.000000185 from prev)
-iter  201 val 24.303267049 (0.191630379 from ideal, 0.000000176 from prev)
-iter  202 val 24.303267218 (0.191630210 from ideal, 0.000000169 from prev)
-iter  203 val 24.303267379 (0.191630049 from ideal, 0.000000161 from prev)
-iter  204 val 24.303267535 (0.191629893 from ideal, 0.000000155 from prev)
-iter  205 val 24.303267682 (0.191629746 from ideal, 0.000000148 from prev)
-iter  206 val 24.303267824 (0.191629604 from ideal, 0.000000142 from prev)
-iter  207 val 24.303267959 (0.191629468 from ideal, 0.000000135 from prev)
-iter  208 val 24.303268089 (0.191629339 from ideal, 0.000000130 from prev)
-iter  209 val 24.303268213 (0.191629214 from ideal, 0.000000124 from prev)
-iter  210 val 24.303268333 (0.191629095 from ideal, 0.000000119 from prev)
-iter  211 val 24.303268446 (0.191628982 from ideal, 0.000000113 from prev)
-iter  212 val 24.303268554 (0.191628873 from ideal, 0.000000108 from prev)
-iter  213 val 24.303268659 (0.191628769 from ideal, 0.000000104 from prev)
-iter  214 val 24.303268759 (0.191628669 from ideal, 0.000000100 from prev)
-iter  215 val 24.303268854 (0.191628574 from ideal, 0.000000095 from prev)
-iter  216 val 24.303268945 (0.191628483 from ideal, 0.000000091 from prev)
-iter  217 val 24.303269033 (0.191628395 from ideal, 0.000000088 from prev)
-iter  218 val 24.303269116 (0.191628311 from ideal, 0.000000083 from prev)
-iter  219 val 24.303269197 (0.191628231 from ideal, 0.000000080 from prev)
-iter  220 val 24.303269274 (0.191628154 from ideal, 0.000000077 from prev)
-iter  221 val 24.303269347 (0.191628081 from ideal, 0.000000073 from prev)
-iter  222 val 24.303269417 (0.191628011 from ideal, 0.000000070 from prev)
-iter  223 val 24.303269484 (0.191627944 from ideal, 0.000000067 from prev)
-iter  224 val 24.303269548 (0.191627879 from ideal, 0.000000064 from prev)
-iter  225 val 24.303269610 (0.191627818 from ideal, 0.000000062 from prev)
-iter  226 val 24.303269669 (0.191627759 from ideal, 0.000000059 from prev)
-iter  227 val 24.303269726 (0.191627702 from ideal, 0.000000057 from prev)
-iter  228 val 24.303269779 (0.191627648 from ideal, 0.000000054 from prev)
-iter  229 val 24.303269832 (0.191627596 from ideal, 0.000000052 from prev)
-iter  230 val 24.303269881 (0.191627546 from ideal, 0.000000050 from prev)
-iter  231 val 24.303269929 (0.191627499 from ideal, 0.000000048 from prev)
-iter  232 val 24.303269974 (0.191627454 from ideal, 0.000000045 from prev)
-iter  233 val 24.303270018 (0.191627410 from ideal, 0.000000044 from prev)
-iter  234 val 24.303270059 (0.191627368 from ideal, 0.000000042 from prev)
-iter  235 val 24.303270100 (0.191627328 from ideal, 0.000000041 from prev)
-iter  236 val 24.303270138 (0.191627290 from ideal, 0.000000038 from prev)
-iter  237 val 24.303270174 (0.191627253 from ideal, 0.000000037 from prev)
-iter  238 val 24.303270209 (0.191627219 from ideal, 0.000000035 from prev)
-iter  239 val 24.303270243 (0.191627184 from ideal, 0.000000034 from prev)
-iter  240 val 24.303270276 (0.191627152 from ideal, 0.000000032 from prev)
-iter  241 val 24.303270306 (0.191627122 from ideal, 0.000000030 from prev)
-iter  242 val 24.303270336 (0.191627092 from ideal, 0.000000030 from prev)
-iter  243 val 24.303270364 (0.191627064 from ideal, 0.000000028 from prev)
-iter  244 val 24.303270391 (0.191627037 from ideal, 0.000000027 from prev)
-iter  245 val 24.303270417 (0.191627011 from ideal, 0.000000026 from prev)
-iter  246 val 24.303270442 (0.191626986 from ideal, 0.000000025 from prev)
-iter  247 val 24.303270466 (0.191626962 from ideal, 0.000000024 from prev)
-iter  248 val 24.303270489 (0.191626939 from ideal, 0.000000022 from prev)
-iter  249 val 24.303270511 (0.191626917 from ideal, 0.000000022 from prev)
-iter  250 val 24.303270532 (0.191626896 from ideal, 0.000000021 from prev)
-iter  251 val 24.303270552 (0.191626876 from ideal, 0.000000020 from prev)
-iter  252 val 24.303270571 (0.191626857 from ideal, 0.000000019 from prev)
-iter  253 val 24.303270590 (0.191626838 from ideal, 0.000000019 from prev)
-iter  254 val 24.303270607 (0.191626820 from ideal, 0.000000017 from prev)
-iter  255 val 24.303270625 (0.191626803 from ideal, 0.000000018 from prev)
-iter  256 val 24.303270640 (0.191626787 from ideal, 0.000000015 from prev)
-iter  257 val 24.303270657 (0.191626771 from ideal, 0.000000016 from prev)
-iter  258 val 24.303270671 (0.191626757 from ideal, 0.000000014 from prev)
-iter  259 val 24.303270685 (0.191626743 from ideal, 0.000000014 from prev)
-iter  260 val 24.303270699 (0.191626729 from ideal, 0.000000014 from prev)
-iter  261 val 24.303270712 (0.191626716 from ideal, 0.000000014 from prev)
-iter  262 val 24.303270725 (0.191626703 from ideal, 0.000000013 from prev)
-iter  263 val 24.303270737 (0.191626691 from ideal, 0.000000012 from prev)
-iter  264 val 24.303270749 (0.191626679 from ideal, 0.000000012 from prev)
-iter  265 val 24.303270760 (0.191626668 from ideal, 0.000000011 from prev)
-iter  266 val 24.303270770 (0.191626658 from ideal, 0.000000010 from prev)
-iter  267 val 24.303270781 (0.191626647 from ideal, 0.000000010 from prev)
-iter  268 val 24.303270791 (0.191626637 from ideal, 0.000000010 from prev)
-iter  269 val 24.303270800 (0.191626628 from ideal, 0.000000009 from prev)
-iter  270 val 24.303270809 (0.191626619 from ideal, 0.000000008 from prev)
-iter  271 val 24.303270817 (0.191626610 from ideal, 0.000000009 from prev)
-iter  272 val 24.303270825 (0.191626603 from ideal, 0.000000008 from prev)
-iter  273 val 24.303270834 (0.191626594 from ideal, 0.000000008 from prev)
-iter  274 val 24.303270842 (0.191626586 from ideal, 0.000000008 from prev)
-iter  275 val 24.303270849 (0.191626579 from ideal, 0.000000006 from prev)
-iter  276 val 24.303270856 (0.191626572 from ideal, 0.000000008 from prev)
-iter  277 val 24.303270863 (0.191626565 from ideal, 0.000000007 from prev)
-iter  278 val 24.303270869 (0.191626559 from ideal, 0.000000006 from prev)
-iter  279 val 24.303270876 (0.191626552 from ideal, 0.000000006 from prev)
-finished in 49388 ms
-final result = 24.30327 <= 24.49490 (0.19163 away)
+iter    0 val 48.919584769 (24.565107515 from ideal, 49.919584769 from prev)
+iter    1 val 72.134543252 (1.350149032 from ideal, 23.214958483 from prev)
+iter    2 val 72.319296834 (1.165395449 from ideal, 0.184753582 from prev)
+iter    3 val 72.468584878 (1.016107405 from ideal, 0.149288044 from prev)
+iter    4 val 72.588195414 (0.896496869 from ideal, 0.119610536 from prev)
+iter    5 val 72.683586285 (0.801105998 from ideal, 0.095390871 from prev)
+iter    6 val 72.759605472 (0.725086812 from ideal, 0.076019186 from prev)
+iter    7 val 72.820360104 (0.664332180 from ideal, 0.060754632 from prev)
+iter    8 val 72.869169186 (0.615523098 from ideal, 0.048809082 from prev)
+iter    9 val 72.908638011 (0.576054272 from ideal, 0.039468825 from prev)
+iter   10 val 72.940775828 (0.543916456 from ideal, 0.032137816 from prev)
+iter   11 val 72.967122404 (0.517569879 from ideal, 0.026346577 from prev)
+iter   12 val 72.988859629 (0.495832655 from ideal, 0.021737225 from prev)
+iter   13 val 73.006901075 (0.477791209 from ideal, 0.018041446 from prev)
+iter   14 val 73.021959658 (0.462732625 from ideal, 0.015058583 from prev)
+iter   15 val 73.034597318 (0.450094966 from ideal, 0.012637660 from prev)
+iter   16 val 73.045260959 (0.439431324 from ideal, 0.010663642 from prev)
+iter   17 val 73.054309114 (0.430383169 from ideal, 0.009048155 from prev)
+iter   18 val 73.062031192 (0.422661092 from ideal, 0.007722078 from prev)
+iter   19 val 73.068661729 (0.416030554 from ideal, 0.006630537 from prev)
+iter   20 val 73.074391942 (0.410300342 from ideal, 0.005730213 from prev)
+iter   21 val 73.079378041 (0.405314243 from ideal, 0.004986099 from prev)
+iter   22 val 73.083747980 (0.400944303 from ideal, 0.004369939 from prev)
+iter   23 val 73.087606793 (0.397085490 from ideal, 0.003858813 from prev)
+iter   24 val 73.091040844 (0.393651440 from ideal, 0.003434051 from prev)
+iter   25 val 73.094121274 (0.390571010 from ideal, 0.003080430 from prev)
+iter   26 val 73.096906797 (0.387785487 from ideal, 0.002785523 from prev)
+iter   27 val 73.099445944 (0.385246340 from ideal, 0.002539147 from prev)
+iter   28 val 73.101778929 (0.382913354 from ideal, 0.002332986 from prev)
+iter   29 val 73.103939144 (0.380753140 from ideal, 0.002160215 from prev)
+iter   30 val 73.105954361 (0.378737922 from ideal, 0.002015218 from prev)
+iter   31 val 73.107847803 (0.376844480 from ideal, 0.001893442 from prev)
+iter   32 val 73.109638917 (0.375053367 from ideal, 0.001791113 from prev)
+iter   33 val 73.111344045 (0.373348239 from ideal, 0.001705128 from prev)
+iter   34 val 73.112977015 (0.371715268 from ideal, 0.001632971 from prev)
+iter   35 val 73.114549500 (0.370142783 from ideal, 0.001572485 from prev)
+iter   36 val 73.116071443 (0.368620841 from ideal, 0.001521942 from prev)
+iter   37 val 73.117551361 (0.367140923 from ideal, 0.001479918 from prev)
+iter   38 val 73.118996583 (0.365695701 from ideal, 0.001445222 from prev)
+iter   39 val 73.120413447 (0.364278836 from ideal, 0.001416865 from prev)
+iter   40 val 73.121807466 (0.362884818 from ideal, 0.001394018 from prev)
+iter   41 val 73.123183460 (0.361508824 from ideal, 0.001375994 from prev)
+iter   42 val 73.124545668 (0.360146615 from ideal, 0.001362208 from prev)
+iter   43 val 73.125897830 (0.358794454 from ideal, 0.001352162 from prev)
+iter   44 val 73.127243260 (0.357449024 from ideal, 0.001345430 from prev)
+iter   45 val 73.128584904 (0.356107380 from ideal, 0.001341644 from prev)
+iter   46 val 73.129925385 (0.354766898 from ideal, 0.001340481 from prev)
+iter   47 val 73.131267039 (0.353425244 from ideal, 0.001341654 from prev)
+iter   48 val 73.132611945 (0.352080339 from ideal, 0.001344905 from prev)
+iter   49 val 73.133961940 (0.350730344 from ideal, 0.001349995 from prev)
+iter   50 val 73.135318616 (0.349373667 from ideal, 0.001356677 from prev)
+iter   51 val 73.136683345 (0.348008938 from ideal, 0.001364729 from prev)
+iter   52 val 73.138057280 (0.346635004 from ideal, 0.001373934 from prev)
+iter   53 val 73.139441348 (0.345250935 from ideal, 0.001384068 from prev)
+iter   54 val 73.140836258 (0.343856026 from ideal, 0.001394910 from prev)
+iter   55 val 73.142242500 (0.342449784 from ideal, 0.001406242 from prev)
+iter   56 val 73.143660296 (0.341031988 from ideal, 0.001417796 from prev)
+iter   57 val 73.145089636 (0.339602648 from ideal, 0.001429340 from prev)
+iter   58 val 73.146530254 (0.338162030 from ideal, 0.001440618 from prev)
+iter   59 val 73.147981623 (0.336710660 from ideal, 0.001451369 from prev)
+iter   60 val 73.149442910 (0.335249374 from ideal, 0.001461287 from prev)
+iter   61 val 73.150913085 (0.333779198 from ideal, 0.001470176 from prev)
+iter   62 val 73.152390804 (0.332301480 from ideal, 0.001477718 from prev)
+iter   63 val 73.153874440 (0.330817844 from ideal, 0.001483636 from prev)
+iter   64 val 73.155362101 (0.329330183 from ideal, 0.001487661 from prev)
+iter   65 val 73.156851635 (0.327840649 from ideal, 0.001489534 from prev)
+iter   66 val 73.158340651 (0.326351633 from ideal, 0.001489016 from prev)
+iter   67 val 73.159826535 (0.324865749 from ideal, 0.001485884 from prev)
+iter   68 val 73.161306477 (0.323385806 from ideal, 0.001479942 from prev)
+iter   69 val 73.162777510 (0.321914773 from ideal, 0.001471033 from prev)
+iter   70 val 73.164236544 (0.320455740 from ideal, 0.001459033 from prev)
+iter   71 val 73.165680400 (0.319011884 from ideal, 0.001443856 from prev)
+iter   72 val 73.167105864 (0.317586419 from ideal, 0.001425464 from prev)
+iter   73 val 73.168509727 (0.316182556 from ideal, 0.001403863 from prev)
+iter   74 val 73.169888815 (0.314803469 from ideal, 0.001379088 from prev)
+iter   75 val 73.171240064 (0.313452220 from ideal, 0.001351249 from prev)
+iter   76 val 73.172560549 (0.312131735 from ideal, 0.001320485 from prev)
+iter   77 val 73.173847524 (0.310844759 from ideal, 0.001286976 from prev)
+iter   78 val 73.175098463 (0.309593820 from ideal, 0.001250939 from prev)
+iter   79 val 73.176311093 (0.308381191 from ideal, 0.001212630 from prev)
+iter   80 val 73.177483421 (0.307208863 from ideal, 0.001172328 from prev)
+iter   81 val 73.178613751 (0.306078532 from ideal, 0.001130331 from prev)
+iter   82 val 73.179700701 (0.304991582 from ideal, 0.001086950 from prev)
+iter   83 val 73.180743213 (0.303949070 from ideal, 0.001042512 from prev)
+iter   84 val 73.181740550 (0.302951733 from ideal, 0.000997337 from prev)
+iter   85 val 73.182692294 (0.301999990 from ideal, 0.000951743 from prev)
+iter   86 val 73.183598329 (0.301093955 from ideal, 0.000906035 from prev)
+iter   87 val 73.184458833 (0.300233450 from ideal, 0.000860504 from prev)
+iter   88 val 73.185274257 (0.299418027 from ideal, 0.000815423 from prev)
+iter   89 val 73.186045295 (0.298646989 from ideal, 0.000771038 from prev)
+iter   90 val 73.186772867 (0.297919417 from ideal, 0.000727572 from prev)
+iter   91 val 73.187458087 (0.297234196 from ideal, 0.000685221 from prev)
+iter   92 val 73.188102241 (0.296590043 from ideal, 0.000644153 from prev)
+iter   93 val 73.188706731 (0.295985552 from ideal, 0.000604491 from prev)
+iter   94 val 73.189273100 (0.295419184 from ideal, 0.000566368 from prev)
+iter   95 val 73.189802979 (0.294889305 from ideal, 0.000529879 from prev)
+iter   96 val 73.190298050 (0.294394234 from ideal, 0.000495071 from prev)
+iter   97 val 73.190760033 (0.293932250 from ideal, 0.000461983 from prev)
+iter   98 val 73.191190671 (0.293501613 from ideal, 0.000430638 from prev)
+iter   99 val 73.191591702 (0.293100582 from ideal, 0.000401031 from prev)
+iter  100 val 73.191964849 (0.292727434 from ideal, 0.000373147 from prev)
+iter  101 val 73.192311804 (0.292380480 from ideal, 0.000346954 from prev)
+iter  102 val 73.192634213 (0.292058071 from ideal, 0.000322409 from prev)
+iter  103 val 73.192933673 (0.291758610 from ideal, 0.000299460 from prev)
+iter  104 val 73.193211720 (0.291480564 from ideal, 0.000278047 from prev)
+iter  105 val 73.193469824 (0.291222460 from ideal, 0.000258104 from prev)
+iter  106 val 73.193709386 (0.290982898 from ideal, 0.000239562 from prev)
+iter  107 val 73.193931735 (0.290760549 from ideal, 0.000222349 from prev)
+iter  108 val 73.194138126 (0.290554158 from ideal, 0.000206391 from prev)
+iter  109 val 73.194329737 (0.290362547 from ideal, 0.000191611 from prev)
+iter  110 val 73.194507679 (0.290184604 from ideal, 0.000177942 from prev)
+iter  111 val 73.194672986 (0.290019298 from ideal, 0.000165307 from prev)
+iter  112 val 73.194826625 (0.289865659 from ideal, 0.000153639 from prev)
+iter  113 val 73.194969491 (0.289722793 from ideal, 0.000142866 from prev)
+iter  114 val 73.195102418 (0.289589865 from ideal, 0.000132928 from prev)
+iter  115 val 73.195226177 (0.289466106 from ideal, 0.000123759 from prev)
+iter  116 val 73.195341482 (0.289350801 from ideal, 0.000115305 from prev)
+iter  117 val 73.195448989 (0.289243295 from ideal, 0.000107506 from prev)
+iter  118 val 73.195549304 (0.289142979 from ideal, 0.000100315 from prev)
+iter  119 val 73.195642985 (0.289049298 from ideal, 0.000093681 from prev)
+iter  120 val 73.195730544 (0.288961739 from ideal, 0.000087559 from prev)
+iter  121 val 73.195812450 (0.288879833 from ideal, 0.000081906 from prev)
+iter  122 val 73.195889138 (0.288803146 from ideal, 0.000076688 from prev)
+iter  123 val 73.195961001 (0.288731282 from ideal, 0.000071863 from prev)
+iter  124 val 73.196028404 (0.288663880 from ideal, 0.000067402 from prev)
+iter  125 val 73.196091677 (0.288600606 from ideal, 0.000063274 from prev)
+iter  126 val 73.196151127 (0.288541156 from ideal, 0.000059450 from prev)
+iter  127 val 73.196207033 (0.288485250 from ideal, 0.000055906 from prev)
+iter  128 val 73.196259650 (0.288432634 from ideal, 0.000052617 from prev)
+iter  129 val 73.196309208 (0.288383075 from ideal, 0.000049558 from prev)
+iter  130 val 73.196355939 (0.288336345 from ideal, 0.000046731 from prev)
+iter  131 val 73.196400004 (0.288292280 from ideal, 0.000044065 from prev)
+iter  132 val 73.196441619 (0.288250665 from ideal, 0.000041615 from prev)
+iter  133 val 73.196480938 (0.288211346 from ideal, 0.000039319 from prev)
+iter  134 val 73.196518115 (0.288174169 from ideal, 0.000037177 from prev)
+iter  135 val 73.196553289 (0.288138994 from ideal, 0.000035175 from prev)
+iter  136 val 73.196586590 (0.288105693 from ideal, 0.000033301 from prev)
+iter  137 val 73.196618138 (0.288074145 from ideal, 0.000031548 from prev)
+iter  138 val 73.196648041 (0.288044242 from ideal, 0.000029903 from prev)
+iter  139 val 73.196676402 (0.288015882 from ideal, 0.000028360 from prev)
+iter  140 val 73.196703313 (0.287988971 from ideal, 0.000026911 from prev)
+iter  141 val 73.196728860 (0.287963423 from ideal, 0.000025547 from prev)
+iter  142 val 73.196753127 (0.287939156 from ideal, 0.000024267 from prev)
+iter  143 val 73.196776185 (0.287916098 from ideal, 0.000023058 from prev)
+iter  144 val 73.196798106 (0.287894178 from ideal, 0.000021920 from prev)
+iter  145 val 73.196818951 (0.287873332 from ideal, 0.000020846 from prev)
+iter  146 val 73.196838783 (0.287853500 from ideal, 0.000019832 from prev)
+iter  147 val 73.196857655 (0.287834628 from ideal, 0.000018872 from prev)
+iter  148 val 73.196875622 (0.287816662 from ideal, 0.000017966 from prev)
+iter  149 val 73.196892731 (0.287799553 from ideal, 0.000017109 from prev)
+iter  150 val 73.196909028 (0.287783256 from ideal, 0.000016297 from prev)
+iter  151 val 73.196924554 (0.287767730 from ideal, 0.000015526 from prev)
+iter  152 val 73.196939351 (0.287752932 from ideal, 0.000014798 from prev)
+iter  153 val 73.196953415 (0.287738869 from ideal, 0.000014063 from prev)
+iter  154 val 73.196966901 (0.287725382 from ideal, 0.000013487 from prev)
+iter  155 val 73.196979725 (0.287712558 from ideal, 0.000012824 from prev)
+iter  156 val 73.196991957 (0.287700327 from ideal, 0.000012232 from prev)
+iter  157 val 73.197003626 (0.287688658 from ideal, 0.000011669 from prev)
+iter  158 val 73.197014758 (0.287677526 from ideal, 0.000011132 from prev)
+iter  159 val 73.197025382 (0.287666902 from ideal, 0.000010624 from prev)
+iter  160 val 73.197035519 (0.287656764 from ideal, 0.000010138 from prev)
+iter  161 val 73.197045197 (0.287647086 from ideal, 0.000009678 from prev)
+iter  162 val 73.197054435 (0.287637849 from ideal, 0.000009237 from prev)
+iter  163 val 73.197063254 (0.287629029 from ideal, 0.000008820 from prev)
+iter  164 val 73.197071675 (0.287620609 from ideal, 0.000008420 from prev)
+iter  165 val 73.197079717 (0.287612567 from ideal, 0.000008042 from prev)
+iter  166 val 73.197087394 (0.287604889 from ideal, 0.000007678 from prev)
+iter  167 val 73.197094728 (0.287597555 from ideal, 0.000007334 from prev)
+iter  168 val 73.197101734 (0.287590550 from ideal, 0.000007005 from prev)
+iter  169 val 73.197108424 (0.287583859 from ideal, 0.000006691 from prev)
+iter  170 val 73.197114816 (0.287577468 from ideal, 0.000006392 from prev)
+iter  171 val 73.197120922 (0.287571361 from ideal, 0.000006106 from prev)
+iter  172 val 73.197126756 (0.287565528 from ideal, 0.000005834 from prev)
+iter  173 val 73.197132329 (0.287559955 from ideal, 0.000005573 from prev)
+iter  174 val 73.197137654 (0.287554630 from ideal, 0.000005325 from prev)
+iter  175 val 73.197142743 (0.287549541 from ideal, 0.000005089 from prev)
+iter  176 val 73.197147605 (0.287544679 from ideal, 0.000004862 from prev)
+iter  177 val 73.197152251 (0.287540033 from ideal, 0.000004646 from prev)
+iter  178 val 73.197156691 (0.287535593 from ideal, 0.000004440 from prev)
+iter  179 val 73.197161034 (0.287531249 from ideal, 0.000004344 from prev)
+iter  180 val 73.197164991 (0.287527292 from ideal, 0.000003957 from prev)
+iter  181 val 73.197168867 (0.287523417 from ideal, 0.000003876 from prev)
+iter  182 val 73.197172571 (0.287519713 from ideal, 0.000003704 from prev)
+iter  183 val 73.197176111 (0.287516172 from ideal, 0.000003541 from prev)
+iter  184 val 73.197179495 (0.287512789 from ideal, 0.000003384 from prev)
+iter  185 val 73.197182729 (0.287509555 from ideal, 0.000003234 from prev)
+iter  186 val 73.197185820 (0.287506463 from ideal, 0.000003092 from prev)
+iter  187 val 73.197188775 (0.287503509 from ideal, 0.000002954 from prev)
+iter  188 val 73.197191599 (0.287500684 from ideal, 0.000002824 from prev)
+iter  189 val 73.197194299 (0.287497985 from ideal, 0.000002700 from prev)
+iter  190 val 73.197196879 (0.287495404 from ideal, 0.000002580 from prev)
+iter  191 val 73.197199347 (0.287492937 from ideal, 0.000002467 from prev)
+iter  192 val 73.197201705 (0.287490579 from ideal, 0.000002358 from prev)
+iter  193 val 73.197203959 (0.287488325 from ideal, 0.000002254 from prev)
+iter  194 val 73.197206113 (0.287486170 from ideal, 0.000002155 from prev)
+iter  195 val 73.197208173 (0.287484110 from ideal, 0.000002060 from prev)
+iter  196 val 73.197210143 (0.287482141 from ideal, 0.000001970 from prev)
+iter  197 val 73.197212025 (0.287480258 from ideal, 0.000001883 from prev)
+iter  198 val 73.197213901 (0.287478383 from ideal, 0.000001875 from prev)
+iter  199 val 73.197215546 (0.287476737 from ideal, 0.000001646 from prev)
+iter  200 val 73.197217191 (0.287475092 from ideal, 0.000001645 from prev)
+iter  201 val 73.197218763 (0.287473520 from ideal, 0.000001572 from prev)
+iter  202 val 73.197220267 (0.287472017 from ideal, 0.000001504 from prev)
+iter  203 val 73.197221703 (0.287470580 from ideal, 0.000001436 from prev)
+iter  204 val 73.197223078 (0.287469206 from ideal, 0.000001375 from prev)
+iter  205 val 73.197224391 (0.287467893 from ideal, 0.000001313 from prev)
+iter  206 val 73.197225646 (0.287466637 from ideal, 0.000001256 from prev)
+iter  207 val 73.197226847 (0.287465437 from ideal, 0.000001200 from prev)
+iter  208 val 73.197227994 (0.287464289 from ideal, 0.000001148 from prev)
+iter  209 val 73.197229092 (0.287463192 from ideal, 0.000001097 from prev)
+iter  210 val 73.197230141 (0.287462143 from ideal, 0.000001049 from prev)
+iter  211 val 73.197231144 (0.287461140 from ideal, 0.000001003 from prev)
+iter  212 val 73.197232102 (0.287460181 from ideal, 0.000000959 from prev)
+iter  213 val 73.197233018 (0.287459265 from ideal, 0.000000916 from prev)
+iter  214 val 73.197233895 (0.287458388 from ideal, 0.000000877 from prev)
+iter  215 val 73.197234732 (0.287457551 from ideal, 0.000000837 from prev)
+iter  216 val 73.197235534 (0.287456749 from ideal, 0.000000802 from prev)
+iter  217 val 73.197236300 (0.287455984 from ideal, 0.000000765 from prev)
+iter  218 val 73.197237031 (0.287455252 from ideal, 0.000000732 from prev)
+iter  219 val 73.197237732 (0.287454552 from ideal, 0.000000700 from prev)
+iter  220 val 73.197238478 (0.287453805 from ideal, 0.000000747 from prev)
+iter  221 val 73.197239041 (0.287453242 from ideal, 0.000000563 from prev)
+iter  222 val 73.197239655 (0.287452628 from ideal, 0.000000614 from prev)
+iter  223 val 73.197240239 (0.287452045 from ideal, 0.000000583 from prev)
+iter  224 val 73.197240797 (0.287451486 from ideal, 0.000000559 from prev)
+iter  225 val 73.197241331 (0.287450953 from ideal, 0.000000533 from prev)
+iter  226 val 73.197241843 (0.287450440 from ideal, 0.000000512 from prev)
+iter  227 val 73.197242331 (0.287449952 from ideal, 0.000000488 from prev)
+iter  228 val 73.197242799 (0.287449485 from ideal, 0.000000467 from prev)
+iter  229 val 73.197243244 (0.287449039 from ideal, 0.000000446 from prev)
+iter  230 val 73.197243672 (0.287448611 from ideal, 0.000000428 from prev)
+iter  231 val 73.197244081 (0.287448203 from ideal, 0.000000409 from prev)
+iter  232 val 73.197244470 (0.287447814 from ideal, 0.000000389 from prev)
+iter  233 val 73.197244843 (0.287447441 from ideal, 0.000000373 from prev)
+iter  234 val 73.197245199 (0.287447084 from ideal, 0.000000357 from prev)
+iter  235 val 73.197245540 (0.287446743 from ideal, 0.000000341 from prev)
+iter  236 val 73.197245867 (0.287446416 from ideal, 0.000000327 from prev)
+iter  237 val 73.197246178 (0.287446105 from ideal, 0.000000311 from prev)
+iter  238 val 73.197246478 (0.287445805 from ideal, 0.000000300 from prev)
+iter  239 val 73.197246746 (0.287445538 from ideal, 0.000000268 from prev)
+iter  240 val 73.197247033 (0.287445250 from ideal, 0.000000288 from prev)
+iter  241 val 73.197247294 (0.287444990 from ideal, 0.000000260 from prev)
+iter  242 val 73.197247542 (0.287444741 from ideal, 0.000000249 from prev)
+iter  243 val 73.197247781 (0.287444502 from ideal, 0.000000239 from prev)
+iter  244 val 73.197248008 (0.287444275 from ideal, 0.000000227 from prev)
+iter  245 val 73.197248225 (0.287444058 from ideal, 0.000000217 from prev)
+iter  246 val 73.197248434 (0.287443850 from ideal, 0.000000209 from prev)
+iter  247 val 73.197248633 (0.287443650 from ideal, 0.000000199 from prev)
+iter  248 val 73.197248822 (0.287443462 from ideal, 0.000000189 from prev)
+iter  249 val 73.197249005 (0.287443279 from ideal, 0.000000183 from prev)
+iter  250 val 73.197249178 (0.287443105 from ideal, 0.000000174 from prev)
+iter  251 val 73.197249344 (0.287442940 from ideal, 0.000000166 from prev)
+iter  252 val 73.197249502 (0.287442781 from ideal, 0.000000159 from prev)
+iter  253 val 73.197249655 (0.287442629 from ideal, 0.000000152 from prev)
+iter  254 val 73.197249799 (0.287442485 from ideal, 0.000000144 from prev)
+iter  255 val 73.197249937 (0.287442347 from ideal, 0.000000138 from prev)
+iter  256 val 73.197250071 (0.287442212 from ideal, 0.000000134 from prev)
+iter  257 val 73.197250196 (0.287442088 from ideal, 0.000000124 from prev)
+iter  258 val 73.197250319 (0.287441965 from ideal, 0.000000123 from prev)
+iter  259 val 73.197250435 (0.287441848 from ideal, 0.000000116 from prev)
+iter  260 val 73.197250521 (0.287441763 from ideal, 0.000000086 from prev)
+iter  261 val 73.197250651 (0.287441632 from ideal, 0.000000131 from prev)
+iter  262 val 73.197250752 (0.287441532 from ideal, 0.000000100 from prev)
+iter  263 val 73.197250849 (0.287441435 from ideal, 0.000000097 from prev)
+iter  264 val 73.197250941 (0.287441343 from ideal, 0.000000092 from prev)
+iter  265 val 73.197251046 (0.287441238 from ideal, 0.000000105 from prev)
+iter  266 val 73.197251113 (0.287441170 from ideal, 0.000000067 from prev)
+iter  267 val 73.197251193 (0.287441090 from ideal, 0.000000080 from prev)
+iter  268 val 73.197251271 (0.287441013 from ideal, 0.000000078 from prev)
+iter  269 val 73.197251345 (0.287440938 from ideal, 0.000000075 from prev)
+iter  270 val 73.197251582 (0.287440701 from ideal, 0.000000237 from prev)
+iter  271 val 73.197251485 (0.287440798 from ideal, 0.000000097 from prev)
+iter  272 val 73.197251550 (0.287440734 from ideal, 0.000000065 from prev)
+iter  273 val 73.197251610 (0.287440674 from ideal, 0.000000060 from prev)
+iter  274 val 73.197251744 (0.287440539 from ideal, 0.000000135 from prev)
+iter  275 val 73.197251725 (0.287440559 from ideal, 0.000000020 from prev)
+iter  276 val 73.197251779 (0.287440505 from ideal, 0.000000054 from prev)
+iter  277 val 73.197251830 (0.287440453 from ideal, 0.000000051 from prev)
+iter  278 val 73.197251879 (0.287440404 from ideal, 0.000000049 from prev)
+iter  279 val 73.197251927 (0.287440357 from ideal, 0.000000047 from prev)
+iter  280 val 73.197251970 (0.287440313 from ideal, 0.000000044 from prev)
+iter  281 val 73.197252013 (0.287440270 from ideal, 0.000000043 from prev)
+iter  282 val 73.197252054 (0.287440229 from ideal, 0.000000041 from prev)
+iter  283 val 73.197252094 (0.287440190 from ideal, 0.000000039 from prev)
+iter  284 val 73.197252356 (0.287439927 from ideal, 0.000000263 from prev)
+iter  285 val 73.197252168 (0.287440115 from ideal, 0.000000188 from prev)
+iter  286 val 73.197252202 (0.287440082 from ideal, 0.000000033 from prev)
+iter  287 val 73.197252236 (0.287440048 from ideal, 0.000000034 from prev)
+iter  288 val 73.197252264 (0.287440019 from ideal, 0.000000028 from prev)
+iter  289 val 73.197252297 (0.287439987 from ideal, 0.000000032 from prev)
+iter  290 val 73.197252324 (0.287439959 from ideal, 0.000000028 from prev)
+iter  291 val 73.197252394 (0.287439890 from ideal, 0.000000069 from prev)
+iter  292 val 73.197252377 (0.287439906 from ideal, 0.000000016 from prev)
+iter  293 val 73.197252403 (0.287439881 from ideal, 0.000000025 from prev)
+iter  294 val 73.197252425 (0.287439858 from ideal, 0.000000022 from prev)
+iter  295 val 73.197252449 (0.287439835 from ideal, 0.000000024 from prev)
+iter  296 val 73.197252469 (0.287439814 from ideal, 0.000000021 from prev)
+iter  297 val 73.197252493 (0.287439791 from ideal, 0.000000023 from prev)
+iter  298 val 73.197252512 (0.287439771 from ideal, 0.000000019 from prev)
+iter  299 val 73.197252531 (0.287439752 from ideal, 0.000000019 from prev)
+iter  300 val 73.197252548 (0.287439735 from ideal, 0.000000017 from prev)
+iter  301 val 73.197252566 (0.287439718 from ideal, 0.000000017 from prev)
+iter  302 val 73.197252582 (0.287439702 from ideal, 0.000000016 from prev)
+iter  303 val 73.197252598 (0.287439686 from ideal, 0.000000016 from prev)
+iter  304 val 73.197252582 (0.287439701 from ideal, 0.000000016 from prev)
+iter  305 val 73.197252626 (0.287439657 from ideal, 0.000000044 from prev)
+iter  306 val 73.197252639 (0.287439644 from ideal, 0.000000013 from prev)
+iter  307 val 73.197252619 (0.287439664 from ideal, 0.000000020 from prev)
+iter  308 val 73.197252665 (0.287439619 from ideal, 0.000000045 from prev)
+iter  309 val 73.197252678 (0.287439606 from ideal, 0.000000013 from prev)
+iter  310 val 73.197252689 (0.287439594 from ideal, 0.000000012 from prev)
+iter  311 val 73.197252701 (0.287439582 from ideal, 0.000000012 from prev)
+iter  312 val 73.197252710 (0.287439573 from ideal, 0.000000009 from prev)
+iter  313 val 73.197252720 (0.287439563 from ideal, 0.000000010 from prev)
+iter  314 val 73.197252730 (0.287439554 from ideal, 0.000000010 from prev)
+iter  315 val 73.197252739 (0.287439544 from ideal, 0.000000009 from prev)
+iter  316 val 73.197252748 (0.287439536 from ideal, 0.000000009 from prev)
+iter  317 val 73.197252756 (0.287439528 from ideal, 0.000000008 from prev)
+iter  318 val 73.197252765 (0.287439519 from ideal, 0.000000009 from prev)
+iter  319 val 73.197252772 (0.287439512 from ideal, 0.000000007 from prev)
+iter  320 val 73.197252778 (0.287439506 from ideal, 0.000000006 from prev)
+iter  321 val 73.197252786 (0.287439498 from ideal, 0.000000008 from prev)
+iter  322 val 73.197252793 (0.287439491 from ideal, 0.000000007 from prev)
+iter  323 val 73.197252798 (0.287439485 from ideal, 0.000000005 from prev)
+iter  324 val 73.197252805 (0.287439478 from ideal, 0.000000007 from prev)
+
+A[0][0] = { { +0.042767087+0.000000000i , -0.115396345-0.036281970i , -0.160564018-0.022903065i },
+            { -0.115396345+0.036281970i , +0.342148641+0.000000000i , +0.452672240-0.074418245i },
+            { -0.160564018+0.022903065i , +0.452672240+0.074418245i , +0.615084264+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[0][1] = { { +0.560102752+0.000000000i , +0.347899515-0.244668834i , -0.080223610+0.243012120i },
+            { +0.347899515+0.244668834i , +0.322970966+0.000000000i , -0.155984341+0.115899419i },
+            { -0.080223610-0.243012120i , -0.155984341-0.115899419i , +0.116926274+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[0][2] = { { +0.397130153+0.000000000i , -0.232503170+0.280950803i , +0.240787628-0.220109056i },
+            { -0.232503170-0.280950803i , +0.334880385+0.000000000i , -0.296687898-0.041481174i },
+            { +0.240787628+0.220109056i , -0.296687898+0.041481174i , +0.267989454+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[1][0] = { { +0.041186456+0.000000000i , +0.149528046-0.071476314i , +0.062435189-0.090135823i },
+            { +0.149528046+0.071476314i , +0.666906310+0.000000000i , +0.383096624-0.218887505i },
+            { +0.062435189+0.090135823i , +0.383096624+0.218887505i , +0.291907226+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[1][1] = { { +0.401293353+0.000000000i , -0.077934005+0.296004674i , -0.205511517-0.323000788i },
+            { -0.077934005-0.296004674i , +0.233476293+0.000000000i , -0.198342228+0.214319823i },
+            { -0.205511517+0.323000788i , -0.198342228-0.214319823i , +0.365230346+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[1][2] = { { +0.557520182+0.000000000i , -0.071594041-0.224528361i , +0.143076328+0.413136611i },
+            { -0.071594041+0.224528361i , +0.099617389+0.000000000i , -0.184754396+0.004567682i },
+            { +0.143076328-0.413136611i , -0.184754396-0.004567682i , +0.342862420+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[2][0] = { { +0.164915117+0.000000000i , -0.055432132-0.282784317i , +0.035012767-0.231198008i },
+            { -0.055432132+0.282784317i , +0.503529956+0.000000000i , +0.384672695+0.137748841i },
+            { +0.035012767+0.231198008i , +0.384672695-0.137748841i , +0.331554919+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[2][1] = { { +0.354308633+0.000000000i , -0.260973550+0.112778582i , +0.312223363+0.224642764i },
+            { -0.260973550-0.112778582i , +0.228123740+0.000000000i , -0.158469626-0.264847994i },
+            { +0.312223363-0.224642764i , -0.158469626+0.264847994i , +0.417567618+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[2][2] = { { +0.480776242+0.000000000i , +0.316405682+0.170005736i , -0.347236130+0.006555244i },
+            { +0.316405682-0.170005736i , +0.268346295+0.000000000i , -0.226203069+0.127099153i },
+            { -0.347236130-0.006555244i , -0.226203069-0.127099153i , +0.250877454+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[3][0] = { { +0.022773269+0.000000000i , -0.050967225+0.056043892i , +0.088807510-0.092893961i },
+            { -0.050967225-0.056043892i , +0.251987415+0.000000000i , -0.427361335-0.010651590i },
+            { +0.088807510+0.092893961i , -0.427361335+0.010651590i , +0.725239308+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[3][1] = { { +0.581677553+0.000000000i , +0.377968413-0.265490688i , +0.155396499-0.076388799i },
+            { +0.377968413+0.265490688i , +0.366776135+0.000000000i , +0.135840713+0.021289752i },
+            { +0.155396499+0.076388799i , +0.135840713-0.021289752i , +0.051546303+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[3][2] = { { +0.395549169+0.000000000i , -0.327001187+0.209446797i , -0.244204009+0.169282759i },
+            { -0.327001187-0.209446797i , +0.381236442+0.000000000i , +0.291520622-0.010638162i },
+            { -0.244204009-0.169282759i , +0.291520622+0.010638162i , +0.223214381+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[4][0] = { { +0.102403298+0.000000000i , -0.031900211-0.217818061i , -0.013571359+0.208015231i },
+            { -0.031900211+0.217818061i , +0.473249789+0.000000000i , -0.438233434-0.093667114i },
+            { -0.013571359-0.208015231i , -0.438233434+0.093667114i , +0.424346904+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[4][1] = { { +0.504088329+0.000000000i , -0.293711375+0.036503275i , -0.295258751-0.274238340i },
+            { -0.293711375-0.036503275i , +0.173776831+0.000000000i , +0.152176242+0.181168316i },
+            { -0.295258751+0.274238340i , +0.152176242-0.181168316i , +0.322134832+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[4][2] = { { +0.393508365+0.000000000i , +0.325611586+0.181314786i , +0.308830110+0.066223109i },
+            { +0.325611586-0.181314786i , +0.352973372+0.000000000i , +0.286057193-0.087501202i },
+            { +0.308830110-0.066223109i , +0.286057193+0.087501202i , +0.253518255+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[5][0] = { { +0.035872621+0.000000000i , +0.134119356+0.010224085i , -0.109292767+0.067441217i },
+            { +0.134119356-0.010224085i , +0.504355156+0.000000000i , -0.389398809+0.283296751i },
+            { -0.109292767-0.067441217i , -0.389398809-0.283296751i , +0.459772214+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[5][1] = { { +0.266856304+0.000000000i , -0.105777654+0.292672109i , +0.154182499+0.273908511i },
+            { -0.105777654-0.292672109i , +0.362913994+0.000000000i , +0.239291061-0.277671251i },
+            { +0.154182499-0.273908511i , +0.239291061+0.277671251i , +0.370229693+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[5][2] = { { +0.697271067+0.000000000i , -0.028341701-0.302896194i , -0.044889732-0.341349728i },
+            { -0.028341701+0.302896194i , +0.132730841+0.000000000i , +0.150107748-0.005625500i },
+            { -0.044889732+0.341349728i , +0.150107748+0.005625500i , +0.169998084+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[6][0] = { { +0.790871771+0.000000000i , -0.235871814+0.329292658i , +0.026969047+0.024435542i },
+            { -0.235871814-0.329292658i , +0.207453564+0.000000000i , +0.002130822-0.018516740i },
+            { +0.026969047-0.024435542i , +0.002130822+0.018516740i , +0.001674657+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[6][1] = { { +0.199868078+0.000000000i , +0.231462811-0.320580589i , +0.031439000+0.050847461i },
+            { +0.231462811+0.320580589i , +0.782250720+0.000000000i , -0.045148529+0.109312254i },
+            { +0.031439000-0.050847461i , -0.045148529-0.109312254i , +0.017881194+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[6][2] = { { +0.009260142+0.000000000i , +0.004409003-0.008712069i , -0.058408048-0.075283003i },
+            { +0.004409003+0.008712069i , +0.010295708+0.000000000i , +0.043017707-0.090795514i },
+            { -0.058408048+0.075283003i , +0.043017707+0.090795514i , +0.980444141+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[7][0] = { { +0.852382760+0.000000000i , +0.093248931+0.127276746i , +0.215495037+0.233438474i },
+            { +0.093248931-0.127276746i , +0.029206066+0.000000000i , +0.058431462-0.006639770i },
+            { +0.215495037-0.233438474i , +0.058431462+0.006639770i , +0.118411166+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[7][1] = { { +0.104170522+0.000000000i , -0.130167216+0.053189817i , -0.128328586-0.238910303i },
+            { -0.130167216-0.053189817i , +0.189810545+0.000000000i , +0.038365733+0.364057536i },
+            { -0.128328586+0.238910303i , +0.038365733-0.364057536i , +0.706018924+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[7][2] = { { +0.043446709+0.000000000i , +0.036918285-0.180466563i , -0.087166450+0.005471829i },
+            { +0.036918285+0.180466563i , +0.780983381+0.000000000i , -0.096797195-0.357417766i },
+            { -0.087166450-0.005471829i , -0.096797195+0.357417766i , +0.175569902+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[8][0] = { { +0.946746360+0.000000000i , +0.112753371+0.085620554i , -0.145327539-0.096194352i },
+            { +0.112753371-0.085620554i , +0.021171692+0.000000000i , -0.026007372+0.001686619i },
+            { -0.145327539+0.096194352i , -0.026007372-0.001686619i , +0.032081939+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[8][1] = { { +0.027803472+0.000000000i , -0.088750664+0.039629648i , +0.056083862+0.120157600i },
+            { -0.088750664-0.039629648i , +0.339784542+0.000000000i , -0.007757159-0.463490689i },
+            { +0.056083862-0.120157600i , -0.007757159+0.463490689i , +0.632411977+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[8][2] = { { +0.025450159+0.000000000i , -0.024002708-0.125250202i , +0.089243678-0.023963249i },
+            { -0.024002708+0.125250202i , +0.639043757+0.000000000i , +0.033764530+0.461804069i },
+            { +0.089243678+0.023963249i , +0.033764530-0.461804069i , +0.335506075+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[9][0] = { { +0.007932000+0.000000000i , -0.005455838-0.064027997i , -0.026370530-0.055175322i },
+            { -0.005455838+0.064027997i , +0.520594712+0.000000000i , +0.463520478-0.174914988i },
+            { -0.026370530+0.055175322i , +0.463520478+0.174914988i , +0.471473280+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[9][1] = { { +0.511657135+0.000000000i , -0.310957449-0.105898373i , +0.373618260+0.048625858i },
+            { -0.310957449+0.105898373i , +0.210901024+0.000000000i , -0.237129097+0.047776131i },
+            { +0.373618260-0.048625858i , -0.237129097-0.047776131i , +0.277441832+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[9][2] = { { +0.480410857+0.000000000i , +0.316413288+0.169926370i , -0.347247730+0.006549464i },
+            { +0.316413288-0.169926370i , +0.268504255+0.000000000i , -0.226391381+0.127138857i },
+            { -0.347247730-0.006549464i , -0.226391381-0.127138857i , +0.251084880+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[10][0] = { { +0.002282707+0.000000000i , +0.014050864-0.036017541i , +0.021463909-0.017946927i },
+             { +0.014050864+0.036017541i , +0.654792670+0.000000000i , +0.415295003+0.228198551i },
+             { +0.021463909+0.017946927i , +0.415295003-0.228198551i , +0.342924614+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[10][1] = { { +0.239256289+0.000000000i , +0.240979409-0.044353945i , -0.336325891-0.094123500i },
+             { +0.240979409+0.044353945i , +0.250937430+0.000000000i , -0.321299298-0.157150360i },
+             { -0.336325891+0.094123500i , -0.321299298+0.157150360i , +0.509806273+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[10][2] = { { +0.758460995+0.000000000i , -0.255030274+0.080371486i , +0.314861981+0.112070427i },
+             { -0.255030274-0.080371486i , +0.094269891+0.000000000i , -0.093995705-0.071048191i },
+             { +0.314861981-0.112070427i , -0.093995705+0.071048191i , +0.147269105+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[11][0] = { { +0.255183442+0.000000000i , +0.021848402-0.294208741i , -0.117339377-0.298764409i },
+             { +0.021848402+0.294208741i , +0.341072834+0.000000000i , +0.334408147-0.160863886i },
+             { -0.117339377+0.298764409i , +0.334408147+0.160863886i , +0.403743716+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[11][1] = { { +0.549730134+0.000000000i , +0.214506005+0.374821457i , -0.167241738+0.181805229i },
+             { +0.214506005-0.374821457i , +0.339264575+0.000000000i , +0.058701779+0.184970957i },
+             { -0.167241738-0.181805229i , +0.058701779-0.184970957i , +0.111005282+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[11][2] = { { +0.195086415+0.000000000i , -0.236354406-0.080612716i , +0.284581116+0.116959180i },
+             { -0.236354406+0.080612716i , +0.319662582+0.000000000i , -0.393109926-0.024107071i },
+             { +0.284581116-0.116959180i , -0.393109926+0.024107071i , +0.485250994+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[12][0] = { { +0.127575125+0.000000000i , +0.209026896-0.004993842i , -0.259927410-0.004501625i },
+             { +0.209026896+0.004993842i , +0.342677968+0.000000000i , -0.425704772-0.017550438i },
+             { -0.259927410+0.004501625i , -0.425704772+0.017550438i , +0.529746898+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[12][1] = { { +0.809953575+0.000000000i , -0.214887324-0.181866366i , +0.230756254-0.146384320i },
+             { -0.214887324+0.181866366i , +0.097847520+0.000000000i , -0.028352492+0.090650797i },
+             { +0.230756254+0.146384320i , -0.028352492-0.090650797i , +0.092198897+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[12][2] = { { +0.062471292+0.000000000i , +0.005860428+0.186860208i , +0.029171156+0.150885946i },
+             { +0.005860428-0.186860208i , +0.559474503+0.000000000i , +0.454057264-0.073100359i },
+             { +0.029171156-0.150885946i , +0.454057264+0.073100359i , +0.378054196+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[13][0] = { { +0.055974714+0.000000000i , -0.096638247-0.135407432i , +0.153348228+0.040641447i },
+             { -0.096638247+0.135407432i , +0.494404186+0.000000000i , -0.363065049+0.300796130i },
+             { +0.153348228-0.040641447i , -0.363065049-0.300796130i , +0.449621091+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[13][1] = { { +0.338643419+0.000000000i , +0.092765261-0.267742054i , -0.219710152-0.308869346i },
+             { +0.092765261+0.267742054i , +0.237096631+0.000000000i , +0.184016135-0.258318916i },
+             { -0.219710152+0.308869346i , +0.184016135+0.258318916i , +0.424259942+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[13][2] = { { +0.605381858+0.000000000i , +0.003872986+0.403149486i , +0.066361923+0.268227899i },
+             { +0.003872986-0.403149486i , +0.268499174+0.000000000i , +0.179048914-0.042477214i },
+             { +0.066361923-0.268227899i , +0.179048914+0.042477214i , +0.126118959+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[14][0] = { { +0.016777647+0.000000000i , -0.047083052-0.064021377i , +0.048112022+0.088689483i },
+             { -0.047083052+0.064021377i , +0.376426766+0.000000000i , -0.473444868-0.065299697i },
+             { +0.048112022-0.088689483i , -0.473444868+0.065299697i , +0.606795578+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[14][1] = { { +0.285604180+0.000000000i , +0.075453240+0.366798517i , -0.003246362+0.252565883i },
+             { +0.075453240-0.366798517i , +0.491009469+0.000000000i , +0.323510161+0.070894187i },
+             { -0.003246362-0.252565883i , +0.323510161-0.070894187i , +0.223386342+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[14][2] = { { +0.697618165+0.000000000i , -0.028370187-0.302777139i , -0.044865661-0.341255366i },
+             { -0.028370187+0.302777139i , +0.132563756+0.000000000i , +0.149934706-0.005594490i },
+             { -0.044865661+0.341255366i , +0.149934706+0.005594490i , +0.169818071+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[15][0] = { { +0.770228582+0.000000000i , +0.180436762+0.326451255i , -0.157186484+0.114634435i },
+             { +0.180436762-0.326451255i , +0.180631903+0.000000000i , +0.011763182+0.093476130i },
+             { -0.157186484-0.114634435i , +0.011763182-0.093476130i , +0.049139507+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[15][1] = { { +0.193064735+0.000000000i , -0.201634568-0.210317066i , +0.265761840-0.016480624i },
+             { -0.201634568+0.210317066i , +0.439695885+0.000000000i , -0.259605247+0.306722573i },
+             { +0.265761840+0.016480624i , -0.259605247-0.306722573i , +0.367239372+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[15][2] = { { +0.036706674+0.000000000i , +0.021197806-0.116134189i , -0.108575356-0.098153811i },
+             { +0.021197806+0.116134189i , +0.379672204+0.000000000i , +0.247842065-0.400198703i },
+             { -0.108575356+0.098153811i , +0.247842065+0.400198703i , +0.583621113+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[16][0] = { { +0.873494273+0.000000000i , -0.079481258+0.257098008i , +0.129694397+0.145824265i },
+             { -0.079481258-0.257098008i , +0.082904567+0.000000000i , +0.031119672-0.051442192i },
+             { +0.129694397-0.145824265i , +0.031119672+0.051442192i , +0.043601152+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[16][1] = { { +0.101060181+0.000000000i , +0.103467951-0.131845258i , -0.218902902-0.121818506i },
+             { +0.103467951+0.131845258i , +0.277941218+0.000000000i , -0.065191288-0.410306203i },
+             { -0.218902902+0.121818506i , -0.065191288+0.410306203i , +0.620998592+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[16][2] = { { +0.025445538+0.000000000i , -0.023986693-0.125252750i , +0.089208505-0.024005759i },
+             { -0.023986693+0.125252750i , +0.639154206+0.000000000i , +0.034071616+0.461748395i },
+             { +0.089208505+0.024005759i , +0.034071616-0.461748395i , +0.335400247+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[17][0] = { { +0.951515505+0.000000000i , -0.117545923-0.062202606i , +0.117447786-0.121051691i },
+             { -0.117545923+0.062202606i , +0.018587423+0.000000000i , -0.006595572+0.022631982i },
+             { +0.117447786+0.121051691i , -0.006595572-0.022631982i , +0.029897064+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[17][1] = { { +0.032129841+0.000000000i , +0.079513712+0.122954291i , -0.015601571+0.097025334i },
+             { +0.079513712-0.122954291i , +0.667298320+0.000000000i , +0.332685822+0.299818608i },
+             { -0.015601571-0.097025334i , +0.332685822-0.299818608i , +0.300571831+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[17][2] = { { +0.016354645+0.000000000i , +0.038032211-0.060751685i , -0.101846214+0.024026357i },
+             { +0.038032211+0.060751685i , +0.314114249+0.000000000i , -0.326090250-0.322450590i },
+             { -0.101846214-0.024026357i , -0.326090250+0.322450590i , +0.669531097+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[18][0] = { { +0.111358510+0.000000000i , -0.094603534-0.253306473i , -0.139188215-0.080438905i },
+             { -0.094603534+0.253306473i , +0.656564210+0.000000000i , +0.301219870-0.248274475i },
+             { -0.139188215+0.080438905i , +0.301219870+0.248274475i , +0.232077271+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[18][1] = { { +0.191674818+0.000000000i , +0.039335680-0.142599670i , +0.216453966+0.293600540i },
+             { +0.039335680+0.142599670i , +0.114161931+0.000000000i , -0.174008164+0.221287530i },
+             { +0.216453966-0.293600540i , -0.174008164-0.221287530i , +0.694163243+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[18][2] = { { +0.696966664+0.000000000i , +0.055267854+0.395906143i , -0.077265752-0.213161636i },
+             { +0.055267854-0.395906143i , +0.229273850+0.000000000i , -0.127211706+0.026986944i },
+             { -0.077265752+0.213161636i , -0.127211706-0.026986944i , +0.073759478+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[19][0] = { { +0.073137251+0.000000000i , -0.092160196-0.153909450i , -0.082234965-0.169835120i },
+             { -0.092160196+0.153909450i , +0.440016868+0.000000000i , +0.461023987+0.040954519i },
+             { -0.082234965+0.169835120i , +0.461023987-0.040954519i , +0.486845872+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[19][1] = { { +0.369598395+0.000000000i , +0.163727471+0.378546069i , -0.060769146-0.243307821i },
+             { +0.163727471-0.378546069i , +0.460239613+0.000000000i , -0.276118109-0.045542010i },
+             { -0.060769146+0.243307821i , -0.276118109+0.045542010i , +0.170161984+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[19][2] = { { +0.557264345+0.000000000i , -0.071567275-0.224636619i , +0.143004110+0.413142942i },
+             { -0.071567275+0.224636619i , +0.099743511+0.000000000i , -0.184905878+0.004587492i },
+             { +0.143004110-0.413142942i , -0.184905878-0.004587492i , +0.342992135+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[20][0] = { { +0.076431059+0.000000000i , +0.175238933-0.029214378i , +0.196207097-0.023020775i },
+             { +0.175238933+0.029214378i , +0.412949483+0.000000000i , +0.458657281+0.022215243i },
+             { +0.196207097+0.023020775i , +0.458657281-0.022215243i , +0.510619449+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[20][1] = { { +0.789870424+0.000000000i , -0.249326184-0.205940479i , -0.088515883+0.231441187i },
+             { -0.249326184+0.205940479i , +0.132395180+0.000000000i , -0.032402516-0.096133935i },
+             { -0.088515883-0.231441187i , -0.032402516+0.096133935i , +0.077734387+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[20][2] = { { +0.133698508+0.000000000i , +0.074087251+0.235154857i , -0.107691214-0.208420412i },
+             { +0.074087251-0.235154857i , +0.454655328+0.000000000i , -0.426254764+0.073918692i },
+             { -0.107691214+0.208420412i , -0.426254764-0.073918692i , +0.411646155+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[21][0] = { { +0.012854052+0.000000000i , +0.091522322-0.001283756i , -0.062017482-0.021555874i },
+             { +0.091522322+0.001283756i , +0.651778602+0.000000000i , -0.439419352-0.159674305i },
+             { -0.062017482+0.021555874i , -0.439419352+0.159674305i , +0.335367338+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[21][1] = { { +0.138766516+0.000000000i , +0.187886381-0.014489711i , +0.278740613+0.079389966i },
+             { +0.187886381+0.014489711i , +0.255906502+0.000000000i , +0.369118152+0.136597570i },
+             { +0.278740613-0.079389966i , +0.369118152-0.136597570i , +0.605326973+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[21][2] = { { +0.848379424+0.000000000i , -0.279408702+0.015773467i , -0.216723131-0.057834092i },
+             { -0.279408702-0.015773467i , +0.092314887+0.000000000i , +0.070301201+0.023076734i },
+             { -0.216723131+0.057834092i , +0.070301201-0.023076734i , +0.059305681+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[22][0] = { { +0.137057871+0.000000000i , -0.004348343-0.174452747i , +0.120829749+0.270592869i },
+             { -0.004348343+0.174452747i , +0.222188412+0.000000000i , -0.348254930+0.145212050i },
+             { +0.120829749-0.270592869i , -0.348254930-0.145212050i , +0.640753708+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[22][1] = { { +0.557480213+0.000000000i , +0.281614242+0.374985706i , +0.132915030-0.095439683i },
+             { +0.281614242-0.374985706i , +0.394490910+0.000000000i , +0.002945855-0.137616388i },
+             { +0.132915030+0.095439683i , +0.002945855+0.137616388i , +0.048028869+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[22][2] = { { +0.305461907+0.000000000i , -0.277265899-0.200532959i , -0.253744779-0.175153186i },
+             { -0.277265899+0.200532959i , +0.383320670+0.000000000i , +0.345309075-0.007595662i },
+             { -0.253744779+0.175153186i , +0.345309075+0.007595662i , +0.311217414+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[23][0] = { { +0.003144307+0.000000000i , +0.019840489+0.028106937i , -0.035929532-0.025687249i },
+             { +0.019840489-0.028106937i , +0.376441565+0.000000000i , -0.456333744+0.159088541i },
+             { -0.035929532+0.025687249i , -0.456333744-0.159088541i , +0.620414119+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[23][1] = { { +0.603109467+0.000000000i , -0.345461187-0.209535620i , -0.272899773-0.040564897i },
+             { -0.345461187+0.209535620i , +0.270678267+0.000000000i , +0.170410331-0.071576775i },
+             { -0.272899773+0.040564897i , +0.170410331+0.071576775i , +0.126212258+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[23][2] = { { +0.393746217+0.000000000i , +0.325620698+0.181428683i , +0.308829305+0.066252146i },
+             { +0.325620698-0.181428683i , +0.352880160+0.000000000i , +0.285923413-0.087511766i },
+             { +0.308829305-0.066252146i , +0.285923413+0.087511766i , +0.253373614+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[24][0] = { { +0.926431658+0.000000000i , -0.073181958+0.237673057i , -0.064151311-0.046867286i },
+             { -0.073181958-0.237673057i , +0.066755164+0.000000000i , -0.006956125+0.020160010i },
+             { -0.064151311+0.046867286i , -0.006956125-0.020160010i , +0.006813170+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[24][1] = { { +0.030111449+0.000000000i , +0.036253886-0.057185187i , +0.151327750+0.041474955i },
+             { +0.036253886+0.057185187i , +0.152250720+0.000000000i , +0.103431288+0.337324623i },
+             { +0.151327750-0.041474955i , +0.103431288-0.337324623i , +0.817637823+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[24][2] = { { +0.043456885+0.000000000i , +0.036928072-0.180487870i , -0.087176439+0.005392331i },
+             { +0.036928072+0.180487870i , +0.780994107+0.000000000i , -0.096475163-0.357484632i },
+             { -0.087176439-0.005392331i , -0.096475163+0.357484632i , +0.175548999+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[25][0] = { { +0.908490779+0.000000000i , -0.150309250-0.058942648i , +0.011695769+0.238602900i },
+             { -0.150309250+0.058942648i , +0.028692768+0.000000000i , -0.017415541-0.038717880i },
+             { +0.011695769-0.238602900i , -0.017415541+0.038717880i , +0.062816444+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[25][1] = { { +0.069185217+0.000000000i , +0.177879635+0.130930290i , -0.044266230-0.116855530i },
+             { +0.177879635-0.130930290i , +0.705120391+0.000000000i , -0.334955791-0.216670967i },
+             { -0.044266230+0.116855530i , -0.334955791+0.216670967i , +0.225694383+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[25][2] = { { +0.022323995+0.000000000i , -0.027570385-0.071987642i , +0.032570461-0.121747371i },
+             { -0.027570385+0.071987642i , +0.266186832+0.000000000i , +0.352371333+0.255388848i },
+             { +0.032570461+0.121747371i , +0.352371333-0.255388848i , +0.711489164+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[26][0] = { { +0.749370916+0.000000000i , +0.215301280+0.338336609i , +0.164237201+0.003736717i },
+             { +0.215301280-0.338336609i , +0.214615090+0.000000000i , +0.048873987-0.073078540i },
+             { +0.164237201-0.003736717i , +0.048873987+0.073078540i , +0.036013985+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[26][1] = { { +0.248694399+0.000000000i , -0.204590205-0.321797701i , -0.203510547-0.004246058i },
+             { -0.204590205+0.321797701i , +0.584697185+0.000000000i , +0.172913566-0.259839078i },
+             { -0.203510547+0.004246058i , +0.172913566+0.259839078i , +0.166608407+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[26][2] = { { +0.001934677+0.000000000i , -0.010711075-0.016538908i , +0.039273347+0.000509340i },
+             { -0.010711075+0.016538908i , +0.200687716+0.000000000i , -0.221787554+0.332917619i },
+             { +0.039273347-0.000509340i , -0.221787554-0.332917619i , +0.797377599+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[27][0] = { { +0.071479063+0.000000000i , -0.220727549-0.012125233i , -0.132279973-0.002033388i },
+             { -0.220727549+0.012125233i , +0.683664230+0.000000000i , +0.408825889-0.016159964i },
+             { -0.132279973+0.002033388i , +0.408825889+0.016159964i , +0.244856698+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[27][1] = { { +0.666540199+0.000000000i , +0.017936098+0.181473875i , +0.318163921-0.296279570i },
+             { +0.017936098-0.181473875i , +0.049891180+0.000000000i , -0.072104264-0.094596754i },
+             { +0.318163921+0.296279570i , -0.072104264+0.094596754i , +0.283568612+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[27][2] = { { +0.261980729+0.000000000i , +0.202791451-0.169348642i , -0.185883949+0.298312958i },
+             { +0.202791451+0.169348642i , +0.266444582+0.000000000i , -0.336721625+0.110756717i },
+             { -0.185883949-0.298312958i , -0.336721625-0.110756717i , +0.471574681+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[28][0] = { { +0.074099713+0.000000000i , +0.064158561-0.107907644i , +0.052726622-0.223759797i },
+             { +0.064158561+0.107907644i , +0.212691569+0.000000000i , +0.371502983-0.116957300i },
+             { +0.052726622+0.223759797i , +0.371502983+0.116957300i , +0.713208709+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[28][1] = { { +0.100694313+0.000000000i , -0.248169077+0.116400494i , +0.102736257-0.069736914i },
+             { -0.248169077-0.116400494i , +0.746188970+0.000000000i , -0.333816107+0.053111218i },
+             { +0.102736257+0.069736914i , -0.333816107-0.053111218i , +0.153116708+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[28][2] = { { +0.825205965+0.000000000i , +0.184010516-0.008492850i , -0.155462879+0.293496711i },
+             { +0.184010516+0.008492850i , +0.041119452+0.000000000i , -0.037686875+0.063846082i },
+             { -0.155462879-0.293496711i , -0.037686875-0.063846082i , +0.133674574+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[29][0] = { { +0.085289203+0.000000000i , +0.073940343-0.215438055i , +0.038571124-0.156991973i },
+             { +0.073940343+0.215438055i , +0.608292022+0.000000000i , +0.429995940-0.038672594i },
+             { +0.038571124+0.156991973i , +0.429995940+0.038672594i , +0.306418767+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[29][1] = { { +0.517835260+0.000000000i , +0.158485810-0.065458486i , -0.279324577+0.377169846i },
+             { +0.158485810+0.065458486i , +0.056779782+0.000000000i , -0.133165827+0.080125685i },
+             { -0.279324577-0.377169846i , -0.133165827-0.080125685i , +0.425384949+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[29][2] = { { +0.396875529+0.000000000i , -0.232426153+0.280896541i , +0.240753453-0.220177873i },
+             { -0.232426153-0.280896541i , +0.334928187+0.000000000i , -0.296830114-0.041453092i },
+             { +0.240753453+0.220177873i , -0.296830114+0.041453092i , +0.268196275+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[30][0] = { { +0.048932923+0.000000000i , +0.084064351-0.132263896i , -0.049919384+0.139592201i },
+             { +0.084064351+0.132263896i , +0.501923039+0.000000000i , -0.463071728+0.104882310i },
+             { -0.049919384-0.139592201i , -0.463071728-0.104882310i , +0.449144030+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[30][1] = { { +0.555261392+0.000000000i , +0.242935726-0.077237138i , +0.294146540-0.308934652i },
+             { +0.242935726+0.077237138i , +0.117032007+0.000000000i , +0.171666798-0.094247917i },
+             { +0.294146540+0.308934652i , +0.171666798+0.094247917i , +0.327706593+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[30][2] = { { +0.395805677+0.000000000i , -0.327000076+0.209501034i , -0.244227156+0.169342450i },
+             { -0.327000076-0.209501034i , +0.381044946+0.000000000i , +0.291404930-0.010634393i },
+             { -0.244227156-0.169342450i , +0.291404930+0.010634393i , +0.223149369+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[31][0] = { { +0.040582792+0.000000000i , +0.053608043-0.046832414i , -0.130458039+0.129805260i },
+             { +0.053608043+0.046832414i , +0.124858332+0.000000000i , -0.322124247+0.020918733i },
+             { -0.130458039-0.129805260i , -0.322124247-0.020918733i , +0.834558867+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[31][1] = { { +0.112744908+0.000000000i , -0.296530751+0.053600787i , -0.095487571+0.010585561i },
+             { -0.296530751-0.053600787i , +0.805389437+0.000000000i , +0.256174817+0.017555239i },
+             { -0.095487571-0.010585561i , +0.256174817-0.017555239i , +0.081865646+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[31][2] = { { +0.846672291+0.000000000i , +0.242922708-0.006768373i , +0.225945610-0.140390822i },
+             { +0.242922708+0.006768373i , +0.069752222+0.000000000i , +0.065949430-0.038473973i },
+             { +0.225945610+0.140390822i , +0.065949430+0.038473973i , +0.083575479+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[32][0] = { { +0.051806474+0.000000000i , -0.157005459+0.078585334i , +0.114249916-0.072409533i },
+             { -0.157005459-0.078585334i , +0.595029437+0.000000000i , -0.456085690+0.046139480i },
+             { +0.114249916+0.072409533i , -0.456085690-0.046139480i , +0.353164080+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[32][1] = { { +0.644369715+0.000000000i , -0.087711350+0.144351806i , -0.302869873+0.329994656i },
+             { -0.087711350-0.144351806i , +0.044276962+0.000000000i , +0.115151997+0.022930214i },
+             { -0.302869873-0.329994656i , +0.115151997-0.022930214i , +0.311353314+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[32][2] = { { +0.303823803+0.000000000i , +0.244716809-0.222937140i , +0.188619957-0.257585122i },
+             { +0.244716809+0.222937140i , +0.360693592+0.000000000i , +0.340933693-0.069069694i },
+             { +0.188619957+0.257585122i , +0.340933693+0.069069694i , +0.335482596+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[33][0] = { { +0.794876890+0.000000000i , -0.129171030+0.221995255i , -0.191690430+0.245632487i },
+             { -0.129171030-0.221995255i , +0.082990296+0.000000000i , +0.099751411+0.013619427i },
+             { -0.191690430-0.245632487i , +0.099751411-0.013619427i , +0.122132805+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[33][1] = { { +0.175844975+0.000000000i , +0.113865241-0.068102057i , +0.175399784-0.310733397i },
+             { +0.113865241+0.068102057i , +0.100106282+0.000000000i , +0.233919227-0.133280167i },
+             { +0.175399784+0.310733397i , +0.233919227+0.133280167i , +0.724048735+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[33][2] = { { +0.029278126+0.000000000i , +0.015305788-0.153893197i , +0.016290646+0.065100910i },
+             { +0.015305788+0.153893197i , +0.816903413+0.000000000i , -0.333670638+0.119660740i },
+             { +0.016290646-0.065100910i , -0.333670638-0.119660740i , +0.153818452+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[34][0] = { { +0.964781806+0.000000000i , +0.119514184+0.106886466i , +0.042304497+0.080497351i },
+             { +0.119514184-0.106886466i , +0.026646807+0.000000000i , +0.014158709+0.005284921i },
+             { +0.042304497-0.080497351i , +0.014158709-0.005284921i , +0.008571378+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[34][1] = { { +0.025947915+0.000000000i , -0.123921003-0.098140851i , +0.016121227-0.005165783i },
+             { -0.123921003+0.098140851i , +0.963007654+0.000000000i , -0.057452963+0.085644649i },
+             { +0.016121227+0.005165783i , -0.057452963-0.085644649i , +0.011044422+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[34][2] = { { +0.009270271+0.000000000i , +0.004406819-0.008745615i , -0.058425724-0.075331568i },
+             { +0.004406819+0.008745615i , +0.010345529+0.000000000i , +0.043294254-0.090929569i },
+             { -0.058425724+0.075331568i , +0.043294254+0.090929569i , +0.980384191+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[35][0] = { { +0.808714561+0.000000000i , -0.054948275+0.251713740i , +0.237882993-0.178123116i },
+             { -0.054948275-0.251713740i , +0.082079822+0.000000000i , -0.071604115-0.061938863i },
+             { +0.237882993+0.178123116i , -0.071604115+0.061938863i , +0.109205609+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[35][1] = { { +0.141624796+0.000000000i , +0.056491823-0.042347472i , -0.247442663+0.235275794i },
+             { +0.056491823+0.042347472i , +0.035196079+0.000000000i , -0.169051050+0.019859439i },
+             { -0.247442663-0.235275794i , -0.169051050-0.019859439i , +0.823179116+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[35][2] = { { +0.049660634+0.000000000i , -0.001543548-0.209366269i , +0.009559670-0.057152678i },
+             { -0.001543548+0.209366269i , +0.882724091+0.000000000i , +0.240655165+0.042079424i },
+             { +0.009559670+0.057152678i , +0.240655165-0.042079424i , +0.067615266+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[36][0] = { { +0.399151895+0.000000000i , +0.476770272-0.100079482i , -0.049787857+0.005002020i },
+             { +0.476770272+0.100079482i , +0.594575156+0.000000000i , -0.060723661-0.006508624i },
+             { -0.049787857-0.005002020i , -0.060723661+0.006508624i , +0.006272940+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[36][1] = { { +0.463447126+0.000000000i , -0.339285961+0.059970491i , +0.331746840-0.141054879i },
+             { -0.339285961-0.059970491i , +0.256148797+0.000000000i , -0.261121857+0.060336806i },
+             { +0.331746840+0.141054879i , -0.261121857-0.060336806i , +0.280404068+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[36][2] = { { +0.137400970+0.000000000i , -0.137484311+0.040108991i , -0.281958983+0.136052859i },
+             { -0.137484311-0.040108991i , +0.149276038+0.000000000i , +0.321845518-0.053828182i },
+             { -0.281958983-0.136052859i , +0.321845518+0.053828182i , +0.713322983+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[37][0] = { { +0.387760157+0.000000000i , +0.315273882-0.265281434i , +0.194973533+0.172091990i },
+             { +0.315273882+0.265281434i , +0.437827036+0.000000000i , +0.040791332+0.273310636i },
+             { +0.194973533-0.172091990i , +0.040791332-0.273310636i , +0.174412799+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[37][1] = { { +0.086846352+0.000000000i , +0.059187283-0.064516603i , -0.212026540-0.163350155i },
+             { +0.059187283+0.064516603i , +0.088265413+0.000000000i , -0.023149832-0.268836715i },
+             { -0.212026540+0.163350155i , -0.023149832+0.268836715i , +0.824888226+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[37][2] = { { +0.525393483+0.000000000i , -0.374461165+0.329798037i , +0.017053006-0.008741836i },
+             { -0.374461165-0.329798037i , +0.473907542+0.000000000i , -0.017641500-0.004473921i },
+             { +0.017053006+0.008741836i , -0.017641500+0.004473921i , +0.000698966+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[38][0] = { { +0.554671223+0.000000000i , +0.165272586-0.465381516i , -0.038588477+0.040335907i },
+             { +0.165272586+0.465381516i , +0.439710909+0.000000000i , -0.045340749-0.020357909i },
+             { -0.038588477-0.040335907i , -0.045340749+0.020357909i , +0.005617860+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[38][1] = { { +0.306175589+0.000000000i , -0.122178826+0.353634482i , -0.164491232+0.213048598i },
+             { -0.122178826-0.353634482i , +0.457205010+0.000000000i , +0.311712237+0.104971610i },
+             { -0.164491232-0.213048598i , +0.311712237-0.104971610i , +0.236619392+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[38][2] = { { +0.139153180+0.000000000i , -0.043093760+0.111747034i , +0.203079708-0.253384505i },
+             { -0.043093760-0.111747034i , +0.103084072+0.000000000i , -0.266371488-0.084613701i },
+             { +0.203079708+0.253384505i , -0.266371488+0.084613701i , +0.757762739+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[39][0] = { { +0.336569513+0.000000000i , -0.070083209+0.170181494i , -0.414915205-0.131386600i },
+             { -0.070083209-0.170181494i , +0.100643111+0.000000000i , +0.019963263+0.237154229i },
+             { -0.414915205+0.131386600i , +0.019963263-0.237154229i , +0.562787368+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[39][1] = { { +0.558075897+0.000000000i , -0.195364469-0.245634644i , +0.314863132+0.221324929i },
+             { -0.195364469+0.245634644i , +0.176505861+0.000000000i , -0.207638674+0.061106851i },
+             { +0.314863132-0.221324929i , -0.207638674-0.061106851i , +0.265418233+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[39][2] = { { +0.105354581+0.000000000i , +0.265447679+0.075453150i , +0.100052074-0.089938329i },
+             { +0.265447679-0.075453150i , +0.722851019+0.000000000i , +0.187675411-0.298261080i },
+             { +0.100052074+0.089938329i , +0.187675411+0.298261080i , +0.171794391+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[40][0] = { { +0.262091609+0.000000000i , -0.295958939+0.171879444i , -0.135788374-0.240472151i },
+             { -0.295958939-0.171879444i , +0.446921005+0.000000000i , -0.004366542+0.360595759i },
+             { -0.135788374+0.240472151i , -0.004366542-0.360595759i , +0.290987377+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[40][1] = { { +0.118336130+0.000000000i , +0.138716414-0.203216593i , -0.194526169-0.077155789i },
+             { +0.138716414+0.203216593i , +0.511587066+0.000000000i , -0.095529877-0.424500340i },
+             { -0.194526169+0.077155789i , -0.095529877+0.424500340i , +0.370076796+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[40][2] = { { +0.619572252+0.000000000i , +0.157242525+0.031337149i , +0.330314543+0.317627939i },
+             { +0.157242525-0.031337149i , +0.041491921+0.000000000i , +0.099896419+0.063904581i },
+             { +0.330314543-0.317627939i , +0.099896419-0.063904581i , +0.338935818+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[41][0] = { { +0.410826153+0.000000000i , -0.135781354+0.043622239i , -0.078412029-0.464284486i },
+             { -0.135781354-0.043622239i , +0.049508729+0.000000000i , -0.023382748+0.161775687i },
+             { -0.078412029+0.464284486i , -0.023382748-0.161775687i , +0.539665109+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[41][1] = { { +0.319551715+0.000000000i , +0.267517994+0.286759941i , +0.143983351+0.207147415i },
+             { +0.267517994-0.286759941i , +0.481290346+0.000000000i , +0.306428392+0.044208805i },
+             { +0.143983351-0.207147415i , +0.306428392-0.044208805i , +0.199157931+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[41][2] = { { +0.269622123+0.000000000i , -0.131736640-0.330382180i , -0.065571321+0.257137071i },
+             { -0.131736640+0.330382180i , +0.469200917+0.000000000i , -0.283045644-0.205984492i },
+             { -0.065571321-0.257137071i , -0.283045644+0.205984492i , +0.261176951+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[42][0] = { { +0.063662061+0.000000000i , -0.084594946+0.136897381i , +0.081271475+0.164641850i },
+             { -0.084594946-0.136897381i , +0.406791780+0.000000000i , +0.246047370-0.393542504i },
+             { +0.081271475-0.164641850i , +0.246047370+0.393542504i , +0.529546151+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[42][1] = { { +0.455895334+0.000000000i , -0.231795844-0.307018592i , +0.265900031-0.171354000i },
+             { -0.231795844+0.307018592i , +0.324613421+0.000000000i , -0.019797669+0.266191382i },
+             { +0.265900031+0.171354000i , -0.019797669-0.266191382i , +0.219491237+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[42][2] = { { +0.480442597+0.000000000i , +0.316390790+0.170121212i , -0.347171506+0.006712150i },
+             { +0.316390790-0.170121212i , +0.268594791+0.000000000i , -0.226249701+0.127351123i },
+             { -0.347171506-0.006712150i , -0.226249701-0.127351123i , +0.250962604+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[43][0] = { { +0.473753720+0.000000000i , -0.194324040+0.264322856i , +0.257281891+0.274752145i },
+             { -0.194324040-0.264322856i , +0.227182201+0.000000000i , +0.047761561-0.256243743i },
+             { +0.257281891-0.274752145i , +0.047761561+0.256243743i , +0.299064070+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[43][1] = { { +0.500715006+0.000000000i , +0.218428495-0.138889161i , -0.346641141-0.250675459i },
+             { +0.218428495+0.138889161i , +0.133811075+0.000000000i , -0.081683591-0.205504836i },
+             { -0.346641141+0.250675459i , -0.081683591+0.205504836i , +0.365473911+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[43][2] = { { +0.025531266+0.000000000i , -0.024104455-0.125433695i , +0.089359250-0.024076686i },
+             { -0.024104455+0.125433695i , +0.639006715+0.000000000i , +0.033922030+0.461748578i },
+             { +0.089359250+0.024076686i , +0.033922030-0.461748578i , +0.335462010+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[44][0] = { { +0.111525885+0.000000000i , -0.176590547+0.043859884i , +0.183945829+0.179287103i },
+             { -0.176590547-0.043859884i , +0.296863062+0.000000000i , -0.220752199-0.356224547i },
+             { +0.183945829-0.179287103i , -0.220752199+0.356224547i , +0.591611044+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[44][1] = { { +0.190966695+0.000000000i , +0.204803436+0.258882564i , -0.138836223+0.162044035i },
+             { +0.204803436-0.258882564i , +0.570595003+0.000000000i , +0.070778020+0.361997469i },
+             { -0.138836223-0.162044035i , +0.070778020-0.361997469i , +0.238438293+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[44][2] = { { +0.697507411+0.000000000i , -0.028212889-0.302742448i , -0.045109606-0.341331138i },
+             { -0.028212889+0.302742448i , +0.132541926+0.000000000i , +0.149974179-0.005772921i },
+             { -0.045109606+0.341331138i , +0.149974179+0.005772921i , +0.169950654+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[45][0] = { { +0.459289453+0.000000000i , +0.357730876-0.319640064i , -0.130705945-0.033427958i },
+             { +0.357730876+0.319640064i , +0.501080903+0.000000000i , -0.078540101-0.117000450i },
+             { -0.130705945+0.033427958i , -0.078540101+0.117000450i , +0.039629635+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[45][1] = { { +0.015312492+0.000000000i , +0.016731923-0.010154792i , +0.113644145+0.042189373i },
+             { +0.016731923+0.010154792i , +0.025017326+0.000000000i , +0.096200007+0.121465770i },
+             { +0.113644145-0.042189373i , +0.096200007-0.121465770i , +0.959670173+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[45][2] = { { +0.525398046+0.000000000i , -0.374462799+0.329794857i , +0.017061800-0.008761415i },
+             { -0.374462799-0.329794857i , +0.473901763+0.000000000i , -0.017659906-0.004465320i },
+             { +0.017061800+0.008761415i , -0.017659906+0.004465320i , +0.000700183+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[46][0] = { { +0.518801359+0.000000000i , +0.152652036-0.431673632i , +0.168752688+0.107351070i },
+             { +0.152652036+0.431673632i , +0.404094495+0.000000000i , -0.039668707+0.171999256i },
+             { +0.168752688-0.107351070i , -0.039668707-0.171999256i , +0.077104137+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[46][1] = { { +0.343796482+0.000000000i , -0.015160310+0.391551367i , +0.113204995-0.243398373i },
+             { -0.015160310-0.391551367i , +0.446608148+0.000000000i , -0.282199477-0.118196613i },
+             { +0.113204995+0.243398373i , -0.282199477+0.118196613i , +0.209595362+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[46][2] = { { +0.137402151+0.000000000i , -0.137491726+0.040122265i , -0.281957683+0.136047302i },
+             { -0.137491726-0.040122265i , +0.149297349+0.000000000i , +0.321868184-0.053802643i },
+             { -0.281957683-0.136047302i , +0.321868184+0.053802643i , +0.713300492+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[47][0] = { { +0.363479229+0.000000000i , +0.446934300-0.079438325i , +0.068550639+0.143534525i },
+             { +0.446934300+0.079438325i , +0.566911952+0.000000000i , +0.052920452+0.191471883i },
+             { +0.068550639-0.143534525i , +0.052920452-0.191471883i , +0.069608810+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[47][1] = { { +0.497346448+0.000000000i , -0.403828532-0.032319191i , -0.271673144+0.109839106i },
+             { -0.403828532+0.032319191i , +0.329995350+0.000000000i , +0.213451720-0.106839861i },
+             { -0.271673144-0.109839106i , +0.213451720+0.106839861i , +0.172658194+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[47][2] = { { +0.139174315+0.000000000i , -0.043105768+0.111757516i , +0.203122505-0.253373631i },
+             { -0.043105768-0.111757516i , +0.103092689+0.000000000i , -0.266372172-0.084632022i },
+             { +0.203122505+0.253373631i , -0.266372172+0.084632022i , +0.757732987+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[48][0] = { { +0.621711251+0.000000000i , -0.193422605+0.223305667i , -0.252784547-0.289842369i },
+             { -0.193422605-0.223305667i , +0.140383076+0.000000000i , -0.025460695+0.180968711i },
+             { -0.252784547+0.289842369i , -0.025460695-0.180968711i , +0.237905664+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[48][1] = { { +0.334943478+0.000000000i , +0.156348493-0.043077352i , +0.339855818+0.284523895i },
+             { +0.156348493+0.043077352i , +0.078522247+0.000000000i , +0.122048681+0.176522223i },
+             { +0.339855818-0.284523895i , +0.122048681-0.176522223i , +0.586534266+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[48][2] = { { +0.043345262+0.000000000i , +0.037074112-0.180228315i , -0.087071272+0.005318474i },
+             { +0.037074112+0.180228315i , +0.781094668+0.000000000i , -0.096587986-0.357490934i },
+             { -0.087071272-0.005318474i , -0.096587986+0.357490934i , +0.175560062+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[49][0] = { { +0.230162323+0.000000000i , -0.225616399-0.011323654i , -0.217818627-0.280555997i },
+             { -0.225616399+0.011323654i , +0.221717381+0.000000000i , +0.227319458+0.264298417i },
+             { -0.217818627+0.280555997i , +0.227319458-0.264298417i , +0.548120288+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[49][1] = { { +0.212396726+0.000000000i , +0.297317685+0.236028390i , +0.074910196-0.132535258i },
+             { +0.297317685-0.236028390i , +0.678481354+0.000000000i , -0.042420438-0.268770690i },
+             { +0.074910196+0.132535258i , -0.042420438+0.268770690i , +0.109121912+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[49][2] = { { +0.557440943+0.000000000i , -0.071701286-0.224704736i , +0.142908431+0.413091255i },
+             { -0.071701286+0.224704736i , +0.099801256+0.000000000i , -0.184899021+0.004472273i },
+             { +0.142908431-0.413091255i , -0.184899021-0.004472273i , +0.342757792+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[50][0] = { { +0.157583223+0.000000000i , -0.082788099+0.173700230i , -0.158481832-0.265722797i },
+             { -0.082788099-0.173700230i , +0.234959295+0.000000000i , -0.209639701+0.314291210i },
+             { -0.158481832+0.265722797i , -0.209639701-0.314291210i , +0.607457474+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[50][1] = { { +0.448684711+0.000000000i , -0.242789026-0.355034306i , -0.150420416+0.199360340i },
+             { -0.242789026+0.355034306i , +0.412307083+0.000000000i , -0.076355016-0.226900797i },
+             { -0.150420416-0.199360340i , -0.076355016+0.226900797i , +0.139008197+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[50][2] = { { +0.393732057+0.000000000i , +0.325577125+0.181334076i , +0.308902248+0.066362458i },
+             { +0.325577125-0.181334076i , +0.352733613+0.000000000i , +0.285994717-0.087390414i },
+             { +0.308902248-0.066362458i , +0.285994717+0.087390414i , +0.253534321+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[51][0] = { { +0.169571796+0.000000000i , -0.263939134+0.170747300i , +0.121810027+0.164805913i },
+             { -0.263939134-0.170747300i , +0.582753281+0.000000000i , -0.023649396-0.379175518i },
+             { +0.121810027-0.164805913i , -0.023649396+0.379175518i , +0.247674915+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[51][1] = { { +0.053460616+0.000000000i , +0.063905728-0.123762816i , +0.169282879+0.050444940i },
+             { +0.063905728+0.123762816i , +0.362906060+0.000000000i , +0.085575864+0.452195572i },
+             { +0.169282879-0.050444940i , +0.085575864-0.452195572i , +0.583633315+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[51][2] = { { +0.776967579+0.000000000i , +0.200033406-0.046984484i , -0.291092906-0.215250852i },
+             { +0.200033406+0.046984484i , +0.054340650+0.000000000i , -0.061926468-0.073020054i },
+             { -0.291092906+0.215250852i , -0.061926468+0.073020054i , +0.168691762+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[52][0] = { { +0.262808183+0.000000000i , -0.180314913+0.061375563i , +0.053589551+0.393176497i },
+             { -0.180314913-0.061375563i , +0.138049093+0.000000000i , +0.055053231-0.282276886i },
+             { +0.053589551-0.393176497i , +0.055053231+0.282276886i , +0.599142715+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[52][1] = { { +0.415720757+0.000000000i , +0.320701339+0.280616911i , -0.198860136-0.147500624i },
+             { +0.320701339-0.280616911i , +0.436820176+0.000000000i , -0.252972412+0.020446120i },
+             { -0.198860136+0.147500624i , -0.252972412-0.020446120i , +0.147459059+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[52][2] = { { +0.321471052+0.000000000i , -0.140386426-0.341992474i , +0.145270585-0.245675874i },
+             { -0.140386426+0.341992474i , +0.425130722+0.000000000i , +0.197919181+0.261830765i },
+             { +0.145270585+0.245675874i , +0.197919181-0.261830765i , +0.253398218+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[53][0] = { { +0.216551482+0.000000000i , -0.011264044+0.212956928i , +0.347119145+0.060726395i },
+             { -0.011264044-0.212956928i , +0.210007957+0.000000000i , +0.041662785-0.344516001i },
+             { +0.347119145-0.060726395i , +0.041662785+0.344516001i , +0.573440553+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[53][1] = { { +0.678318592+0.000000000i , -0.193181628-0.343883574i , -0.189968236-0.162909401i },
+             { -0.193181628+0.343883574i , +0.229353975+0.000000000i , +0.136691284-0.049911422i },
+             { -0.189968236+0.162909401i , +0.136691284+0.049911422i , +0.092327424+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[53][2] = { { +0.105129918+0.000000000i , +0.204445672+0.130926647i , -0.157150908+0.102183007i },
+             { +0.204445672-0.130926647i , +0.560638059+0.000000000i , -0.178354070+0.394427423i },
+             { -0.157150908-0.102183007i , -0.178354070-0.394427423i , +0.334232014+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[54][0] = { { +0.289225665+0.000000000i , +0.286278375-0.297318869i , -0.043293585+0.182608889i },
+             { +0.286278375+0.297318869i , +0.588999719+0.000000000i , -0.230571115+0.136243024i },
+             { -0.043293585-0.182608889i , -0.230571115-0.136243024i , +0.121774607+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[54][1] = { { +0.315006752+0.000000000i , +0.040797746+0.087763695i , +0.287430573-0.351844033i },
+             { +0.040797746-0.087763695i , +0.029735633+0.000000000i , -0.060800627-0.125649420i },
+             { +0.287430573+0.351844033i , -0.060800627+0.125649420i , +0.655257606+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[54][2] = { { +0.395767574+0.000000000i , -0.327076121+0.209555174i , -0.244136987+0.169235145i },
+             { -0.327076121-0.209555174i , +0.381264640+0.000000000i , +0.291371742-0.010593605i },
+             { -0.244136987-0.169235145i , +0.291371742+0.010593605i , +0.222967778+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[55][0] = { { +0.741872522+0.000000000i , +0.372017798-0.202210555i , +0.046627100+0.100185938i },
+             { +0.372017798+0.202210555i , +0.241667331+0.000000000i , -0.003925934+0.062948069i },
+             { +0.046627100-0.100185938i , -0.003925934-0.062948069i , +0.016460139+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[55][1] = { { +0.248887771+0.000000000i , -0.376388250+0.210949788i , +0.011925266-0.025149593i },
+             { -0.376388250-0.210949788i , +0.747999498+0.000000000i , -0.039350391+0.027925751i },
+             { +0.011925266+0.025149593i , -0.039350391-0.027925751i , +0.003112722+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[55][2] = { { +0.009239698+0.000000000i , +0.004370452-0.008739233i , -0.058552365-0.075036345i },
+             { +0.004370452+0.008739233i , +0.010333163+0.000000000i , +0.043276325-0.090873820i },
+             { -0.058552365+0.075036345i , +0.043276325+0.090873820i , +0.980427131+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[56][0] = { { +0.310386959+0.000000000i , +0.299012055-0.331217593i , +0.103285094-0.065312792i },
+             { +0.299012055+0.331217593i , +0.641500275+0.000000000i , +0.169195996+0.047297503i },
+             { +0.103285094+0.065312792i , +0.169195996-0.047297503i , +0.048112757+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[56][1] = { { +0.292536247+0.000000000i , -0.066646466+0.050346712i , -0.344130049+0.285581407i },
+             { -0.066646466-0.050346712i , +0.023848478+0.000000000i , +0.127550460-0.005835776i },
+             { -0.344130049-0.285581407i , +0.127550460+0.005835776i , +0.683615266+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[56][2] = { { +0.397076785+0.000000000i , -0.232365589+0.280870881i , +0.240844955-0.220268615i },
+             { -0.232365589-0.280870881i , +0.334651238+0.000000000i , -0.296746456-0.041461727i },
+             { +0.240844955+0.220268615i , -0.296746456+0.041461727i , +0.268271968+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[57][0] = { { +0.273719619+0.000000000i , -0.156769555+0.260580633i , -0.306691199-0.110719114i },
+             { -0.156769555-0.260580633i , +0.337860211+0.000000000i , +0.070249188+0.355382552i },
+             { -0.306691199+0.110719114i , +0.070249188-0.355382552i , +0.388420162+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[57][1] = { { +0.456699643+0.000000000i , +0.288482140+0.069800544i , +0.372292777-0.146386765i },
+             { +0.288482140-0.069800544i , +0.192892795+0.000000000i , +0.212791800-0.149367785i },
+             { +0.372292777+0.146386765i , +0.212791800+0.149367785i , +0.350407554+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[57][2] = { { +0.269580730+0.000000000i , -0.131712585-0.330381177i , -0.065601578+0.257105879i },
+             { -0.131712585+0.330381177i , +0.469246986+0.000000000i , -0.283040988-0.206014767i },
+             { -0.065601578-0.257105879i , -0.283040988+0.206014767i , +0.261172276+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[58][0] = { { +0.358131154+0.000000000i , -0.049749085+0.065656784i , -0.321965938-0.345579737i },
+             { -0.049749085-0.065656784i , +0.018947767+0.000000000i , -0.018630440+0.107032096i },
+             { -0.321965938+0.345579737i , -0.018630440-0.107032096i , +0.622921071+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[58][1] = { { +0.022319565+0.000000000i , -0.107481236-0.097048037i , -0.008353448+0.027947495i },
+             { -0.107481236+0.097048037i , +0.939559465+0.000000000i , -0.081292363-0.170904790i },
+             { -0.008353448-0.027947495i , -0.081292363+0.170904790i , +0.038120961+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[58][2] = { { +0.619549272+0.000000000i , +0.157230322+0.031391253i , +0.330319385+0.317632241i },
+             { +0.157230322-0.031391253i , +0.041492759+0.000000000i , +0.099922804+0.063872694i },
+             { +0.330319385-0.317632241i , +0.099922804-0.063872694i , +0.338957960+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[59][0] = { { +0.377619384+0.000000000i , -0.295304478+0.059430364i , -0.000459020-0.379850044i },
+             { -0.295304478-0.059430364i , +0.240286166+0.000000000i , -0.059422459+0.297121132i },
+             { -0.000459020+0.379850044i , -0.059422459-0.297121132i , +0.382094442+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[59][1] = { { +0.516978488+0.000000000i , +0.029787488-0.134848307i , -0.099606088+0.469807387i },
+             { +0.029787488+0.134848307i , +0.036890062+0.000000000i , -0.128283374+0.001088369i },
+             { -0.099606088-0.469807387i , -0.128283374-0.001088369i , +0.446131442+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[59][2] = { { +0.105402119+0.000000000i , +0.265516990+0.075417944i , +0.100065108-0.089957343i },
+             { +0.265516990-0.075417944i , +0.722823764+0.000000000i , +0.187705833-0.298209501i },
+             { +0.100065108+0.089957343i , +0.187705833+0.298209501i , +0.171774108+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[60][0] = { { +0.270610193+0.000000000i , -0.313876937+0.043984386i , +0.011662811+0.311112400i },
+             { -0.313876937-0.043984386i , +0.371210575+0.000000000i , +0.037039983-0.362750519i },
+             { +0.011662811-0.311112400i , +0.037039983+0.362750519i , +0.358179223+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[60][1] = { { +0.624288482+0.000000000i , +0.109487242-0.174913898i , +0.145496276-0.413280605i },
+             { +0.109487242+0.174913898i , +0.068209388+0.000000000i , +0.141310482-0.031715507i },
+             { +0.145496276+0.413280605i , +0.141310482+0.031715507i , +0.307502121+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[60][2] = { { +0.105101316+0.000000000i , +0.204389695+0.130929512i , -0.157159087+0.102168205i },
+             { +0.204389695-0.130929512i , +0.560580028+0.000000000i , -0.178350465+0.394466026i },
+             { -0.157159087-0.102168205i , -0.178350465-0.394466026i , +0.334318648+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[61][0] = { { +0.194078876+0.000000000i , -0.060231729+0.118908888i , +0.261324025+0.265244816i },
+             { -0.060231729-0.118908888i , +0.091546220+0.000000000i , +0.081410037-0.242426744i },
+             { +0.261324025-0.265244816i , +0.081410037+0.242426744i , +0.714374895+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[61][1] = { { +0.028959183+0.000000000i , -0.139871359-0.071897583i , +0.029745025-0.050025060i },
+             { -0.139871359+0.071897583i , +0.854073593+0.000000000i , -0.019468701+0.315467233i },
+             { +0.029745025+0.050025060i , -0.019468701-0.315467233i , +0.116967215+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[61][2] = { { +0.776961932+0.000000000i , +0.200103089-0.047011304i , -0.291069051-0.215219755i },
+             { +0.200103089+0.047011304i , +0.054380178+0.000000000i , -0.061941336-0.073040488i },
+             { -0.291069051+0.215219755i , -0.061941336+0.073040488i , +0.168657882+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[62][0] = { { +0.184254987+0.000000000i , -0.081411759+0.282188539i , +0.249506279+0.042349061i },
+             { -0.081411759-0.282188539i , +0.468146114+0.000000000i , -0.045384505-0.400833262i },
+             { +0.249506279-0.042349061i , -0.045384505+0.400833262i , +0.347598890+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[62][1] = { { +0.494333276+0.000000000i , +0.221757327+0.059789280i , -0.394824165+0.203299467i },
+             { +0.221757327-0.059789280i , +0.106711567+0.000000000i , -0.152528719+0.138953641i },
+             { -0.394824165-0.203299467i , -0.152528719-0.138953641i , +0.398955148+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[62][2] = { { +0.321411728+0.000000000i , -0.140345568-0.341977819i , +0.145317886-0.245648528i },
+             { -0.140345568+0.341977819i , +0.425142310+0.000000000i , +0.197913224+0.261879621i },
+             { +0.145317886+0.245648528i , +0.197913224-0.261879621i , +0.253445953+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[63][0] = { { +0.622955194+0.000000000i , -0.452327379-0.075769818i , +0.155301667-0.020549015i },
+             { -0.452327379+0.075769818i , +0.337650512+0.000000000i , -0.110265084+0.033809906i },
+             { +0.155301667+0.020549015i , -0.110265084-0.033809906i , +0.039394285+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[63][1] = { { +0.066165418+0.000000000i , +0.068040505+0.087938473i , +0.005079015+0.222259004i },
+             { +0.068040505-0.087938473i , +0.186845136+0.000000000i , +0.300620766+0.221807318i },
+             { +0.005079015-0.222259004i , +0.300620766-0.221807318i , +0.746989437+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[63][2] = { { +0.310879379+0.000000000i , +0.384286874-0.012168655i , -0.160380681-0.201709990i },
+             { +0.384286874+0.012168655i , +0.475504344+0.000000000i , -0.190355681-0.255617224i },
+             { -0.160380681+0.201709990i , -0.190355681+0.255617224i , +0.213616269+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[64][0] = { { +0.534927118+0.000000000i , -0.211950475-0.307221207i , +0.330223436+0.020607943i },
+             { -0.211950475+0.307221207i , +0.260424027+0.000000000i , -0.142677766+0.181489737i },
+             { +0.330223436-0.020607943i , -0.142677766-0.181489737i , +0.204648847+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[64][1] = { { +0.327684360+0.000000000i , +0.349417834+0.267103386i , -0.048269887-0.156653393i },
+             { +0.349417834-0.267103386i , +0.590315157+0.000000000i , -0.179163287-0.127697407i },
+             { -0.048269887+0.156653393i , -0.179163287+0.127697407i , +0.082000474+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[64][2] = { { +0.137388513+0.000000000i , -0.137467359+0.040117820i , -0.281953549+0.136045450i },
+             { -0.137467359-0.040117820i , +0.149260808+0.000000000i , +0.321841053-0.053792330i },
+             { -0.281953549-0.136045450i , +0.321841053+0.053792330i , +0.713350670+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[65][0] = { { +0.293310123+0.000000000i , -0.165462534-0.083538886i , +0.407010296-0.085236736i },
+             { -0.165462534+0.083538886i , +0.117134055+0.000000000i , -0.205326623+0.164006197i },
+             { +0.407010296+0.085236736i , -0.205326623-0.164006197i , +0.589555814+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[65][1] = { { +0.369513276+0.000000000i , -0.203502372-0.207255850i , -0.383630188+0.037853264i },
+             { -0.203502372+0.207255850i , +0.228322559+0.000000000i , +0.190045534-0.236020840i },
+             { -0.383630188-0.037853264i , +0.190045534+0.236020840i , +0.402164156+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[65][2] = { { +0.337176592+0.000000000i , +0.368964906+0.290794736i , -0.023380108+0.047383472i },
+             { +0.368964906-0.290794736i , +0.654543377+0.000000000i , +0.015281089+0.072014643i },
+             { -0.023380108-0.047383472i , +0.015281089-0.072014643i , +0.008280022+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[66][0] = { { +0.299248300+0.000000000i , +0.223998713-0.211970906i , -0.290592658-0.173630505i },
+             { +0.223998713+0.211970906i , +0.317820028+0.000000000i , -0.094529422-0.335808781i },
+             { -0.290592658+0.173630505i , -0.094529422+0.335808781i , +0.382931663+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[66][1] = { { +0.175365389+0.000000000i , +0.150464360-0.117825807i , +0.273547880+0.182377265i },
+             { +0.150464360+0.117825807i , +0.208264886+0.000000000i , +0.112168430+0.340274017i },
+             { +0.273547880-0.182377265i , +0.112168430-0.340274017i , +0.616369717+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[66][2] = { { +0.525386302+0.000000000i , -0.374463073+0.329796713i , +0.017044778-0.008746760i },
+             { -0.374463073-0.329796713i , +0.473915077+0.000000000i , -0.017639008-0.004465236i },
+             { +0.017044778+0.008746760i , -0.017639008+0.004465236i , +0.000698612+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[67][0] = { { +0.251889979+0.000000000i , -0.060877653-0.198936061i , -0.378744614-0.041379585i },
+             { -0.060877653+0.198936061i , +0.171827583+0.000000000i , +0.124216839-0.289121743i },
+             { -0.378744614+0.041379585i , +0.124216839+0.289121743i , +0.576282429+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[67][1] = { { +0.389880775+0.000000000i , +0.035831808+0.482880625i , +0.006252214-0.058112211i },
+             { +0.035831808-0.482880625i , +0.601357248+0.000000000i , -0.071399353-0.013084341i },
+             { +0.006252214+0.058112211i , -0.071399353+0.013084341i , +0.008761969+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[67][2] = { { +0.358229237+0.000000000i , +0.025045845-0.283944564i , +0.372492400+0.099491796i },
+             { +0.025045845+0.283944564i , +0.226815161+0.000000000i , -0.052817487+0.302206084i },
+             { +0.372492400-0.099491796i , -0.052817487-0.302206084i , +0.414955593+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[68][0] = { { +0.158912270+0.000000000i , +0.183505620+0.064546239i , -0.098707853-0.293386057i },
+             { +0.183505620-0.064546239i , +0.238122144+0.000000000i , -0.233150109-0.298697951i },
+             { -0.098707853+0.293386057i , -0.233150109+0.298697951i , +0.602965577+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[68][1] = { { +0.635219970+0.000000000i , -0.467882036-0.103771949i , -0.025522320+0.037174319i },
+             { -0.467882036+0.103771949i , +0.361579045+0.000000000i , +0.012725966-0.031550789i },
+             { -0.025522320-0.037174319i , +0.012725966+0.031550789i , +0.003200977+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[68][2] = { { +0.205867752+0.000000000i , +0.284376416+0.039225710i , +0.124230173+0.256211737i },
+             { +0.284376416-0.039225710i , +0.400298802+0.000000000i , +0.220424143+0.330248740i },
+             { +0.124230173-0.256211737i , +0.220424143-0.330248740i , +0.393833437+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[69][0] = { { +0.375390185+0.000000000i , +0.004395498+0.475206031i , -0.052698176+0.076519151i },
+             { +0.004395498-0.475206031i , +0.601614319+0.000000000i , +0.096248467+0.067606527i },
+             { -0.052698176-0.076519151i , +0.096248467-0.067606527i , +0.022995487+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[69][1] = { { +0.161254653+0.000000000i , -0.054283581-0.082943592i , +0.352895751-0.029829811i },
+             { -0.054283581+0.082943592i , +0.060936831+0.000000000i , -0.103452862+0.191558563i },
+             { +0.352895751+0.029829811i , -0.103452862-0.191558563i , +0.777808508+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[69][2] = { { +0.463355154+0.000000000i , +0.049888083-0.392262439i , -0.300197576-0.046689340i },
+             { +0.049888083+0.392262439i , +0.337448841+0.000000000i , +0.007204395-0.259165091i },
+             { -0.300197576+0.046689340i , +0.007204395+0.259165091i , +0.199195996+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[70][0] = { { +0.138974867+0.000000000i , +0.046745384+0.203795526i , -0.081572489+0.263228070i },
+             { +0.046745384-0.203795526i , +0.314573114+0.000000000i , +0.358565351+0.208158579i },
+             { -0.081572489-0.263228070i , +0.358565351-0.208158579i , +0.546452010+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[70][1] = { { +0.219477347+0.000000000i , +0.177808301+0.208418962i , -0.004517116-0.310213409i },
+             { +0.177808301-0.208418962i , +0.341968177+0.000000000i , -0.298242832-0.247028096i },
+             { -0.004517116+0.310213409i , -0.298242832+0.247028096i , +0.438554467+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[70][2] = { { +0.641547776+0.000000000i , -0.224553685-0.412214488i , +0.086089605+0.046985339i },
+             { -0.224553685+0.412214488i , +0.343458701+0.000000000i , -0.060322519+0.038869517i },
+             { +0.086089605-0.046985339i , -0.060322519-0.038869517i , +0.014993514+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[71][0] = { { +0.264871812+0.000000000i , +0.265475116+0.278365074i , -0.008753612+0.216041543i },
+             { +0.265475116-0.278365074i , +0.558625512+0.000000000i , +0.218273708+0.225733181i },
+             { -0.008753612-0.216041543i , +0.218273708-0.225733181i , +0.176502667+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[71][1] = { { +0.595998375+0.000000000i , -0.222370481-0.390094902i , -0.194346039+0.037299422i },
+             { -0.222370481+0.390094902i , +0.338293985+0.000000000i , +0.048098290-0.141120677i },
+             { -0.194346039-0.037299422i , +0.048098290+0.141120677i , +0.065707631+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[71][2] = { { +0.139129804+0.000000000i , -0.043104634+0.111729828i , +0.203099651-0.253340965i },
+             { -0.043104634-0.111729828i , +0.103080494+0.000000000i , -0.266371997-0.084612504i },
+             { +0.203099651+0.253340965i , -0.266371997+0.084612504i , +0.757789693+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[72][0] = { { +0.339732439+0.000000000i , -0.335955120-0.254515714i , +0.192161561+0.098712369i },
+             { -0.335955120+0.254515714i , +0.522894142+0.000000000i , -0.263976890+0.046345936i },
+             { +0.192161561-0.098712369i , -0.263976890-0.046345936i , +0.137373411+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[72][1] = { { +0.297503808+0.000000000i , +0.289027599-0.008037596i , +0.136527884-0.326732081i },
+             { +0.289027599+0.008037596i , +0.281010051+0.000000000i , +0.141465327-0.313734587i },
+             { +0.136527884+0.326732081i , +0.141465327+0.313734587i , +0.421486132+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[72][2] = { { +0.362763744+0.000000000i , +0.046927521+0.262553310i , -0.328689445+0.228019712i },
+             { +0.046927521-0.262553310i , +0.196095799+0.000000000i , +0.122511563+0.267388651i },
+             { -0.328689445-0.228019712i , +0.122511563-0.267388651i , +0.441140448+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[73][0] = { { +0.637008989+0.000000000i , -0.067840982-0.118371755i , +0.461100076-0.000977547i },
+             { -0.067840982+0.118371755i , +0.029221365+0.000000000i , -0.048925167+0.085787711i },
+             { +0.461100076+0.000977547i , -0.048925167-0.085787711i , +0.333769638+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[73][1] = { { +0.026507463+0.000000000i , +0.006179155+0.158951036i , +0.005140582+0.021789048i },
+             { +0.006179155-0.158951036i , +0.954585052+0.000000000i , +0.131855621-0.025746180i },
+             { +0.005140582-0.021789048i , +0.131855621+0.025746180i , +0.018907477+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[73][2] = { { +0.336483539+0.000000000i , +0.061661826-0.040579282i , -0.466240658-0.020811501i },
+             { +0.061661826+0.040579282i , +0.016193575+0.000000000i , -0.082930454-0.060041531i },
+             { -0.466240658+0.020811501i , -0.082930454+0.060041531i , +0.647322877+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[74][0] = { { +0.482882789+0.000000000i , -0.327764794-0.133669134i , +0.308921008-0.170228078i },
+             { -0.327764794+0.133669134i , +0.259477482+0.000000000i , -0.162563652+0.201059084i },
+             { +0.308921008+0.170228078i , -0.162563652-0.201059084i , +0.257639721+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[74][1] = { { +0.411726046+0.000000000i , +0.062269692+0.058186175i , -0.408978778+0.260155550i },
+             { +0.062269692-0.058186175i , +0.017640737+0.000000000i , -0.025088338+0.097143992i },
+             { -0.408978778-0.260155550i , -0.025088338-0.097143992i , +0.570633209+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[74][2] = { { +0.105391157+0.000000000i , +0.265495102+0.075482959i , +0.100057769-0.089927473i },
+             { +0.265495102-0.075482959i , +0.722881773+0.000000000i , +0.187651990-0.298203076i },
+             { +0.100057769+0.089927473i , +0.187651990+0.298203076i , +0.171727062+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[75][0] = { { +0.255849864+0.000000000i , +0.064921310-0.239988560i , -0.340778315+0.111586516i },
+             { +0.064921310+0.239988560i , +0.241584246+0.000000000i , -0.191140474-0.291337092i },
+             { -0.340778315-0.111586516i , -0.191140474+0.291337092i , +0.502565882+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[75][1] = { { +0.613757111+0.000000000i , +0.076550518-0.038084656i , +0.467366565-0.106383129i },
+             { +0.076550518+0.038084656i , +0.011910954+0.000000000i , +0.064893295+0.015732309i },
+             { +0.467366565+0.106383129i , +0.064893295-0.015732309i , +0.374331926+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[75][2] = { { +0.130393017+0.000000000i , -0.141471828+0.278073216i , -0.126588250-0.005203387i },
+             { -0.141471828-0.278073216i , +0.746504791+0.000000000i , +0.126247180+0.275604783i },
+             { -0.126588250+0.005203387i , +0.126247180-0.275604783i , +0.123102183+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[76][0] = { { +0.273323243+0.000000000i , +0.134567594-0.107650658i , -0.326370781-0.249805195i },
+             { +0.134567594+0.107650658i , +0.108651946+0.000000000i , -0.062297066-0.251532644i },
+             { -0.326370781+0.249805195i , -0.062297066+0.251532644i , +0.618024802+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[76][1] = { { +0.107022113+0.000000000i , -0.291780301+0.076286032i , -0.003942548-0.067805036i },
+             { -0.291780301-0.076286032i , +0.849873999+0.000000000i , -0.037583057+0.187670926i },
+             { -0.003942548+0.067805036i , -0.037583057-0.187670926i , +0.043103879+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[76][2] = { { +0.619654635+0.000000000i , +0.157212706+0.031364626i , +0.330313330+0.317610231i },
+             { +0.157212706-0.031364626i , +0.041474046+0.000000000i , +0.099880122+0.063861719i },
+             { +0.330313330-0.317610231i , +0.099880122-0.063861719i , +0.338871310+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[77][0] = { { +0.203518589+0.000000000i , +0.259923234-0.076361589i , -0.038895190-0.295287557i },
+             { +0.259923234+0.076361589i , +0.360611733+0.000000000i , +0.061119044-0.391719498i },
+             { -0.038895190+0.295287557i , +0.061119044+0.391719498i , +0.435869670+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[77][1] = { { +0.513675043+0.000000000i , +0.139873570+0.121719486i , -0.083165563+0.456635753i },
+             { +0.139873570-0.121719486i , +0.066929976+0.000000000i , +0.085557599+0.144048561i },
+             { -0.083165563-0.456635753i , +0.085557599-0.144048561i , +0.419394972+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[77][2] = { { +0.282806359+0.000000000i , -0.399796803-0.045357896i , +0.122060753-0.161348195i },
+             { -0.399796803+0.045357896i , +0.572458282+0.000000000i , -0.146676643+0.247670938i },
+             { +0.122060753+0.161348195i , -0.146676643-0.247670938i , +0.144735350+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[78][0] = { { +0.246430694+0.000000000i , +0.047679988+0.353096109i , -0.164920083+0.177633652i },
+             { +0.047679988-0.353096109i , +0.515156026+0.000000000i , +0.222611724+0.270673309i },
+             { -0.164920083-0.177633652i , +0.222611724-0.270673309i , +0.238413271+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[78][1] = { { +0.483954301+0.000000000i , +0.084023225-0.022709988i , +0.230533480-0.434765666i },
+             { +0.084023225+0.022709988i , +0.015653651+0.000000000i , +0.060426540-0.064665212i },
+             { +0.230533480+0.434765666i , +0.060426540+0.064665212i , +0.500392040+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[78][2] = { { +0.269614997+0.000000000i , -0.131703213-0.330386121i , -0.065613398+0.257132014i },
+             { -0.131703213+0.330386121i , +0.469190315+0.000000000i , -0.283038263-0.206008097i },
+             { -0.065613398-0.257132014i , -0.283038263+0.206008097i , +0.261194680+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[79][0] = { { +0.454435260+0.000000000i , +0.192110827+0.241742987i , -0.007202046+0.390545411i },
+             { +0.192110827-0.241742987i , +0.209812602+0.000000000i , +0.204711291+0.168932856i },
+             { -0.007202046-0.390545411i , +0.204711291-0.168932856i , +0.335752130+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[79][1] = { { +0.186554861+0.000000000i , -0.312896832-0.202832425i , +0.092723255+0.064102344i },
+             { -0.312896832+0.202832425i , +0.745332640+0.000000000i , -0.225214449-0.006701196i },
+             { +0.092723255-0.064102344i , -0.225214449+0.006701196i , +0.068112491+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[79][2] = { { +0.359009871+0.000000000i , +0.120786006-0.038910562i , -0.085521209-0.454647756i },
+             { +0.120786006+0.038910562i , +0.044854750+0.000000000i , +0.020503158-0.162231660i },
+             { -0.085521209+0.454647756i , +0.020503158+0.162231660i , +0.596135371+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[80][0] = { { +0.105159201+0.000000000i , +0.119679689+0.268682639i , +0.025496597+0.083289038i },
+             { +0.119679689-0.268682639i , +0.822691679+0.000000000i , +0.241821419+0.029645682i },
+             { +0.025496597-0.083289038i , +0.241821419-0.029645682i , +0.072149111+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[80][1] = { { +0.357727087+0.000000000i , +0.033965955-0.210461452i , -0.326737118+0.278484360i },
+             { +0.033965955+0.210461452i , +0.127045765+0.000000000i , -0.194864101-0.165787228i },
+             { -0.326737118-0.278484360i , -0.194864101+0.165787228i , +0.515227140+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[80][2] = { { +0.537113704+0.000000000i , -0.153645644-0.058221187i , +0.301240521-0.361773398i },
+             { -0.153645644+0.058221187i , +0.050262547+0.000000000i , -0.046957319+0.136141546i },
+             { +0.301240521+0.361773398i , -0.046957319-0.136141546i , +0.412623741+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[81][0] = { { +0.111759754+0.000000000i , +0.152721859+0.003872629i , -0.020581981+0.274785223i },
+             { +0.152721859-0.003872629i , +0.208831613+0.000000000i , -0.018603984+0.376212540i },
+             { -0.020581981-0.274785223i , -0.018603984-0.376212540i , +0.679408624+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[81][1] = { { +0.626358065+0.000000000i , +0.257351391+0.086683086i , +0.074021308-0.393459991i },
+             { +0.257351391-0.086683086i , +0.117734111+0.000000000i , -0.024038709-0.171904674i },
+             { +0.074021308+0.393459991i , -0.024038709+0.171904674i , +0.255907815+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[81][2] = { { +0.261882172+0.000000000i , -0.410073250-0.090555714i , -0.053439328+0.118674767i },
+             { -0.410073250+0.090555714i , +0.673434267+0.000000000i , +0.042642693-0.204307866i },
+             { -0.053439328-0.118674767i , +0.042642693+0.204307866i , +0.064683552+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[82][0] = { { +0.132745268+0.000000000i , +0.076400678-0.021392533i , +0.266378029+0.194607267i },
+             { +0.076400678+0.021392533i , +0.047419423+0.000000000i , +0.121950264+0.154933050i },
+             { +0.266378029-0.194607267i , +0.121950264-0.154933050i , +0.819835300+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[82][1] = { { +0.090316742+0.000000000i , -0.276482012+0.068417320i , +0.024710771+0.020633896i },
+             { -0.276482012-0.068417320i , +0.898208293+0.000000000i , -0.060015118-0.081884581i },
+             { +0.024710771-0.020633896i , -0.060015118+0.081884581i , +0.011474956+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[82][2] = { { +0.776937981+0.000000000i , +0.200081334-0.047024786i , -0.291088800-0.215241163i },
+             { +0.200081334+0.047024786i , +0.054372275+0.000000000i , -0.061935146-0.073048469i },
+             { -0.291088800+0.215241163i , -0.061935146+0.073048469i , +0.168689735+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[83][0] = { { +0.211647023+0.000000000i , +0.050945861-0.183971979i , +0.335960276-0.132446483i },
+             { +0.050945861+0.183971979i , +0.172179028+0.000000000i , +0.195997223+0.260148610i },
+             { +0.335960276+0.132446483i , +0.195997223-0.260148610i , +0.616173940+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[83][1] = { { +0.678452098+0.000000000i , +0.023920263-0.104983460i , -0.421849328+0.169127956i },
+             { +0.023920263+0.104983460i , +0.017088484+0.000000000i , -0.041044001-0.059313874i },
+             { -0.421849328-0.169127956i , -0.041044001+0.059313874i , +0.304459410+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[83][2] = { { +0.109900871+0.000000000i , -0.074866124+0.288955439i , +0.085889052-0.036681473i },
+             { -0.074866124-0.288955439i , +0.810732479+0.000000000i , -0.154953222-0.200834736i },
+             { +0.085889052+0.036681473i , -0.154953222+0.200834736i , +0.079366642+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[84][0] = { { +0.142827255+0.000000000i , +0.153673736+0.293404439i , -0.083900976-0.075408627i },
+             { +0.153673736-0.293404439i , +0.768073237+0.000000000i , -0.245181538+0.091219225i },
+             { -0.083900976+0.075408627i , -0.245181538-0.091219225i , +0.089099500+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[84][1] = { { +0.362725729+0.000000000i , +0.068585049-0.186576892i , +0.339277230-0.276643932i },
+             { +0.068585049+0.186576892i , +0.108938643+0.000000000i , +0.206449971+0.122207079i },
+             { +0.339277230+0.276643932i , +0.206449971-0.122207079i , +0.528335620+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[84][2] = { { +0.494447007+0.000000000i , -0.222258785-0.106827546i , -0.255376254+0.352052559i },
+             { -0.222258785+0.106827546i , +0.122988112+0.000000000i , +0.038731567-0.213426304i },
+             { -0.255376254-0.352052559i , +0.038731567+0.213426304i , +0.382564872+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[85][0] = { { +0.568767658+0.000000000i , +0.304327764+0.213540325i , -0.026606204-0.326110771i },
+             { +0.304327764-0.213540325i , +0.243007594+0.000000000i , -0.136672343-0.164501384i },
+             { -0.026606204+0.326110771i , -0.136672343+0.164501384i , +0.188224739+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[85][1] = { { +0.220408180+0.000000000i , -0.331699856-0.235644667i , -0.003751355-0.079127284i },
+             { -0.331699856+0.235644667i , +0.751120978+0.000000000i , +0.090242789+0.115070707i },
+             { -0.003751355+0.079127284i , +0.090242789-0.115070707i , +0.028470832+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[85][2] = { { +0.210824153+0.000000000i , +0.027372093+0.022104342i , +0.030357558+0.405238055i },
+             { +0.027372093-0.022104342i , +0.005871419+0.000000000i , +0.046429554+0.049430678i },
+             { +0.030357558-0.405238055i , +0.046429554-0.049430678i , +0.783304420+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[86][0] = { { +0.271213174+0.000000000i , +0.155842931+0.362224979i , +0.097023805-0.180966838i },
+             { +0.155842931-0.362224979i , +0.573327501+0.000000000i , -0.185943159-0.233568472i },
+             { +0.097023805+0.180966838i , -0.185943159+0.233568472i , +0.155459316+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[86][1] = { { +0.407311061+0.000000000i , -0.015499625-0.020237044i , -0.242341107+0.426649450i },
+             { -0.015499625+0.020237044i , +0.001595292+0.000000000i , -0.011975915-0.028276100i },
+             { -0.242341107-0.426649450i , -0.011975915+0.028276100i , +0.591093638+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[86][2] = { { +0.321475756+0.000000000i , -0.140343306-0.341987935i , +0.145317302-0.245682612i },
+             { -0.140343306+0.341987935i , +0.425077198+0.000000000i , +0.197919074+0.261844572i },
+             { +0.145317302+0.245682612i , +0.197919074-0.261844572i , +0.253447037+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[87][0] = { { +0.494253345+0.000000000i , -0.364310252-0.211786537i , -0.211944416+0.165743859i },
+             { -0.364310252+0.211786537i , +0.359280337+0.000000000i , +0.085201655-0.212986228i },
+             { -0.211944416-0.165743859i , +0.085201655+0.212986228i , +0.146466310+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[87][1] = { { +0.400628020+0.000000000i , +0.159876456+0.080885615i , +0.369106121-0.267923316i },
+             { +0.159876456-0.080885615i , +0.080131607+0.000000000i , +0.093204249-0.181440128i },
+             { +0.369106121+0.267923316i , +0.093204249+0.181440128i , +0.519240364+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[87][2] = { { +0.105118626+0.000000000i , +0.204433796+0.130900922i , -0.157161705+0.102179456i },
+             { +0.204433796-0.130900922i , +0.560588048+0.000000000i , -0.178405904+0.394426356i },
+             { -0.157161705-0.102179456i , -0.178405904-0.394426356i , +0.334293317+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[88][0] = { { +0.726802040+0.000000000i , -0.099291676-0.212425900i , -0.373444766+0.064157708i },
+             { -0.099291676+0.212425900i , +0.075651415+0.000000000i , +0.032266286-0.117913360i },
+             { -0.373444766-0.064157708i , +0.032266286+0.117913360i , +0.197546537+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[88][1] = { { +0.040131695+0.000000000i , +0.012773258+0.188534631i , -0.038755052-0.036203778i },
+             { +0.012773258-0.188534631i , +0.889782290+0.000000000i , -0.182416804+0.170544337i },
+             { -0.038755052+0.036203778i , -0.182416804-0.170544337i , +0.070086007+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[88][2] = { { +0.233066256+0.000000000i , +0.086518418+0.023891270i , +0.412199818-0.027953930i },
+             { +0.086518418-0.023891270i , +0.034566287+0.000000000i , +0.150150518-0.052630977i },
+             { +0.412199818+0.027953930i , +0.150150518+0.052630977i , +0.732367448+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[89][0] = { { +0.400886066+0.000000000i , -0.351104040-0.320920458i , -0.073805901-0.092006018i },
+             { -0.351104040+0.320920458i , +0.564409745+0.000000000i , +0.138294070+0.021497018i },
+             { -0.073805901+0.092006018i , +0.138294070-0.021497018i , +0.034704180+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[89][1] = { { +0.234657548+0.000000000i , +0.180294729+0.045452950i , -0.191258738+0.329304267i },
+             { +0.180294729-0.045452950i , +0.147330277+0.000000000i , -0.083164150+0.290061403i },
+             { -0.191258738-0.329304267i , -0.083164150-0.290061403i , +0.618012166+0.000000000i } }
+(0.999999991,0.000000000)
+
+A[89][2] = { { +0.364456378+0.000000000i , +0.170809311+0.275467508i , +0.265064639-0.237298249i },
+             { +0.170809311-0.275467508i , +0.288259969+0.000000000i , -0.055129920-0.311558421i },
+             { +0.265064639+0.237298249i , -0.055129920+0.311558421i , +0.347283645+0.000000000i } }
+(0.999999991,0.000000000)
+
+B[0][0] = { { +0.043006431+0.000000000i , -0.008243577+0.150958220i , -0.024394466+0.133061822i },
+            { -0.008243577-0.150958220i , +0.531463306+0.000000000i , +0.471740443+0.060122164i },
+            { -0.024394466-0.133061822i , +0.471740443-0.060122164i , +0.425530261+0.000000000i } }
+
+B[0][1] = { { +0.009058824+0.000000000i , +0.019805288+0.058577226i , -0.013160475-0.070569287i },
+            { +0.019805288-0.058577226i , +0.422079090+0.000000000i , -0.485096006-0.069185670i },
+            { -0.013160475+0.070569287i , -0.485096006+0.069185670i , +0.568862084+0.000000000i } }
+
+B[0][2] = { { +0.947934743+0.000000000i , -0.011561711-0.209535445i , +0.037554941-0.062492535i },
+            { -0.011561711+0.209535445i , +0.046457602+0.000000000i , +0.013355563+0.009063506i },
+            { +0.037554941+0.062492535i , +0.013355563-0.009063506i , +0.005607653+0.000000000i } }
+
+B[1][0] = { { +0.465360754+0.000000000i , +0.370035015+0.321110587i , +0.041204117-0.084050116i },
+            { +0.370035015-0.321110587i , +0.515810409+0.000000000i , -0.025232931-0.095264939i },
+            { +0.041204117+0.084050116i , -0.025232931+0.095264939i , +0.018828835+0.000000000i } }
+
+B[1][1] = { { +0.337004208+0.000000000i , -0.193966771-0.149076235i , -0.243168121+0.323194686i },
+            { -0.193966771+0.149076235i , +0.177584820+0.000000000i , -0.003009196-0.293585703i },
+            { -0.243168121-0.323194686i , -0.003009196+0.293585703i , +0.485410970+0.000000000i } }
+
+B[1][2] = { { +0.197635036+0.000000000i , -0.176068244-0.172034352i , +0.201964004-0.239144570i },
+            { -0.176068244+0.172034352i , +0.306604769+0.000000000i , +0.028242127+0.388850643i },
+            { +0.201964004+0.239144570i , +0.028242127-0.388850643i , +0.495760193+0.000000000i } }
+
+B[2][0] = { { +0.517858541+0.000000000i , -0.296263586+0.190432487i , +0.352711595+0.035198845i },
+            { -0.296263586-0.190432487i , +0.239518390+0.000000000i , -0.188840370-0.149839920i },
+            { +0.352711595-0.035198845i , -0.188840370+0.149839920i , +0.242623067+0.000000000i } }
+
+B[2][1] = { { +0.219647528+0.000000000i , +0.160928329+0.157177282i , -0.291126054+0.189856492i },
+            { +0.160928329-0.157177282i , +0.230381034+0.000000000i , -0.077439077+0.347427947i },
+            { -0.291126054-0.189856492i , -0.077439077-0.347427947i , +0.549971436+0.000000000i } }
+
+B[2][2] = { { +0.262493930+0.000000000i , +0.135335257-0.347609769i , -0.061585542-0.225055337i },
+            { +0.135335257+0.347609769i , +0.530100574+0.000000000i , +0.266279447-0.197588027i },
+            { -0.061585542+0.225055337i , +0.266279447+0.197588027i , +0.207405495+0.000000000i } }
+
+B[3][0] = { { +0.102854145+0.000000000i , +0.091605168+0.068416894i , +0.240730578-0.145779219i },
+            { +0.091605168-0.068416894i , +0.127096268+0.000000000i , +0.117432346-0.289965641i },
+            { +0.240730578+0.145779219i , +0.117432346+0.289965641i , +0.770049586+0.000000000i } }
+
+B[3][1] = { { +0.322475311+0.000000000i , +0.233012191-0.351051952i , -0.004155359+0.202325391i },
+            { +0.233012191+0.351051952i , +0.550529444+0.000000000i , -0.223257316+0.141671421i },
+            { -0.004155359-0.202325391i , -0.223257316-0.141671421i , +0.126995242+0.000000000i } }
+
+B[3][2] = { { +0.574670542+0.000000000i , -0.324617359+0.282635059i , -0.236575220-0.056546171i },
+            { -0.324617359-0.282635059i , +0.322374286+0.000000000i , +0.105824969+0.148294220i },
+            { -0.236575220+0.056546171i , +0.105824969-0.148294220i , +0.102955170+0.000000000i } }
+
+B[4][0] = { { +0.486404973+0.000000000i , +0.169597681+0.006695456i , +0.311247456+0.352323706i },
+            { +0.169597681-0.006695456i , +0.059226784+0.000000000i , +0.113374283+0.118562398i },
+            { +0.311247456-0.352323706i , +0.113374283-0.118562398i , +0.454368241+0.000000000i } }
+
+B[4][1] = { { +0.062819741+0.000000000i , -0.241061708-0.016246464i , +0.012878307+0.018244896i },
+            { -0.241061708+0.016246464i , +0.929241241+0.000000000i , -0.054137150-0.066681565i },
+            { +0.012878307-0.018244896i , -0.054137150+0.066681565i , +0.007939016+0.000000000i } }
+
+B[4][2] = { { +0.450775284+0.000000000i , +0.071464026+0.009551007i , -0.324125763-0.370568602i },
+            { +0.071464026-0.009551007i , +0.011531973+0.000000000i , -0.059237133-0.051880832i },
+            { -0.324125763+0.370568602i , -0.059237133+0.051880832i , +0.537692741+0.000000000i } }
+
+moments 0 1 = { { +0.333367906+0.000000000i , +0.333352141+0.000000000i , +0.333279950+0.000000000i },
+                { +0.333357161+0.000000000i , +0.333320041+0.000000000i , +0.333322794+0.000000000i },
+                { +0.333274929+0.000000000i , +0.333327814+0.000000000i , +0.333397253+0.000000000i } }
+
+moments 0 2 = { { +0.111163325-0.000000000i , +0.444158948+0.000000000i , +0.444677723+0.000000000i },
+                { +0.444074150+0.000000000i , +0.444798488+0.000000000i , +0.111127359+0.000000000i },
+                { +0.444762522-0.000000000i , +0.111042560+0.000000000i , +0.444194914-0.000000000i } }
+
+moments 0 3 = { { +0.444183835+0.000000000i , +0.111107447+0.000000000i , +0.444708714+0.000000000i },
+                { +0.444702128+0.000000000i , +0.444186096+0.000000000i , +0.111111773+0.000000000i },
+                { +0.111114033+0.000000000i , +0.444706454+0.000000000i , +0.444179509+0.000000000i } }
+
+moments 0 4 = { { +0.444767288+0.000000000i , +0.444138547+0.000000000i , +0.111094161+0.000000000i },
+                { +0.111060517+0.000000000i , +0.444682857+0.000000000i , +0.444256622+0.000000000i },
+                { +0.444172191-0.000000000i , +0.111178592+0.000000000i , +0.444649213+0.000000000i } }
+
+moments 1 2 = { { +0.333377783+0.000000000i , +0.333250929-0.000000000i , +0.333371284+0.000000000i },
+                { +0.333313861-0.000000000i , +0.333376865+0.000000000i , +0.333309270-0.000000000i },
+                { +0.333308352+0.000000000i , +0.333372203+0.000000000i , +0.333319442+0.000000000i } }
+
+moments 1 3 = { { +0.333318511+0.000000000i , +0.333340540-0.000000000i , +0.333340946+0.000000000i },
+                { +0.333334418+0.000000000i , +0.333319981+0.000000000i , +0.333345598+0.000000000i },
+                { +0.333347068+0.000000000i , +0.333339476-0.000000000i , +0.333313453-0.000000000i } }
+
+moments 1 4 = { { +0.333385373+0.000000000i , +0.333290477-0.000000000i , +0.333324146+0.000000000i },
+                { +0.333273333+0.000000000i , +0.333412633-0.000000000i , +0.333314030+0.000000000i },
+                { +0.333341290+0.000000000i , +0.333296887+0.000000000i , +0.333361820-0.000000000i } }
+
+moments 2 3 = { { +0.444415964+0.000000000i , +0.111076921+0.000000000i , +0.444507111+0.000000000i },
+                { +0.111176211+0.000000000i , +0.444411892-0.000000000i , +0.444411892+0.000000000i },
+                { +0.444407821+0.000000000i , +0.444511182+0.000000000i , +0.111080993+0.000000000i } }
+
+moments 2 4 = { { +0.444387826+0.000000000i , +0.444474931+0.000000000i , +0.111137239-0.000000000i },
+                { +0.444444801-0.000000000i , +0.111029511+0.000000000i , +0.444525684+0.000000000i },
+                { +0.111167369+0.000000000i , +0.444495554+0.000000000i , +0.444337073+0.000000000i } }
+
+moments 3 4 = { { +0.444430742+0.000000000i , +0.111126511+0.000000000i , +0.444442743+0.000000000i },
+                { +0.444449941+0.000000000i , +0.444461838+0.000000000i , +0.111088218-0.000000000i },
+                { +0.111119313+0.000000000i , +0.444411648-0.000000000i , +0.444469036+0.000000000i } }
+iterations = 324
+time elapsed = 51611 ms
+final result = 73.19725 <= 73.48469 (0.28744 away)
