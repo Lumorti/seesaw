@@ -810,7 +810,7 @@ void JCB(int d, int n){
 		}
 	}
 
-	// Turn it into MOSEK form TODO isues with SEtaRef[106]
+	// Turn it into MOSEK form
 	std::vector<mosek::fusion::Matrix::t> SEtarRef(p*p);
 	std::vector<mosek::fusion::Matrix::t> SEtaiRef(p*p);
 	for (int j=0; j<p*p; j++){
@@ -887,7 +887,7 @@ void JCB(int d, int n){
 
 	}
 
-	// TODO Xtox
+	// Turn it into MOSEK form
 	int1 nonZeroRows;
 	int1 nonZeroCols;
 	real1 nonZeroValsr;
@@ -1450,8 +1450,8 @@ void JCB(int d, int n){
 	// Combined constraint with r
 	for (int j=0; j<K; j++){
 
-		std::cout << j << " " << SEtarRef[j]->numRows() << " x " << SEtarRef[j]->numColumns() << " " << SEtarRef[j]->numNonzeros() << std::endl; // TODO
-		std::cout << j << " " << SEtaiRef[j]->numRows() << " x " << SEtaiRef[j]->numColumns() << " " << SEtaiRef[j]->numNonzeros() << std::endl; // TODO
+		std::cout << j << " " << SEtarRef[j]->numRows() << " x " << SEtarRef[j]->numColumns() << " " << SEtarRef[j]->numNonzeros() << std::endl;
+		std::cout << j << " " << SEtaiRef[j]->numRows() << " x " << SEtaiRef[j]->numColumns() << " " << SEtaiRef[j]->numNonzeros() << std::endl;
 
 		// For l and m
 		model->constraint(
@@ -1727,8 +1727,6 @@ void JCB(int d, int n){
 				localUppers[j] += std::real(Delta(i,0)*xs[j][i]*ys[j][i]);
 			}
 
-			// Based on X vs Y, can we eliminate bounds? TODO
-
 			// Verbose output
 			if (procID == 0 && verbosity >= 2){
 
@@ -1912,8 +1910,49 @@ void seesawExtended(int d, int n){
 	}
 	std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
+	// If told to use the ideal TODO
+	if (useIdeal && d == 2 && n == 4) {
+
+		// Mate's tetrahedron vectors
+		double o = 1 / std::sqrt(3);
+		complex2 idealBlochs = {{o, o, o}, {o, -o, -o}, {-o, o, -o}, {-o, -o, o}};
+
+		// Useful definitions
+		Eigen::MatrixXcd PauliX = Eigen::MatrixXcd::Zero(2, 2);
+		PauliX(0, 1) = 1;
+		PauliX(1, 0) = 1;
+		Eigen::MatrixXcd PauliY = Eigen::MatrixXcd::Zero(2, 2);
+		PauliY(0, 1) = -1i;
+		PauliY(1, 0) = 1i;
+		Eigen::MatrixXcd PauliZ = Eigen::MatrixXcd::Zero(2, 2);
+		PauliZ(0, 0) = 1;
+		PauliZ(1, 1) = -1;
+		Eigen::MatrixXcd id = Eigen::MatrixXcd::Identity(2, 2);
+
+		// Use these to generate the ideal B's
+		Eigen::MatrixXcd B = Eigen::MatrixXcd::Zero(2, 2);
+		int index = 0;
+		for (int i=0; i<idealBlochs.size(); i++) {
+			B = 0.5*(id + idealBlochs[i][0]*PauliX + idealBlochs[i][1]*PauliY + idealBlochs[i][2]*PauliZ);
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
+					Br[j*d+k][index] = std::real(B(j,k));
+					Bi[j*d+k][index] = std::imag(B(j,k));
+				}
+			}
+			index += 1;
+			B = id - B;
+			for (int j=0; j<d; j++){
+				for (int k=0; k<d; k++){
+					Br[j*d+k][index] = std::real(B(j,k));
+					Bi[j*d+k][index] = std::imag(B(j,k));
+				}
+			}
+			index += 1;
+		}
+
 	// If told to just generate a random symmetric matrix
-	if (randomMethod == 1){
+	} else if (randomMethod == 1){
 
 		// Randomise B
 		for (int x=0; x<numMeasureB; x++){
@@ -2021,6 +2060,8 @@ void seesawExtended(int d, int n){
 		}
 	}
 	auto CRef = mosek::fusion::Matrix::sparse(monty::new_array_ptr(C));
+
+	prettyPrint("C = ", C); // TODO
 
 	// Create the arrays to be used to select the columns of the B array 
 	std::vector<std::shared_ptr<monty::ndarray<int,1>>> columnsStartRefB;
@@ -2287,6 +2328,7 @@ void seesawExtended(int d, int n){
 			if (outputMethod == 1 && verbosity >= 1){
 				std::cout << std::endl;
 				prettyPrint("A[" + std::to_string(x) + "][" + std::to_string(a) + "] = ", A[x][a]);
+				std::cout << trace(A[x][a]) << std::endl;
 			}
 		}
 	}
@@ -2329,6 +2371,25 @@ void seesawExtended(int d, int n){
 
 		}
 	}
+
+	// Check sections of objective TODO
+	std::complex<double> tot = 0;
+	int ind = 0;
+	for (int y1=0; y1<numMeasureB; y1++){
+		for (int y2=y1+1; y2<numMeasureB; y2++){
+			for (int b1=0; b1<numOutcomeB; b1++){
+				for (int b2=0; b2<numOutcomeB; b2++){
+					Eigen::MatrixXcd BMinus = vecToMat(B[y1][b1]) - vecToMat(B[y2][b2]);
+					Eigen::MatrixXcd AMinus = vecToMat(A[ind][0]) - vecToMat(A[ind][1]);
+					std::complex<double> val = (AMinus.transpose()*BMinus).trace();
+					tot += val;
+					std::cout << val << std::endl;
+					ind++;
+				}
+			}
+		}
+	}
+	std::cout << tot / std::complex<double>(2*d) << std::endl;
 
 	// Stop the timer 
 	auto t2 = std::chrono::high_resolution_clock::now();
