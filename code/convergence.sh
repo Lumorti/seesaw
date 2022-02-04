@@ -1,7 +1,7 @@
 #!/bin/bash
 
-numRepeats=100
-d=3
+numRepeats=10000
+d=2
 n=2
 
 # Keep repeating
