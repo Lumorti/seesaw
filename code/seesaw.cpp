@@ -72,7 +72,6 @@ int numIters = 100000;
 
 // Convergence criteria
 double tol = 1e-8;
-double epsilon = 1e-5;
 int numInRowRequired = 10;
 
 // What counts as zero
@@ -1158,7 +1157,6 @@ int main (int argc, char ** argv) {
 		// Set the tolerance
 		} else if (arg == "-t") {
 			tol = std::stod(argv[i+1]);
-			epsilon = std::stod(argv[i+1]);
 			i += 1;
 
 		// Set the precision
