@@ -1,8 +1,8 @@
 #!/bin/bash
 
-numRepeats=100
-d=3
-n=2
+numRepeats=10000
+d=2
+n=4
 
 # Keep repeating
 total=0
